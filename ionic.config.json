@@ -1,0 +1,7 @@
+{
+  "name": "Paintflow",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
