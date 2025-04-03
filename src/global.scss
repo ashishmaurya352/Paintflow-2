@@ -35,3 +35,22 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import "@ionic/angular/css/palettes/dark.system.css";
+
+:root {
+    --theme-color-primary: #A52B54;
+    --theme-color-dark: #333333;
+    --theme-color-red: #EC4949;
+    --theme-color-orange: #E8B500;
+    --theme-color-green: #16A34A;
+    --theme-color-gray: #BBBBBB;
+    --theme-color-gray-1: #999999;
+    --theme-color-gray-2: #F2F2F2;
+    --theme-color-gray-3: #F1F1F1;
+  }
+.quantity-modal{
+  z-index: 20002;
+  --height: 18%;
+  --width: 43%;
+  --border-radius: 16px;
+  --box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}

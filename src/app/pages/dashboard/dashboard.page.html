@@ -1,0 +1,74 @@
+<ion-content [fullscreen]="true">
+  <div class="hader">
+    <ion-item>
+      <ion-button fill="clear" slot="start" aria-label="Show/hide" (click)="logout()">
+        <ion-icon color="dark" slot="icon-only" name="exit" aria-hidden="true"></ion-icon>
+      </ion-button>
+      <h3>Short Blast Orders</h3>
+    </ion-item>
+  </div>
+
+  <div class="content">
+  <div class="header-title">
+    <strong class="active">Cost</strong> Overview
+  </div>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" size-md="4" *ngFor="let item of paintData">
+        <ion-card class="requisition-card">
+          <ion-card-content class="overview">
+            <h3>{{ item.title }}</h3>
+            <h2>{{ item.value | number }}</h2>
+            <p>Qty in {{ item.unit }}: <b>{{ item.qty | number }}</b></p>
+            <p>Rate: <b>{{ item.rate }}</b></p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
+<!-- <app-bar-chart canvasId="barChart"></app-bar-chart> -->
+
+  <div class="header-title">
+    <strong class="active">Active</strong> Requisitions
+  </div>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6" size-md="4" *ngFor="let item of requisitions">
+        <ion-card class="requisition-card">
+          <ion-card-content>
+            <h2 class="requisition-number">{{ item.count }}</h2>
+            <p class="requisition-title">{{ item.title }}</p>
+            <a class="view-all" (click)="viewAll(item)">View all &gt;</a>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</div>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="end">
+  <ion-fab-button >
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+  <ion-fab-list side="top">
+    <ion-fab-button data-desc="Refresh App Data" aria-label="Repeat Action" (click)="getRequisitionFetch()">
+      <ion-icon name="repeat-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button data-desc="Download Master File" (click)="downloadFile()">
+      <ion-icon name="cloud-download-outline"></ion-icon>
+    </ion-fab-button>
+    <ion-fab-button data-desc="Update Master File"(click)="openFileInput()" >
+      <ion-icon name="cloud-upload-outline"></ion-icon>
+    </ion-fab-button>
+    <input #fileInput type="file" accept=".xlsx, .xls" style="display: none;" (change)="handleFileSelection($event)">
+    
+  </ion-fab-list>
+</ion-fab>
+
+
+</ion-content>

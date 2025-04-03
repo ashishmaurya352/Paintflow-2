@@ -1,0 +1,55 @@
+
+<ion-content [fullscreen]="true">
+  <div class="hader">
+    <ion-item>
+      <ion-button fill="clear" slot="start" aria-label="Show/hide" (click)="backToRequisitionPage()">
+        <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
+      </ion-button>
+      <h3>{{pageTitles}}</h3>
+    </ion-item>
+  </div>
+
+  <div class="content">
+    <ion-list class="main-list">
+
+      <div class="dropdown" >
+        <ion-item lines="none">
+          <h3><b>Select Priority</b></h3>
+        </ion-item>
+        <ion-item lines="none" >
+        
+        <ion-select  class="custom-select" [value]="priority" 
+          interface="popover" label-placement="floating" shape="round" fill="outline" (ionChange)="onStatusChange($event)">
+          <ion-select-option value="High">High</ion-select-option>
+          <ion-select-option value="Medium">Medium</ion-select-option>
+          <ion-select-option value="Low">Low</ion-select-option>
+        </ion-select>
+        </ion-item> 
+      </div>
+
+      <ion-item lines="none">
+        <h3><b>Select Team</b></h3>
+      </ion-item>
+      
+      <ion-item *ngFor="let team of teams" lines="none">
+        <ion-button
+          expand="block"
+          shape="round"
+          fill="outline"
+          size="large"
+          [class.selected]="team === selectedTeam"
+          (click)="selectTeam(team)">
+          <b>{{ team }}</b>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <div class="accept-btn">
+    <ion-button shape="round" size="large" expand="block"  slot="start" aria-label="accept" (click)="assignTeam()">
+      Submit
+  </ion-button>
+  </div>
+</ion-footer>

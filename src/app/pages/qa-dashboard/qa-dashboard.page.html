@@ -1,0 +1,61 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>qa-dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">qa-dashboard</ion-title>
+    </ion-toolbar>
+  </ion-header>
+</ion-content>
+<ion-header class="ion-no-border">
+  <div class="hader">
+    <ion-item>
+      <ion-button fill="clear" slot="start" aria-label="Show/hide">
+        <ion-icon color="dark" slot="icon-only" name="exit-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
+      <h3>Short Blast Orders</h3>
+    </ion-item>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <div class="content">
+    <div class="header-title">
+      <strong class="active">Cost</strong> Overview
+    </div>
+
+    <ion-grid>
+      <ion-row>
+        <ion-col>
+          <ion-card class="requisition-card">
+            <ion-card-content class="overview">
+              <h3>{{ 'Short Bplasting' }}</h3>
+              <div class="request">
+
+                <h2>{{ '120' }}</h2>
+                <p>Active Request</p>
+              </div>
+              <div class="action-container">
+                <div class="action">
+                  <ion-icon class="Approved-icon" name="checkmark-circle-outline"></ion-icon>
+                  <p>Approved: <b>{{ '50 '}}</b></p>
+
+                  <ion-icon class="Rejected-icon" name="close-circle-outline"></ion-icon>
+                  <p>Rejected: <b>{{ '20 '}}</b></p>
+                </div>
+                <ion-button shape="round">
+                  View All
+                  <ion-icon slot="end" name="arrow-forward-outline"></ion-icon>
+                </ion-button>
+              </div>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </div>
+</ion-content>

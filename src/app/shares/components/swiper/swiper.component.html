@@ -1,0 +1,33 @@
+<!-- <ion-header mode="md">
+  <ion-toolbar>
+    <ion-title>{{ dprData?.SubTask | titlecase}}</ion-title>    
+    <ion-button slot="end" fill="clear" (click)="dismiss()">
+      <ion-icon color="dark" slot="end" name="close-sharp"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header> -->
+
+<ion-content>
+
+  <swiper-container 
+  #swiper
+  (afterinit)="swiperReady()"
+  [loop]="false" 
+  [zoom]="true"
+  [pagination]="{ clickable: true }" 
+  (slideChange)="swiperSlideChanged($event)"
+  zoom-max-ratio="3"
+  zoom-min-ratio="1"
+  initialSlide="2"
+>
+    <swiper-slide *ngFor="let img of Images; let i = index">
+      <div class="swiper-zoom-container">
+        <img  *ngIf="img.compressedUrl"
+        [src]="img.compressedUrl"/> 
+        <img *ngIf="img.imageUrl"
+        [src]="img.imageUrl"/> 
+        
+      </div>
+    </swiper-slide>
+  </swiper-container>
+</ion-content>

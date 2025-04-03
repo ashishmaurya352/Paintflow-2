@@ -1,0 +1,156 @@
+.hader {
+    h3 {
+        font-size: 32px;
+        margin: auto;
+        color: #333333;
+        margin-top: 16px !important;
+        margin-bottom: 16px !important;
+        font-weight: bold;
+    }
+
+    ion-icon {
+        font-size: 32px
+    }
+}
+
+ion-list {
+    min-height: 100vh;
+    background: #F1F1F1;
+    padding: 0;
+
+    ion-card {
+        margin-left: 0;
+        margin-right: 0;
+        box-shadow: none;
+    }
+
+    ion-checkbox::part(container) {
+        // border-radius: 6px;
+        // border: 2px solid #A52B54;
+    }
+
+    ion-checkbox {
+        margin-left: 13px;
+        --size: 20px;
+        --checkbox-background-checked: #A52B54;
+        --border-color-checked: #A52B54;
+
+        h6 {
+            font-size: 14px;
+            color: #657786;
+        }
+
+        h5 {
+            font-size: 16px;
+            color: #333333;
+        }
+    }
+}
+
+ion-footer {
+    border-top: 1px solid #DDDDDD;
+    box-shadow: none;
+    background: white;
+
+    .accept-btn {
+        ion-button {
+            margin: 10px 20px;
+            --background: #A52B54;
+            /* Apply color to button background */
+            --color: white;
+            /* Apply text color inside the button */
+        }
+    }
+}
+
+.modal-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: white;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .modal-header ion-icon {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .modal-body {
+    text-align: center;
+  }
+  
+  .item-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .quantity-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+  }
+  
+  .modal-footer {
+    display: flex;
+    justify-content: space-between;
+  }
+  ion-card-content{
+    
+    display: flex;
+    width: 100%;
+    .dropdown {
+      margin-left: auto;
+      width: 145px;
+      height: 32px;
+      margin-top: 18px;
+      color: #A52B54
+
+    }
+    ion-select{
+      --border-color:#A52B54
+    }
+    ion-select::part(icon) {
+      height: 32px;
+      color: #A52B54;
+
+    }
+    ion-select::part(container) {
+    margin-top: 7px;
+    }
+    .card-content{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      h6{
+        color: var(--theme-color-dark);
+      }
+      h5{
+        color: var(--theme-color-dark);
+        font-weight: 600;
+      }
+    }
+    ion-thumbnail{
+
+      --border-radius: 14px;
+      margin-right: 13px;
+      --size: 72px;
+      img{
+        max-width: 72px;
+    border-radius: 14px;
+    margin-right: 13px;
+      }
+    }
+  }

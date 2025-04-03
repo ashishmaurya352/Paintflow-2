@@ -1,0 +1,173 @@
+.hader {
+    h3 {
+        font-size: 32px;
+        margin: auto;
+        color: var(--theme-color-dark);
+        margin-top: 16px !important;
+        margin-bottom: 16px !important;
+        font-weight: bold;
+    }
+
+    ion-icon {
+        font-size: 32px
+    }
+}
+
+.main-list {
+
+    min-height: 90.5vh;
+    background: var(--theme-color-gray-3);
+}
+
+ion-card {
+
+    margin: 15px 28px;
+}
+
+.content {
+    ion-segment-button {
+        --color-checked:var(--theme-color-primary);
+        --color: var(--theme-color-dark)
+        ion-label{
+            font-size: 14px;
+            font-weight: bold;
+        }
+    }
+
+    ion-card-content {
+        padding-left: 0;
+        padding-right: 0;
+
+        .short-view {
+
+            display: flex;
+            justify-content: space-between;
+
+            .id-no {
+                color: var(--theme-color-dark);
+                border-left: 4px solid var(--theme-color-orange);
+                padding-left: 20px;
+                border-radius: 3px;
+                h5{
+                    font-size: 16px;
+                    color: var(--theme-color-dark);
+                    font-weight: bold;
+                }
+
+                .accept {
+                    font-size: 24px;
+                    display: flex;
+                    align-items: baseline;
+
+                    p {
+                        color: var(--theme-color-dark);
+
+                    }
+
+                    h6 {
+                        margin-left: 5px;
+                        color: var(--theme-color-dark);
+                        font-weight: 600;
+
+                    }
+                    .margin-side{
+                        margin: 0 5px;
+                    }
+                    .rejeced-item{
+                        color: var(--theme-color-red);
+                    }
+                }
+            }
+
+            .border {
+                border: 0 !important
+            }
+
+            .card-end {
+                display: flex;
+
+                ion-icon {
+                    font-size: large;
+                }
+
+                .chart {
+
+                    width: 48px !important;
+                    height: 48px !important;
+                    // app-pie-chart {
+                    //     // display: inline-block;
+                    // }
+                }
+            }
+
+        }
+
+        .long-view {
+
+            margin-top: 15px;
+
+            ion-list {
+                border-top: 1px solid #DDDDDD;
+            }
+
+            ion-row {
+                ion-col{
+                    color: var(--theme-color-dark);
+                }
+                .quantity {
+                    float: inline-end;
+                    padding-right: 5px;
+                }
+
+                .type {
+                    float: inline-end;
+                    font-weight: bold;
+                }
+            }
+        }
+    }
+
+}
+
+.accept-btn {
+    --color: #1BAA1A;
+    --border-color: #1BAA1A;
+
+}
+
+
+.medium-completion {
+    border-left: 4px solid #E8B500;
+    /*  You can choose a specific red shade */
+}
+
+/* Yellow for less than 20% */
+.low-completion {
+    border-left: 4px solid #EC4949;
+}
+
+/* Green for 100% */
+.high-completion {
+    border-left: 4px solid #499DF3;
+}
+
+.In-Progress {
+    color: #E8B500;
+}
+
+.Completed {
+    color: #66DB98;
+}
+
+.Un-assigned {
+    color:var(--theme-color-primary);
+}
+
+ion-badge {
+    margin-left: 10px;
+}
+
+.priority {
+    display: flex;
+    margin-bottom: 5px;
+}

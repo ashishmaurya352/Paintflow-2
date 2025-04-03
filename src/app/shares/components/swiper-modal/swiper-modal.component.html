@@ -1,0 +1,11 @@
+<!-- <ion-modal [isOpen]="isOpen" (didDismiss)="closeModal()"> -->
+    <div class="swiper-container">
+      <swiper-container slides-per-view="3" speed="500" loop="true" css-mode="true">
+        <swiper-slide *ngFor="let img of images">
+          <img [src]="img" class="full-screen-img" />
+        </swiper-slide>
+      </swiper-container>
+      <ion-icon name="close-circle" class="close-icon" (click)="closeModal()"></ion-icon>
+    </div>
+  <!-- </ion-modal> -->
+

@@ -1,0 +1,82 @@
+<ion-content [fullscreen]="true">
+  <div class="hader">
+    <ion-item>
+      <ion-button (click)="isSearchbarVisible?toggleSearch():backToOrderPage()" fill="clear" slot="start"
+        aria-label="Show/hide">
+        <!-- <ion-icon name="arrow-back"></ion-icon> -->
+        <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
+      </ion-button>
+      <h3 *ngIf="isSearchbarVisible">Search</h3>
+      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}}{{requisitionId}}</h3>
+
+      <ion-button *ngIf="!isSearchbarVisible" fill="clear" slot="end" aria-label="Show/hide" (click)="toggleSearch()">
+        <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
+      </ion-button>
+
+      <ion-button fill="clear" slot="end" aria-label="Show/hide">
+        <ion-icon color="dark" slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
+
+    </ion-item>
+  </div>
+
+  <div>
+    <ion-searchbar *ngIf="isSearchbarVisible" [debounce]="1000" (ionInput)="handleInput($event)">
+    </ion-searchbar>
+    <!-- Search Results -->
+    <ion-list *ngIf="isSearchbarVisible">
+      <ion-item *ngFor="let result of results">
+        <ion-label>{{ result }}</ion-label>
+      </ion-item>
+    </ion-list>
+
+
+    <ion-list *ngIf="!isSearchbarVisible">
+
+      <ion-card *ngFor="let item of RequisitionItemLists; let i = index">
+        <ion-card-content>
+          <ion-checkbox [(ngModel)]="itemChecked[i]" labelPlacement="end" (ionChange)="openModal(i,item) ">
+            <div class="card-content">
+              <div *ngIf="usereRole === 'Inward Manager'">
+                <ion-thumbnail>
+                  <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
+                </ion-thumbnail>
+              </div>
+              <div>
+                <h6>{{ item.partNumber | uppercase }}</h6>
+                <h5>{{ item.partDesciption | uppercase }}</h5>
+                <h6>Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
+              </div>
+            </div>
+          </ion-checkbox>
+          <div class="dropdown" *ngIf="usereRole === 'Inward Manager'">
+            <ion-select [disabled]="!itemChecked[i]" class="custom-select" [value]="UpdatedItemLists[i].priority" 
+              interface="popover" label-placement="floating" shape="round" fill="outline" (ionChange)="onStatusChange($event, i)">
+              <ion-select-option value="High">High</ion-select-option>
+              <ion-select-option value="Medium">Medium</ion-select-option>
+              <ion-select-option value="Low">Low</ion-select-option>
+            </ion-select>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </ion-list>
+
+  </div>
+
+  <!-- <app-received-modal [isOpen]="isModalOpen" [totalQuantity]="totalQuantity" [index]="index" [itemName]="partDesciption"
+    [getquantity]="quantity" (dismiss)="isModalOpen = false" (quantitySubmitted)="handleQuantitySubmitted($event)">
+  </app-received-modal> -->
+</ion-content>
+
+<ion-footer>
+  <div class="accept-btn">
+    <ion-button *ngIf="usereRole == 'Executive'" shape="round" size="large" expand="block" slot="start"
+      aria-label="accept" (click)="acceptItems()">
+      Accept Items
+    </ion-button>
+    <ion-button *ngIf="usereRole == 'Inward Manager'" shape="round" size="large" expand="block" slot="start"
+      aria-label="accept" (click)="acceptItems()">
+      Assign Team
+    </ion-button>
+  </div>
+</ion-footer>

@@ -1,0 +1,50 @@
+
+<ion-content>
+
+<div  class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3 (click)="$event.stopPropagation()">Enter Quantity Received</h3>
+      <ion-button color="dark" fill="clear" slot="end" (click)="closeModal()">
+        <ion-icon slot="end" name="close"></ion-icon>
+      </ion-button>
+      <!-- <ion-by (click)="closeModal()">
+        <ion-icon name="close"></ion-icon>
+      </ion-by> -->
+    </div>
+    <div class="modal-body" (click)="$event.stopPropagation()">
+      <h6>{{ itemName }}</h6>
+      <div class="modal-input">
+
+        <!-- <ion-input type="number" size="small" fill="outline"   [(ngModel)]="quantity" placeholder="Enter quantity"></ion-input> -->
+
+        <input type="number" [(ngModel)]="quantity" placeholder="Enter quantity" />
+        <h6>/ {{ totalQuantity }} pcs</h6>
+      </div>
+      <div *ngIf="teams.length > 0" class="team">
+        <h6>Setect Team </h6>
+        <ion-button *ngFor="let team of teams" (click)="selectTeam(team)" expand="block" fill="outline" shape="round"
+          [ngClass]="{'selected': selectedTeam === team, 'notselected': selectedTeam !== team}">
+          {{team}}
+        </ion-button>
+      </div>
+      <div class="modal-actions">
+        <ion-button class="close-btn" shape="round" (click)="closeModal()">
+          Cancel
+        </ion-button>
+        <div>
+          <ion-button *ngIf="teams.length !== 0" [disabled]="!selectedTeam" class="submit-btn" shape="round"
+            (click)="submitQuantity()">
+            Submit
+          </ion-button>
+          <ion-button *ngIf="teams.length === 0" class="submit-btn" shape="round"
+            (click)="submitQuantity()">
+            Submit
+          </ion-button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</ion-content>

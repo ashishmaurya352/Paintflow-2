@@ -1,0 +1,57 @@
+.hader {
+    h3 {
+        font-size: 32px;
+        margin: auto;
+        color: #333333;
+        margin-top: 16px !important;
+        margin-bottom: 16px !important;
+        font-weight: bold;
+    }
+
+    ion-icon {
+        font-size: 32px
+    }
+}
+
+.content {
+    ion-button {
+        width: 100%;
+        --color: #333333;
+        --border-color: #333333;
+    }
+
+
+    .selected {
+        // ion-button{
+        //     --color: #A52B54;
+        //     --border-color: #A52B54;
+        // }
+        --color: #A52B54;
+        --border-color: #A52B54;
+    }
+}
+.custom-select{
+    width: 100%;
+    --color: #333333;
+    --border-color: #333333;
+}
+
+
+ion-footer {
+    border-top: 1px solid #DDDDDD;
+    box-shadow: none;
+    background: white;
+
+    .accept-btn {
+        ion-button {
+            margin: 10px 20px;
+            --background: #A52B54;
+            /* Apply color to button background */
+            --color: white;
+            /* Apply text color inside the button */
+        }
+    }
+}
+.dropdown{
+    width: 45%;
+}
