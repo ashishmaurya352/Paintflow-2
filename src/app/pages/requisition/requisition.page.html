@@ -7,7 +7,7 @@
         <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
       </ion-button>
       <h3 *ngIf="isSearchbarVisible">Search</h3>
-      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}}{{slipNumber}}</h3>
+      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}} {{slipNumber}}</h3>
 
       <ion-button *ngIf="!isSearchbarVisible" fill="clear" slot="end" aria-label="Show/hide" (click)="toggleSearch()">
         <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
@@ -37,7 +37,7 @@
         <ion-card-content>
           <ion-checkbox [(ngModel)]="itemChecked[i]" labelPlacement="end" (ionChange)="openModal(i,item) ">
             <div class="card-content">
-              <div *ngIf="usereRole === 'Inward Manager'">
+              <div >
                 <ion-thumbnail>
                   <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
                 </ion-thumbnail>
@@ -73,7 +73,7 @@
 
 <ion-footer>
   <div class="accept-btn">
-    <ion-button *ngIf="usereRole == 'Executive'" shape="round" size="large" expand="block" slot="start"
+    <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Executive'" shape="round" size="large" expand="block" slot="start"
       aria-label="accept" (click)="acceptItems()">
       Accept Items
     </ion-button>

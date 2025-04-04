@@ -6,27 +6,23 @@
     </ion-button>
   </ion-toolbar>
 </ion-header> -->
-
 <ion-content>
-
   <swiper-container 
-  #swiper
-  (afterinit)="swiperReady()"
-  [loop]="false" 
-  [zoom]="true"
-  [pagination]="{ clickable: true }" 
-  (slideChange)="swiperSlideChanged($event)"
-  zoom-max-ratio="3"
-  zoom-min-ratio="1"
-  initialSlide="2"
->
+    #swiper
+    (afterinit)="swiperReady()"
+    [loop]="false" 
+    [zoom]="true"
+    [pagination]="{ clickable: true }" 
+    (slideChange)="swiperSlideChanged($event)"
+    zoom-max-ratio="3"
+    zoom-min-ratio="1"
+    initialSlide="2"
+    class="swiper-container"
+  >
     <swiper-slide *ngFor="let img of Images; let i = index">
-      <div class="swiper-zoom-container">
-        <img  *ngIf="img.compressedUrl"
-        [src]="img.compressedUrl"/> 
-        <img *ngIf="img.imageUrl"
-        [src]="img.imageUrl"/> 
-        
+      <div class="swiper-slide-content">
+        <img *ngIf="img.compressedUrl" [src]="img.compressedUrl"/>
+        <img *ngIf="img.imageUrl" [src]="img.imageUrl"/>
       </div>
     </swiper-slide>
   </swiper-container>

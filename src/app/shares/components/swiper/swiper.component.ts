@@ -3,9 +3,8 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, ViewChild } from '@angular/co
 import { FormsModule } from '@angular/forms';
 import { ModalController } from '@ionic/angular';
 import Swiper from 'swiper';
-
-// import{register} from 'swiper/element/bundle'
-// register()
+import{register} from 'swiper/element/bundle'
+register()
 
 // Import Swiper styles
 import 'swiper';

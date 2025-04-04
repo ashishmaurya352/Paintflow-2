@@ -6,7 +6,7 @@
         <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
       </ion-button>
       <h3 *ngIf="isSearchbarVisible">Search</h3>
-      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}}{{slipNumber}}</h3>
+      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}} {{slipNumber}}</h3>
 
       <ion-button *ngIf="!isSearchbarVisible" fill="clear" slot="end" aria-label="Show/hide" (click)="toggleSearch()">
         <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
@@ -498,7 +498,9 @@
         <div class="accept_modal_title">
           <h3>Accept Order</h3>
           <ion-buttons>
-            <ion-button (click)="isAcceptModalOpen = false">Cancel</ion-button>
+            <ion-button color="dark" (click)="isAcceptModalOpen = false">
+              <ion-icon name="close-outline"></ion-icon>
+            </ion-button>
           </ion-buttons>
         </div>
 
