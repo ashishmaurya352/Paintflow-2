@@ -64,11 +64,18 @@ export class OrderPage implements OnInit {
     this.route.queryParams.subscribe(params => {
       console.log('params',params);
       const segmentValueParam = params['segmentValue'];
+      console.log('segmentValueParam',segmentValueParam);
       
       if (segmentValueParam) {
           // Only try to parse if it's a valid stringified JSON
-          this.segmentValue = JSON.parse(segmentValueParam);
+          this.segmentValue = segmentValueParam
+          if(this.usereRole == 'Executive'){
+            this.getRequisitionDetail()
+
+          }else{
       this.getItem()
+
+          }
       }
       if (params['team']) {
         this.teamsOrders = params['team']
@@ -115,11 +122,11 @@ export class OrderPage implements OnInit {
     }
   }
 
-  activityListPage(id: any) {
-    this.router.navigate(['/activity-list'], { queryParams: { id: id } });
+  activityListPage(id: any,slipNumber: any) {
+    this.router.navigate(['/activity-list'], { queryParams: { id: id,slipNumber:slipNumber } });
   }
-  requisitionListPage(id: any) {
-    this.router.navigate(['/requisition'], { queryParams: { id: id } });
+  requisitionListPage(id: any, slipNumber: any) {
+    this.router.navigate(['/requisition'], { queryParams: { id: id,slipNumber: slipNumber } });
   }
 
   detailView(event: any, id?: any) {

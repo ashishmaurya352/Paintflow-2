@@ -64,6 +64,7 @@ export class ActivityListPage implements OnInit {
   acceptTemplate:any
   qaRemarks: any
   qaRemarksSelected: any
+  slipNumber: any
   constructor(private router: Router,
     private route: ActivatedRoute,
     private httpService: HttpService,
@@ -86,6 +87,7 @@ export class ActivityListPage implements OnInit {
     }
     this.route.queryParams.subscribe(params => {
       this.requisitionId = params['id'];
+      this.slipNumber = params['slipNumber'];
       this.getRequisitionItem(this.requisitionId)
     });
   }
@@ -140,6 +142,13 @@ export class ActivityListPage implements OnInit {
     if(type =='Update' && this.isUpdateDisabled(item)){
       return
     }
+    let cssClass = 'quantity-modal';
+    if(this.segmentValue == 'handover') {
+      cssClass = 'quantity-team-modal';
+
+    }else{
+      cssClass = 'quantity-modal';
+    }
     if (this.typeItem == 'Update') {
           this.totalQuantity = this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity
         }
@@ -159,9 +168,10 @@ export class ActivityListPage implements OnInit {
         totalQuantity: item.quantity,
         getquantity: this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity,
         itemName: this.selectedItem?.partDesciption,
-        teams :this.teams
+        teams :this.teams,
+        height:true
       },
-      cssClass: 'quantity-modal',
+      cssClass: cssClass,
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log('Modal data:', dataReturned);
@@ -619,6 +629,17 @@ export class ActivityListPage implements OnInit {
           this.controller.hideloader()
         });
   }
-  
+  getBadgeColor(priority: string): string {
+    switch (priority) {
+      case 'High':
+        return '#EC4949'; // Red
+      case 'Low':
+        return '#A5A5A5'; // Gray
+      case 'Medium':
+        return '#E8B500'; // Yellow
+      default:
+        return '#4e6e7c'; // Default color
+    }
+  }
 
 }

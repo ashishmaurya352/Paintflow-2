@@ -22,7 +22,7 @@ export class RequisitionPage implements OnInit {
   requisitionId: any
   RequisitionItemLists: any[] = []
   usereRole: any;
-  pageTitles = "Challan NO. "
+  pageTitles = "Challan No. "
   isModalOpen = false;
   index: number = 0
   UpdatedItemLists: any[] = [];
@@ -31,7 +31,7 @@ export class RequisitionPage implements OnInit {
   selectedOption: string = 'Medium';
   isSearchbarVisible = false;
   results: string[] = [];
-
+  slipNumber: any;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -47,6 +47,7 @@ export class RequisitionPage implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       this.requisitionId = params['id'];
+      this.slipNumber = params['slipNumber'];
     });
 
     this.usereRole = localStorage.getItem('role');
@@ -154,8 +155,9 @@ export class RequisitionPage implements OnInit {
 
       this.httpService.acceptItemForProcess(data).subscribe(() => {
         this.controller.hideloader()
-        const segmentValue = JSON.stringify({ status: 'Active' });
-        this.router.navigate(['/order'], { queryParams: { segmentValue } });
+        const segmentValue = 'Active'
+      // const segmentValue = 'Active';
+      this.router.navigate(['/order'], { queryParams: { segmentValue } });
       }, (error) => {
         this.controller.hideloader()
       });
@@ -264,8 +266,22 @@ export class RequisitionPage implements OnInit {
     this.UpdatedItemLists[index].priority = newStatus;
   }
 
-
-
+  getBadgeColor(priority: string): string {
+    switch (priority) {
+      case 'High':
+        return '#EC4949'; // Red
+      case 'Low':
+        return '#A5A5A5'; // Gray
+      case 'Medium':
+        return '#E8B500'; // Yellow
+      default:
+        return '#4e6e7c'; // Default color
+    }
+  }
+  disabledAcceptItems(){
+    const items = this.UpdatedItemLists.filter((item, i) => this.itemChecked[i]);
+    return items.length === 0;
+  }
 
 
 }

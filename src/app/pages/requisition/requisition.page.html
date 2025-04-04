@@ -7,7 +7,7 @@
         <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
       </ion-button>
       <h3 *ngIf="isSearchbarVisible">Search</h3>
-      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}}{{requisitionId}}</h3>
+      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}}{{slipNumber}}</h3>
 
       <ion-button *ngIf="!isSearchbarVisible" fill="clear" slot="end" aria-label="Show/hide" (click)="toggleSearch()">
         <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
@@ -43,8 +43,11 @@
                 </ion-thumbnail>
               </div>
               <div>
+                <div style="display: flex;">
                 <h6>{{ item.partNumber | uppercase }}</h6>
-                <h5>{{ item.partDesciption | uppercase }}</h5>
+                <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+              </div>
+                  <h5>{{ item.partDesciption | uppercase }}</h5>
                 <h6>Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
               </div>
             </div>
@@ -74,7 +77,7 @@
       aria-label="accept" (click)="acceptItems()">
       Accept Items
     </ion-button>
-    <ion-button *ngIf="usereRole == 'Inward Manager'" shape="round" size="large" expand="block" slot="start"
+    <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Inward Manager'" shape="round" size="large" expand="block" slot="start"
       aria-label="accept" (click)="acceptItems()">
       Assign Team
     </ion-button>

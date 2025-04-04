@@ -64,11 +64,11 @@
           </div>
           <ion-card *ngFor="let item of activeList; let i = index">
             <ion-card-content>
-              <div class="short-view" (click)="activityListPage(item.requisitionId)">
+              <div class="short-view" (click)="activityListPage(item.requisitionId ,item?.slipNumber )">
 
                 <div class="id-no border">
                   <div class="priority">
-                  <h5>Challan No. {{item.requisitionId}} 
+                  <h5>Challan No. {{item.slipNumber}} 
                     
                   </h5>
                   <ion-badge [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
@@ -127,7 +127,10 @@
               <div class="short-view">
 
                 <div class="id-no border">
-                  <h5>Challan No. {{item.requisitionId}}</h5>
+                  <div style="display: flex;">
+                    <h5>Challan No. {{item.slipNumber}}</h5>
+                    <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  </div>
                   <div class="accept">
                     <p>Accepted on </p>
                     <h6>{{item.completedDate | date:'mediumDate'}}</h6>
@@ -173,7 +176,11 @@
               <div class="short-view" >
     
                 <div class="id-no border"  [ngClass]="getRequisitionColor(item.completedPercent)">
-                  <h5>Challan No. {{item.requisitionId}}</h5>
+                  <div style="display: flex;">
+                    <h5>Challan No. {{item.slipNumber}}</h5>
+                    <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  </div>
+
                   <div class="accept">
                     <p>Assigned to  </p>
                     <h6>{{item.team }}</h6>
@@ -182,7 +189,7 @@
                   </div>
                 </div>
                 <div class="card-end">
-                  <ion-button *ngIf="usereRole !== 'Admin'" class="accept-btn" (click)="requisitionListPage(item.requisitionId)"  fill="outline" shape="round" slot="end" aria-label="Show/hide">
+                  <ion-button *ngIf="usereRole !== 'Admin'" class="accept-btn" (click)="requisitionListPage(item.requisitionId, item?.slipNumber)"  fill="outline" shape="round" slot="end" aria-label="Show/hide">
                     Accpet Order
                   </ion-button>
                   <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
@@ -221,14 +228,17 @@
               <div class="short-view">
 
                 <div class="id-no" style= "border-left: 4px solid #A52B54">
-                  <h5>Challan No. {{item.requisitionId}}</h5>
+                  <div style="display: flex;">
+                    <h5>Challan No. {{item.slipNumber}}</h5>
+                    <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  </div>
                   <div class="accept">
                     <p>Accepted on </p>
                     <h6>{{item.createdDate | date:'mediumDate'}}</h6>
                   </div>
                 </div>
                 <div class="card-end">
-                  <ion-button class="accept-btn" (click)="requisitionListPage(item.requisitionId)"  fill="outline" shape="round" slot="end" aria-label="Show/hide">
+                  <ion-button class="accept-btn" (click)="requisitionListPage(item.requisitionId ,item.slipNumber)"  fill="outline" shape="round" slot="end" aria-label="Show/hide">
                     Accpet Order
                   </ion-button>
                   <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
@@ -268,7 +278,10 @@
             <div class="short-view" >
   
               <div class="id-no"  [ngClass]="getRequisitionColor(item.completedPercent)">
-                <h5>Challan No. {{item.requisitionId}}</h5>
+                <div style="display: flex;">
+                  <h5>Challan No. {{item.slipNumber}}</h5>
+                  <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <div class="accept">
                   <p>Assigned to  </p>
                   <h6>{{item.team }}</h6>
@@ -317,11 +330,14 @@
           <p>No Data Found</p>
         </div>
         <ion-card *ngFor="let item of qaCompletedList; let i = index">
-          <ion-card-content (click)="activityListPage(item.requisitionId)">
+          <ion-card-content (click)="activityListPage(item.requisitionId ,item?.slipNumber )">
             <div class="short-view">
 
               <div class="id-no border">
-                <h5>Challan No. {{item.requisitionId}}</h5>
+                <div style="display: flex;">
+                  <h5>Challan No. {{item.slipNumber}}</h5>
+                  <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <div class="accept">
                   <p>Accepted on </p>
                   <h6>{{item.assignedDate | date:'mediumDate'}}</h6>
@@ -364,11 +380,14 @@
         </div>
         
         <ion-card *ngFor="let item of rejectedList; let i = index">
-          <ion-card-content (click)="activityListPage(item.requisitionId)">
+          <ion-card-content >
             <div class="short-view">
 
               <div class="id-no border">
-                <h5>Challan No. {{item.requisitionId}}</h5>
+                <div style="display: flex;">
+                  <h5>Challan No. {{item.slipNumber}}</h5>
+                  <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <div class="accept">
                   <p>Accepted on </p>
                   <h6>{{item.reqAcceptedDate | date:'mediumDate'}}</h6>
@@ -414,7 +433,10 @@
             <div class="short-view">
 
               <div class="id-no border">
-                <h5>Challan No. {{item.requisitionId}}</h5>
+                <div style="display: flex;">
+                  <h5>Challan No. {{item.slipNumber}}</h5>
+                  <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <div class="accept">
                   <p>Accepted on </p>
                   <h6>{{item.assignedDate | date:'mediumDate'}}</h6>

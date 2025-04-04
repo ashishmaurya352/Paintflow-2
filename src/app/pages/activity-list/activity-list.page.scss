@@ -406,3 +406,13 @@
       }
     }
   }
+
+  .badge{
+    display: flex;
+    margin-bottom: 8px;
+    .badge-text{
+    margin-left: 20px;
+    background-color: rgb(232, 181, 0);
+    align-items: anchor-center;
+    }
+  }

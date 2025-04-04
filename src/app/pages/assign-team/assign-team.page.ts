@@ -75,8 +75,9 @@ export class AssignTeamPage implements OnInit {
       this.controller.hideloader()
       console.log(res);
       console.log('res');
-      const segmentValue = 'queue';
-      this.router.navigate(['/order'], { state: { segmentValue } });
+      const segmentValue = 'Assigned'
+      // const segmentValue = 'Active';
+      this.router.navigate(['/order'], { queryParams: { segmentValue } });
     },(error) => {
       this.controller.hideloader()
     });

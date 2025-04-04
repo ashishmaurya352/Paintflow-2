@@ -6,7 +6,7 @@
         <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
       </ion-button>
       <h3 *ngIf="isSearchbarVisible">Search</h3>
-      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}}{{requisitionId}}</h3>
+      <h3 *ngIf="!isSearchbarVisible">{{pageTitles}}{{slipNumber}}</h3>
 
       <ion-button *ngIf="!isSearchbarVisible" fill="clear" slot="end" aria-label="Show/hide" (click)="toggleSearch()">
         <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
@@ -145,11 +145,14 @@
           <ion-card-content>
             <div class="up-card">
               <div class="list-name">
-                <h6>{{item.partNumber | uppercase}}</h6>
+                <div class="badge">
+                  <h6>{{item.partNumber | uppercase}}</h6>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
               <div>
-                <ion-button fill="clear" class="pending-btn" *ngIf="item?.qcApprovalPendingQuantity !=0">
+                <ion-button fill="clear" class="pending-btn" *ngIf="item?.qcApprovalPendingQuantity">
                   {{item.qcApprovalPendingQuantity}} Items QA Pending
                 </ion-button>
                 <ion-button fill="clear" class="handover-btn" *ngIf="item?.hasHandoverCompleted">
@@ -203,7 +206,10 @@
           <ion-card-content>
             <div class="up-card">
               <div class="list-name">
-                <h6>{{item.partNumber | uppercase}}</h6>
+                <div class="badge">
+                  <h6>{{item.partNumber | uppercase}}</h6>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
               <div>
@@ -213,7 +219,7 @@
                   <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
 
                 </ion-button>
-                <ion-button *ngIf="item?.curretProcess?.sentForHandover" class="startTask-btn"
+                <ion-button *ngIf="!item?.curretProcess?.sentForHandover" class="startTask-btn"
                   (click)="openModal(item,'SendForHandover')">
                   Handover
                   <ion-icon slot="start" name="navigate"></ion-icon>
@@ -258,7 +264,10 @@
           <ion-card-content>
             <div class="up-card">
               <div class="list-name">
-                <h6>{{item.partNumber | uppercase}}</h6>
+                <div class="badge">
+                  <h6>{{item.partNumber | uppercase}}</h6>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
               <div>
@@ -321,7 +330,10 @@
           <ion-card-content>
             <div class="up-card">
               <div class="list-name">
-                <h6>{{item.partNumber | uppercase}}</h6>
+                <div class="badge">
+                  <h6>{{item.partNumber | uppercase}}</h6>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
               <div>
@@ -360,7 +372,10 @@
           <ion-card-content>
             <div class="up-card">
               <div class="list-name">
-                <h6>{{item.partNumber | uppercase}}</h6>
+                <div class="badge">
+                  <h6>{{item.partNumber | uppercase}}</h6>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
               <div>
@@ -397,7 +412,10 @@
           <ion-card-content>
             <div class="up-card">
               <div class="list-name">
-                <h6>{{item.partNumber | uppercase}}</h6>
+                <div class="badge">
+                  <h6>{{item.partNumber | uppercase}}</h6>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
               <div>
@@ -435,7 +453,10 @@
           <ion-card-content>
             <div class="up-card">
               <div class="list-name">
-                <h6>{{item.partNumber | uppercase}}</h6>
+                <div class="badge">
+                  <h6>{{item.partNumber | uppercase}}</h6>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
               <div style="display: flex;">

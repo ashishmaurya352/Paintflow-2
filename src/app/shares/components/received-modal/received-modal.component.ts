@@ -26,7 +26,7 @@ export class ReceivedModalComponent  implements OnInit {
   @Input() getquantity:any = 0;  // Control modal visibility
   @Input() itemName:any = 'itemName';  // Control modal visibility
   @Input() teams = []  // Control modal visibility
-  
+  @Input() height = false
   @Output() dismiss = new EventEmitter<void>(); // Close event
   @Output() quantitySubmitted = new EventEmitter<any>(); // Pass quantity value
   quantity = 0;
