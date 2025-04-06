@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, NgModule, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { InfiniteScrollCustomEvent, IonicModule, ModalController } from '@ionic/angular';
@@ -9,6 +9,7 @@ import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ImgModalComponent } from 'src/app/shares/components/img-modal/img-modal.component';
 import { ReceivedModalComponent } from 'src/app/shares/components/received-modal/received-modal.component';
+import { SwiperComponent } from 'src/app/shares/components/swiper/swiper.component';
 
 @Component({
   selector: 'app-requisition',
@@ -102,10 +103,16 @@ export class RequisitionPage implements OnInit {
   //   [getquantity]="quantity" (dismiss)="isModalOpen = false" (quantitySubmitted)="handleQuantitySubmitted($event)">
   async openModal(i: number, item: any) {
     // this.index = i;
+    let totalQuantity
+    if(this.usereRole === 'Inward Manager'){
+      totalQuantity = item.quantity;
+    }else{
+      totalQuantity = item.curretProcess.quantity;
+    }
     const modal = await this.modalController.create({
       component: ReceivedModalComponent,
       componentProps: {
-        'totalQuantity': item.quantity,
+        'totalQuantity': totalQuantity,
         'getquantity': this.UpdatedItemLists[i].quantity,
         itemName: item.partDesciption,
       },
@@ -116,8 +123,6 @@ export class RequisitionPage implements OnInit {
       if (dataReturned.data !== undefined) {
         this.UpdatedItemLists[i].quantity = dataReturned.data;
         this.itemChecked[i] = dataReturned.data > 0;
-        console.log('this.UpdatedItemLists[i]', this.UpdatedItemLists[i])
-        console.log('this.itemChecked[i]', this.itemChecked[i])
       }
       else {
         console.log('No data returned from modal');
@@ -164,7 +169,7 @@ export class RequisitionPage implements OnInit {
           this.RequisitionItemLists = [...this.RequisitionItemLists, ...res];
         }
         // Set checkboxes for each item
-        this.itemChecked = [this.itemChecked, ...res.map(() => false)];
+        this.itemChecked = [...this.itemChecked, ...res.map(() => false)];
         // Handle user roles and map the updated item list accordingly
         if (this.usereRole === 'Executive') {
           if (this.filter.PageNumber === 1) {
@@ -231,41 +236,6 @@ export class RequisitionPage implements OnInit {
       this.router.navigate(['/assign-team'], { queryParams: { items: JSON.stringify(items), id: this.requisitionId } });
     }
   }
-
-  // addcss() {
-  //   const observer = new MutationObserver(() => {
-  //     document.querySelectorAll("ion-select").forEach((ionSelect) => {
-  //       // Ensure ion-select has shadowRoot and check for existing styles
-  //       if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
-  //         try {
-  //           console.log("✅ Styling dynamically added ion-select");
-
-  //           // Create style element and add the styles
-  //           const style = document.createElement("style");
-  //           style.classList.add("custom-style");
-  //           style.textContent = `
-  //             .select-outline-container {
-  //               height: 32px !important;
-  //               left: 20px !important;
-  //               width: 80% !important;
-  //             }
-  //             .select-wrapper-inner {
-  //               display: block !important;
-  //             }
-  //           `;
-
-  //           // Append to shadow DOM
-  //           ionSelect.shadowRoot.appendChild(style);
-  //         } catch (error) {
-  //           console.error("Error while adding custom styles to ion-select:", error);
-  //         }
-  //       }
-  //     });
-  //   });
-
-  //   // Observe the entire document for added nodes
-  //   observer.observe(document.body, { childList: true, subtree: true });
-  // };
 
   addcss() {
     // Check if we're on the requisition page
@@ -394,29 +364,47 @@ export class RequisitionPage implements OnInit {
     }
   }
 
-  getImageSrc(index: number): string {
+  getImageSrc(index: number) {
     // Ensure that images exists and has at least one element
-    const images = this.RequisitionItemLists[index]?.imageUrl;
-    console.log('images', images)
+    let images
+     if(this.usereRole === 'Inward Manager'){
+       images = this.UpdatedItemLists[index].images;
+    return images  ? images[0] : this.defaultImageUrl;
+
+      } else if(this.usereRole === 'Executive'){
+        images = this.RequisitionItemLists[index]?.imageUrl;
     return images  ? images : this.defaultImageUrl;
+
+      }else{
+        return images  ? images : this.defaultImageUrl;
+
+      }
+    // return images  ? images[0] : this.defaultImageUrl;
   }
 
   async openImgModal(item:any, index: number) {
-    let response
-    if(this.usereRole !== 'Inward Manager'){
-      response = await this.getItemProcessDetailed(item).toPromise();
+    if(this.usereRole == 'Executive'){
+      // response = await this.getItemProcessDetailed(item).toPromise();
+      const response = await this.getImageUrl(item).toPromise();
+      this.openSwiper()
+      return
     }
+    // else if(this.usereRole === 'Inward Manager'){
+    //   response = this.UpdatedItemLists[index].images;
+
+    // }
     // this.selectedItemImage = [];
     const modal = await this.modalController.create({
       component: ImgModalComponent,
       componentProps: {
-        'image': this.selectedItemImage,
+        'image': this.UpdatedItemLists[index].images?this.UpdatedItemLists[index].images:this.selectedItemImage,
         'isEdit': this.usereRole === 'Inward Manager'? true : false,
       },
       cssClass: 'img-modal',
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log('Modal data:', dataReturned);
+    this.selectedItemImage = [];
 
       if (dataReturned.data !== undefined) {
         this.UpdatedItemLists[index].images = dataReturned.data;
@@ -454,6 +442,34 @@ export class RequisitionPage implements OnInit {
         return of(null); // Return null if you want to handle it silently
       })
     );
+  }
+
+  getImageUrl(item: any) {
+    console.log('getItemProcessDetailed', item);
+    this.controller.showloader()
+    return this.httpService.getItemGetImages(item.id)
+      .pipe(
+        tap((res: any) => {
+          this.controller.hideloader();
+          this.selectedItemImage = res;
+          console.log('getItemProcessDetailed', this.selectedItemImage);
+          // openModalPop here if needed
+        }),
+        catchError((error) => {
+          this.controller.hideloader();
+          console.error(error);
+          return of(null); // Return null if you want to handle it silently
+        })
+      );
+}
+ async openSwiper() {
+    const modal = await this.modalController.create({
+      component: SwiperComponent,
+      componentProps: {
+        Images: this.selectedItemImage,
+      },
+    });
+    await modal.present();
   }
 
 }

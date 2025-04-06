@@ -72,6 +72,7 @@
                   </div>
                 </div>
                 <div class="up-card-btn">
+
                     <img [src]="reworkImageUrl" alt="rework" *ngIf="item?.masterId > 1"/>
                   <ion-button fill="clear" class="pending-btn" *ngIf="item?.qcApprovalPendingQuantity">
                     {{item.qcApprovalPendingQuantity}} Items QA Pending
@@ -125,12 +126,11 @@
           </div>
           <ion-card *ngFor="let item of handoverItemList; let i = index">
             <ion-card-content>
-              <div class="up-card">
-                <div class="list-name">
+              <div class="up-card" style="display: block; ">
+                <div class="list-name" style="display: flex; justify-content: space-between;">
                   <div class="thumbnail-image">
                     
                     <ion-thumbnail (click)="openImgModal(item,i)">
-                      <!-- <ion-thumbnail (click)="openSwiper(item,i)"> -->
                       <img alt="item Image" [src]="getImageSrc(item)" />
                     </ion-thumbnail>
                     <div class="list-name">
@@ -141,7 +141,8 @@
                       </div>
                       <h5>{{item.partDesciption | uppercase}}</h5>
                     </div>
-                    <div>
+                  </div>
+                    <div class="up-card-btn">
                       <ion-button fill="clear" class="handoverCompleted-btn"
                         *ngIf="item?.curretProcess?.hasHandoverCompleted">
                         Handover Completed
@@ -172,14 +173,10 @@
                     </h6>
                     <!-- <h6><b>Total Quantity:</b> 100 | <b>Received:</b> 60 | <b>Completed:</b> 40 | <b>Approved:</b> 20</h6> -->
                     <div class="">
-                      <h6 style="    margin: 15px 0;"><b>Accepted:</b>{{item.qcApprovedQuantity}}
+                      <h6 style="margin: 15px 0;"><b>Accepted:</b>{{item.qcApprovedQuantity}}
                       </h6>
-                      <!-- <ion-button fill="clear" class="accepted-btn">
-                    <b>Accepted:</b> 20
-                  </ion-button> -->
                     </div>
                   </div>
-                </div>
               </div>
             </ion-card-content>
           </ion-card>
@@ -267,7 +264,7 @@
               </div>
   
               <div class="lower-card">
-                <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
+                <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.curretProcess.quantity}} |
                   <b>Accepted:</b> {{item.qcApprovedQuantity}} | <b>Rejected:</b> {{item.qcRejectedCount}}
                 </h6>
                 <div>
@@ -309,7 +306,7 @@
               </div>
   
               <div class="lower-card">
-                <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
+                <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} 
                 </h6>
                 <div>
   
@@ -526,7 +523,7 @@
           <div class="input">
             <ion-input type="number" [value]="acceptQuantity" (ionChange)="onInput($event)" name="acceptQuantity"
               mode="md" label="Outline input" label-placement="floating" fill="outline" placeholder="Enter text">
-              <p slot="end">/ {{selectedItem?.receivedQuantity}} pcs</p>
+              <p slot="end">/ {{selectedItem?.curretProcess.quantity}} pcs</p>
             </ion-input>
           </div>
           <div>

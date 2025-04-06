@@ -86,7 +86,7 @@
 
                   <div class="accept">
                     <p>Accepted on </p>
-                    <h6>{{item.completedDate | date:'mediumDate'}}</h6>
+                    <h6>{{item.acceptedDate | date:'mediumDate'}}</h6>
                     <!-- <p class="margin-side">|</p> <p>Approved: </p> <h6>{{'20'}}</h6>
                     <p class="margin-side">|</p> <p>Rejected: </p> <h6 class="rejeced-item">{{'50'}}</h6> -->
                   </div>
@@ -111,13 +111,13 @@
                 <ion-list>
                   <ion-grid>
                     <ion-row *ngFor="let item of activeListItems[i]; let j = index">
-                      <ion-col size="7" >{{j+1}}. {{ item.partDesciption }}</ion-col>
+                      <ion-col size="7" >{{j+1}}. {{ item.partNumber }}</ion-col>
                     <ion-col size="" class="type">
                       <h6 class="type" [ngClass]="item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed'">
                         {{ item.curretProcess.statusName ? item.curretProcess.statusName : 'Not Started' }}
                       </h6></ion-col>
                     <ion-col size="2">
-                      <h6 class="quantity">{{ item.qcApprovedQuantity?item.qcApprovedQuantity:0 }} / {{ item.quantity }}</h6>
+                      <h6 class="quantity">{{ item.qcApprovedQuantity?item.qcApprovedQuantity:0 }} / {{ item.receivedQuantity }}</h6>
                     </ion-col>
                     </ion-row>
                   </ion-grid>
@@ -143,7 +143,7 @@
                   </div>
                   <div class="accept">
                     <p>Accepted on </p>
-                    <h6>{{item.completedDate | date:'mediumDate'}}</h6>
+                    <h6>{{item.acceptedDate | date:'mediumDate'}}</h6>
                   </div>
                 </div>
                 <div class="card-end">
@@ -161,7 +161,7 @@
                 <ion-list>
                   <ion-grid>
                     <ion-row *ngFor="let item of completedListItems[i]; let j = index">
-                      <ion-col size="8">{{j+1}}. {{ item.partDesciption }}</ion-col>
+                      <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
                       <ion-col size="2" class="type">
                         <h6 class="type">{{ 'Completed' }}</h6>
                       </ion-col>
@@ -216,9 +216,9 @@
                 <ion-list>
                   <ion-grid>
                     <ion-row *ngFor="let item of inQueueListItems[i]; let j = index">
-                      <ion-col size="8">{{j+1}}. {{ item.partDesciption }}</ion-col>                   
+                      <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>                   
                       <ion-col>
-                        <h6 class="quantity">{{ item.quantity }}</h6>
+                        <h6 class="quantity">{{ item.curretProcess.quantity }}</h6>
                       </ion-col>
                     </ion-row>
                   </ion-grid>
@@ -265,7 +265,7 @@
                 <ion-list>
                   <ion-grid>
                     <ion-row *ngFor="let item of unAssignedRequisitionItemLists[i]; let j = index">
-                      <ion-col size="8">{{j+1}}. {{ item.partDesciption }}</ion-col>
+                      <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
                       <ion-col>
                         <h6 class="quantity"> {{ item.quantity }}</h6>
                       </ion-col>
@@ -317,13 +317,13 @@
               <ion-list>
                 <ion-grid>
                   <ion-row *ngFor="let item of RequisitionItemLists[i]; let j = index">
-                    <ion-col size="8">{{j+1}}. {{ item.partDesciption }}</ion-col>
+                    <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
                     <ion-col size="2" class="type">
                       <h6 class="type" [ngClass]="item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed'">
                         {{ item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed' }}
                       </h6></ion-col>
                     <ion-col>
-                      <h6 class="quantity">{{ item.qcApprovedQuantity?item.qcApprovedQuantity:0 }} / {{ item.quantity }}</h6>
+                      <h6 class="quantity">{{ item.receivedQuantity }} / {{ item.quantity }}</h6>
                     </ion-col>
                   </ion-row>
                 </ion-grid>
@@ -368,12 +368,12 @@
               <ion-list>
                 <ion-grid>
                   <ion-row *ngFor="let item of qaCompletedListItems[i]; let j = index">
-                    <ion-col size="8">{{j+1}}. {{ item.partDesciption }}</ion-col>
+                    <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
                     <ion-col size="2" class="type">
                       <h6 class="type">{{ 'Completed' }}</h6>
                     </ion-col>
                     <ion-col>
-                      <h6 class="quantity">{{ item.quantity }}</h6>
+                      <h6 class="quantity">{{ item.receivedQuantity }}</h6>
                     </ion-col>
                   </ion-row>
                 </ion-grid>
@@ -418,7 +418,7 @@
               <ion-list>
                 <ion-grid>
                   <ion-row *ngFor="let item of rejectedListItems[i]; let j = index">
-                    <ion-col size="8">{{j+1}}. {{ item.partDesciption }}</ion-col>
+                    <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
                     <!-- <ion-col size="2" class="type">
                       <h6 class="type">{{ 'Completed' }}</h6>
                     </ion-col> -->
@@ -467,7 +467,7 @@
               <ion-list>
                 <ion-grid>
                   <ion-row *ngFor="let item of approvedListItems[i]; let j = index">
-                    <ion-col size="8">{{j+1}}. {{ item.partDesciption }}</ion-col>
+                    <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
                     <!-- <ion-col size="2" class="type">
                       <h6 class="type">{{ 'Completed' }}</h6>
                     </ion-col> -->

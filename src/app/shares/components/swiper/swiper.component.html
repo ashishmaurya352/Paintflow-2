@@ -25,6 +25,8 @@
       <div >
         <img *ngIf="img.compressedUrl" [src]="img.compressedUrl"/>
         <img *ngIf="img.imageUrl" [src]="img.imageUrl"/>
+        <img *ngIf="img && !img.imageUrl" [src]="img" />
+
         <!-- <img *ngIf="img" [src]="img"/> -->
       </div>
     </swiper-slide>

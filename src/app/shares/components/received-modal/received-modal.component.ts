@@ -35,7 +35,7 @@ export class ReceivedModalComponent  implements OnInit {
     private modalCtrl: ModalController,
   ){}
   ngOnInit() {
-    this.quantity = this.totalQuantity
+    this.quantity = this.getquantity == 0 ? this.totalQuantity : this.getquantity;  // Update the quantity based on new input value
 
   }
   

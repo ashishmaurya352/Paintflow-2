@@ -19,8 +19,8 @@
                 <ion-col size="2" *ngFor="let img of image; let i = index">
                   <div class="image-container">
                     <img *ngIf="img?.compressedUrl" [src]="img?.compressedUrl" (click)="openSwiper(image)" />
-                    <!-- <img *ngIf="img" [src]="img" (click)="openSwiper(image)" /> -->
                     <img *ngIf="img.imageUrl" [src]="img.imageUrl" (click)="openSwiper(image)" />
+                    <img *ngIf="img && !img.imageUrl" [src]="img" (click)="openSwiper(image)" />
 
                     <ion-icon *ngIf="isEdit" name="close-circle-outline" (click)="removeImage(i)"></ion-icon>
                   </div>
@@ -42,7 +42,7 @@
   <!-- </div> -->
 </ion-content>
 
-<ion-footer *ngIf="isEdit">
+<ion-footer *ngIf="isEdit" style="padding-bottom: 0">
   <div class="submit_btn">
     <ion-button expand="block" (click)="submit()">Submit</ion-button>
   </div>

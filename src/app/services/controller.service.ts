@@ -28,6 +28,7 @@ export class ControllerService {
             keyboardClose: true,
             translucent: true,
             backdropDismiss: true,
+            cssClass: 'loader-modal',
           })
           .then((a) => {
             a.present().then(() => {

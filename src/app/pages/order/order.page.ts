@@ -208,14 +208,26 @@ export class OrderPage implements OnInit {
   handleExecutiveRequisition(res: any) {
     switch (this.segmentValue) {
       case 'Active':
-        this.activeList = res;
+        if (this.filter.PageNumber === 1) {
+          this.activeList = res;
+        } else {
+          this.activeList = [...this.activeList, ...res];
+        }
         console.log('this.activeList', this.activeList);
         break;
       case 'InQueue':
-        this.inQueueList = res;
+        if (this.filter.PageNumber === 1) {
+          this.inQueueList = res;
+        } else {
+          this.inQueueList = [...this.inQueueList, ...res];
+        }
         break;
       default:
-        this.completedList = res;
+        if (this.filter.PageNumber === 1) {
+          this.completedList = res;
+        } else {
+          this.completedList = [...this.completedList, ...res];
+        }
         break;
     }
   }
@@ -223,12 +235,27 @@ export class OrderPage implements OnInit {
   handleOtherRolesRequisition(res: any) {
     switch (this.segmentValue) {
       case 'InQueueQA':
+        if (this.filter.PageNumber === 1) {
+          this.qaCompletedList = res;
+        } else {
+          this.completedList = [...this.qaCompletedList, ...res];
+        }
         this.qaCompletedList = res;
         break;
       case 'Rejected':
+        if (this.filter.PageNumber === 1) {
+          this.rejectedList = res;
+        } else {
+          this.rejectedList = [...this.rejectedList, ...res];
+        }
         this.rejectedList = res;
         break;
       default:
+        if (this.filter.PageNumber === 1) {
+          this.approvedList = res;
+        } else {
+          this.approvedList = [...this.approvedList, ...res];
+        }
         this.approvedList = res;
         break;
     }
@@ -255,9 +282,17 @@ export class OrderPage implements OnInit {
           }
           this.controller.hideloader()
           if (this.segmentValue == 'Assigned') {
-            this.assignedList = res
+            if (this.filter.PageNumber === 1) {
+              this.assignedList = res;
+            } else {
+              this.assignedList = [...this.assignedList, ...res];
+            }
           } else {
-            this.unAssignedList = res
+            if (this.filter.PageNumber === 1) {
+              this.unAssignedList = res;
+            } else {
+              this.unAssignedList = [...this.unAssignedList, ...res];
+            }
           }
           console.log(res);
         }, (error) => {
@@ -313,13 +348,13 @@ export class OrderPage implements OnInit {
         parm = createHttpParams(id, team);
         break;
     }
-    // parm = parm.set('PageSize', 10)
+    parm = parm.set('PageSize', 20)
 
-    Object.keys(this.filter).forEach(key => {
-      if (this.filter[key] !== null) {
-        parm = parm.set(key, this.filter[key]);
-      }
-    });
+    // Object.keys(this.filter).forEach(key => {
+    //   if (this.filter[key] !== null) {
+    //     parm = parm.set(key, this.filter[key]);
+    //   }
+    // });
 
     // Make the HTTP request
     this.httpService.getItemDetail(parm)

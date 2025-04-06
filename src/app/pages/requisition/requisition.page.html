@@ -39,7 +39,7 @@
       <ion-card *ngFor="let item of RequisitionItemLists; let i = index">
         <ion-card-content>
           <div class="card-content">
-            <ion-checkbox [(ngModel)]="itemChecked[i]" labelPlacement="end" (ionChange)="openModal(i,item) ">
+            <ion-checkbox [(ngModel)]="this.itemChecked[i]"  labelPlacement="end" (ionChange)="openModal(i,item) ">
             </ion-checkbox>
 
             <div>
@@ -57,7 +57,8 @@
                   item.priority }}</ion-badge>
               </div>
               <h5>{{ item.partDesciption | uppercase }}</h5>
-              <h6>Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
+              <h6 *ngIf="usereRole === 'Inward Manager'">Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
+              <h6 *ngIf="usereRole !== 'Inward Manager'">Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.curretProcess.quantity }} pcs</h6>
             </div>
           </div>
           <!-- Hidden file input element -->

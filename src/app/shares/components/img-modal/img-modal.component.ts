@@ -35,6 +35,7 @@ export class ImgModalComponent implements OnInit {
   }
 
   closeModal() { 
+    this.image = []; 
     this.modalController.dismiss();
   }
   async submit() {
@@ -42,13 +43,9 @@ export class ImgModalComponent implements OnInit {
  await this.uploadAllImages()
     // this.controller.showToast('Images uploaded successfully', 'success', 'top', 2000);
     this.controller.hideloader()
+    this.image = []; 
     this.modalController.dismiss(this.uploadImage);
   }
-  // images: any = [
-  //   // { file: new File([], 'image1.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
-  //   // { file: new File([], 'image2.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
-  //   // { file: new File([], 'image3.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
-  // ];
   onFileSelected(event: any) {
     const files = event.target.files;
     if (files) {

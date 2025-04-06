@@ -152,6 +152,8 @@ export class ActivityListPage implements OnInit {
   // (quantitySubmitted)="handleQuantitySubmitted($event)"
   async openModal(item: any, type: any) {
     this.typeItem = type
+    this.selectedItem = item
+
     if (type == 'Approval' && this.isHandoverDisabled(item)) {
       return
     }
@@ -167,6 +169,8 @@ export class ActivityListPage implements OnInit {
     }
     if (this.typeItem == 'Update') {
       this.totalQuantity = this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity
+    }else if( this.typeItem == 'Approval') {
+      this.totalQuantity = Math.abs(this.selectedItem?.receivedQuantity - (this.selectedItem?.qcApprovalPendingQuantity + this.selectedItem?.qcApprovedQuantity));
     }
     else if (this.typeItem == 'AcceptOrder') {
       this.totalQuantity = item.receivedQuantity
@@ -181,7 +185,7 @@ export class ActivityListPage implements OnInit {
     const modal = await this.modalController.create({
       component: ReceivedModalComponent,
       componentProps: {
-        totalQuantity: item.quantity,
+        totalQuantity: this.totalQuantity,
         getquantity: this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity,
         itemName: this.selectedItem?.partDesciption,
         teams: this.teams,
@@ -470,7 +474,7 @@ export class ActivityListPage implements OnInit {
   acceptOrder(item: any) {
     console.log('acceptOrder', item);
     this.selectedItem = item
-    this.acceptQuantity = this.selectedItem.receivedQuantity
+    this.acceptQuantity = this.selectedItem.curretProcess.quantity
     this.isAcceptModalOpen = true;
   }
 
