@@ -3,10 +3,11 @@ import { HttpParams } from '@angular/common/http';
 import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 // import { HttpParams } from '@capacitor/core';
-import { InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, IonicModule, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
+import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
 
 @Component({
   selector: 'app-order',
@@ -65,7 +66,8 @@ export class OrderPage implements OnInit {
     private route: ActivatedRoute,
     private httpService: HttpService,
     private controller: ControllerService,
-    private cdr: ChangeDetectorRef
+        private modalController: ModalController
+    
   ) {
   }
 
@@ -477,6 +479,19 @@ export class OrderPage implements OnInit {
         event.target.complete();
       }, 500);
     }
+
+    async openSearch(){
+        const modal = await this.modalController.create({
+          component: SearchModalComponent,
+          componentProps: {
+            // id: this.requisitionId,
+            // status: this.segmentValue,
+            // Images: data,
+          },
+          cssClass: 'search-modal',
+        });
+        await modal.present();
+      }
 
 
 }

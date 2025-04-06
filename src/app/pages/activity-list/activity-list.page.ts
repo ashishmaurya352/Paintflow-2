@@ -23,7 +23,7 @@ import { SearchModalComponent } from 'src/app/shares/components/search-modal/sea
 })
 export class ActivityListPage implements OnInit {
   defaultImageUrl = 'assets/img/mountain.png';
-
+  reworkImageUrl = 'assets/img/letter-r.png';
   filter: any = {
     PageNumber: 1,
     PageSize: 20,
@@ -589,8 +589,14 @@ export class ActivityListPage implements OnInit {
   delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  openRemarksModal(item: any) {
-    this.getItemProcessDetailed(item)
+  async openRemarksModal(item: any,type='') {
+    if(type == 'QARemarks'){
+      this.getItemProcessDetailed(item)
+      
+    }else{
+
+      const response = await this.getImageUrl(item).toPromise();
+    }
     console.log('openRemarksModal', item);
     this.isRemarksModalOpen = true;
   }
@@ -630,23 +636,23 @@ export class ActivityListPage implements OnInit {
     console.log('acceptStatus', this.acceptStatus);
   }
 
-  getItemProcessDetailed(item: any) {
+  getItemProcessDetailed(item: any,type='QARemarks') {
     // const parm = new HttpParams().set('id', item.currentProcess_Id);
+    this.qaRemarksSelected = item
+    console.log('getItemProcessDetailed', item);
+    const parm = new HttpParams().set('id', item.currentProcess_Id);
     this.controller.showloader()
-    return this.httpService.getItemGetImages(item.id)
-      .pipe(
-        tap((res: any) => {
-          this.controller.hideloader();
-          this.selectedItemImage = res;
-          console.log('getItemProcessDetailed', this.selectedItemImage);
-          // openModalPop here if needed
-        }),
-        catchError((error) => {
-          this.controller.hideloader();
-          console.error(error);
-          return of(null); // Return null if you want to handle it silently
-        })
-      );
+    this.httpService.getItemProcessDetailed(item.currentProcess_Id)
+      .subscribe(
+        (res: any) => {
+          this.controller.hideloader()
+          console.log(res);
+          this.qaRemarks = res
+          // this.openModalPop(res)
+        }, (error) => {
+          this.controller.hideloader()
+        });
+        
   }
   getBadgeColor(priority: string): string {
     switch (priority) {
@@ -670,7 +676,7 @@ export class ActivityListPage implements OnInit {
   }
 
   async openImgModal(item: any, index: number) {
-    const response = await this.getItemProcessDetailed(item).toPromise();
+    const response = await this.getImageUrl(item).toPromise();
     const modal = await this.modalController.create({
       component: SwiperComponent,
       componentProps: {
@@ -709,5 +715,24 @@ export class ActivityListPage implements OnInit {
       cssClass: 'search-modal',
     });
     await modal.present();
+  }
+
+  getImageUrl(item: any) {
+      console.log('getItemProcessDetailed', item);
+      this.controller.showloader()
+      return this.httpService.getItemGetImages(item.id)
+        .pipe(
+          tap((res: any) => {
+            this.controller.hideloader();
+            this.selectedItemImage = res;
+            console.log('getItemProcessDetailed', this.selectedItemImage);
+            // openModalPop here if needed
+          }),
+          catchError((error) => {
+            this.controller.hideloader();
+            console.error(error);
+            return of(null); // Return null if you want to handle it silently
+          })
+        );
   }
 }

@@ -137,7 +137,7 @@ export class HttpService {
   }
   restartWork(data: any): Observable<any> {
     let url = `${this.apiUrl + this.RestartWork}?${data}`;
-    return this.httpClient.post(url, data);
+    return this.httpClient.put(url, '');
   }
   getItemSearchItem(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ItemSearchItem}?${data}`;

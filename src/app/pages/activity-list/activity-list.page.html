@@ -71,8 +71,8 @@
                     <h5>{{item.partDesciption | uppercase}}</h5>
                   </div>
                 </div>
-  
-                <div>
+                <div class="up-card-btn">
+                    <img [src]="reworkImageUrl" alt="rework" *ngIf="item?.masterId > 1"/>
                   <ion-button fill="clear" class="pending-btn" *ngIf="item?.qcApprovalPendingQuantity">
                     {{item.qcApprovalPendingQuantity}} Items QA Pending
                   </ion-button>
@@ -158,7 +158,7 @@
                         Handover Pending
                         <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
                       </ion-button> -->
-                      <ion-button fill="outline" class="QARemarks-btn" (click)="openRemarksModal(item)">
+                      <ion-button fill="outline" class="QARemarks-btn" (click)="openRemarksModal(item,'QARemarks')">
                         QA Remarks
                         <ion-icon slot="start" name="chatbox-ellipses-outline"></ion-icon>
                       </ion-button>
@@ -218,7 +218,7 @@
                       <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>
                     </ion-button>
                     <ion-button *ngIf="!item?.curretProcess?.sentForHandover" fill="outline" class="QARemarks-btn"
-                      (click)="openRemarksModal(item)">
+                      (click)="openRemarksModal(item,'QARemarks')">
                       QA Remarks
                       <ion-icon slot="start" name="chatbox-ellipses-outline"></ion-icon>
                     </ion-button>
