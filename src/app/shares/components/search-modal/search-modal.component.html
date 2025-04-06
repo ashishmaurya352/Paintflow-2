@@ -1,0 +1,28 @@
+<ion-header>
+  <div class="hader">
+    <ion-item lines="none">
+      <ion-button (click)="closeModal()" fill="clear" slot="start"
+        aria-label="Show/hide">
+        <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
+      </ion-button>
+      <h3>Search</h3>
+
+
+      <ion-button expand="block" fill="clear" slot="end" aria-label="Show/hide" (click)="closeModal()">
+        <ion-icon color="dark" slot="icon-only" name="close-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
+    </ion-item>
+
+    <div>
+
+      <ion-searchbar [debounce]="1000" (ionInput)="handleInput($event)">
+      </ion-searchbar>
+      <!-- Search Results -->
+      <ion-list>
+        <ion-item *ngFor="let result of results">
+          <ion-label>{{ result }}</ion-label>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
+</ion-header>

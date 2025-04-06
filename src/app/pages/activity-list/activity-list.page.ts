@@ -11,6 +11,7 @@ import { IonHeader } from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
 import { ImgModalComponent } from 'src/app/shares/components/img-modal/img-modal.component';
 import { tap, catchError, of } from 'rxjs';
+import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
 // import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
 
 @Component({
@@ -21,7 +22,7 @@ import { tap, catchError, of } from 'rxjs';
   imports: [CommonModule],
 })
 export class ActivityListPage implements OnInit {
-defaultImageUrl = 'assets/img/mountain.png';
+  defaultImageUrl = 'assets/img/mountain.png';
 
   filter: any = {
     PageNumber: 1,
@@ -33,7 +34,6 @@ defaultImageUrl = 'assets/img/mountain.png';
     Status: null,
   }
   finalPage: boolean = false; // Flag to indicate if it's the last page
-
 
   isShortView = true
   segmentValue = 'item-list'
@@ -66,9 +66,8 @@ defaultImageUrl = 'assets/img/mountain.png';
   priorityName = ''
   isAcceptModalOpen = false;
 
-
   selectedImage: any;
-  selectedIndex:any
+  selectedIndex: any
   isModalOpen2 = false;
   formData: FormData = new FormData();
   isRemarksModalOpen = false;
@@ -76,7 +75,7 @@ defaultImageUrl = 'assets/img/mountain.png';
   uploadImage: any
   acceptStatus = 'Accepted'
   acceptQuantity = 0
-  acceptTemplate:any
+  acceptTemplate: any
   qaRemarks: any
   qaRemarksSelected: any
   slipNumber: any
@@ -99,7 +98,6 @@ defaultImageUrl = 'assets/img/mountain.png';
     else if (this.usereRole == 'Admin') {
       this.addcss()
       this.segmentValue = 'Admin'
-
     }
     this.route.queryParams.subscribe(params => {
       this.requisitionId = params['id'];
@@ -150,34 +148,34 @@ defaultImageUrl = 'assets/img/mountain.png';
   //     this.totalQuantity = item.completedQuantity
   //   }
   // }
-   
-    // (quantitySubmitted)="handleQuantitySubmitted($event)"
+
+  // (quantitySubmitted)="handleQuantitySubmitted($event)"
   async openModal(item: any, type: any) {
     this.typeItem = type
-       if(type =='Approval' && this.isHandoverDisabled(item)){
+    if (type == 'Approval' && this.isHandoverDisabled(item)) {
       return
     }
-    if(type =='Update' && this.isUpdateDisabled(item)){
+    if (type == 'Update' && this.isUpdateDisabled(item)) {
       return
     }
     let cssClass = 'quantity-modal';
-    if(this.segmentValue == 'handover') {
+    if (this.segmentValue == 'handover') {
       cssClass = 'quantity-team-modal';
 
-    }else{
+    } else {
       cssClass = 'quantity-modal';
     }
     if (this.typeItem == 'Update') {
-          this.totalQuantity = this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity
-        }
-        else if (this.typeItem == 'AcceptOrder') {
-          this.totalQuantity = item.receivedQuantity
-        } else if (this.typeItem == 'SendForHandover') {
-          this.totalQuantity = item.qcApprovedQuantity
-        }
-        else {
-          this.totalQuantity = item.completedQuantity
-        }
+      this.totalQuantity = this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity
+    }
+    else if (this.typeItem == 'AcceptOrder') {
+      this.totalQuantity = item.receivedQuantity
+    } else if (this.typeItem == 'SendForHandover') {
+      this.totalQuantity = item.qcApprovedQuantity
+    }
+    else {
+      this.totalQuantity = item.completedQuantity
+    }
 
     this.selectedItem = item
     const modal = await this.modalController.create({
@@ -186,14 +184,14 @@ defaultImageUrl = 'assets/img/mountain.png';
         totalQuantity: item.quantity,
         getquantity: this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity,
         itemName: this.selectedItem?.partDesciption,
-        teams :this.teams,
-        height:true
+        teams: this.teams,
+        height: true
       },
       cssClass: cssClass,
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log('Modal data:', dataReturned);
-      
+
       if (dataReturned.data !== undefined) {
         if (this.segmentValue == 'handover') {
           this.completed = dataReturned.data.quantity
@@ -214,7 +212,7 @@ defaultImageUrl = 'assets/img/mountain.png';
           this.updateItemStatus(this.selectedItem, 'SendForApproval');
         }
       }
-      else{
+      else {
         console.log('No data returned from modal');
         // this.itemChecked[i] = false;
       }
@@ -270,7 +268,7 @@ defaultImageUrl = 'assets/img/mountain.png';
     this.httpService.getItemDetail(parm)
       .subscribe(
         (res: any) => {
-          if(res.length < 20) {
+          if (res.length < 20) {
             this.finalPage = true; // Set finalPage to true if no items are returned
           }
           this.controller.hideloader()
@@ -291,7 +289,7 @@ defaultImageUrl = 'assets/img/mountain.png';
       // parm = parm.set('Status', 'Handover');
     } else if (this.segmentValue === 'handover') {
       parm = parm.set('Status', 'Handover');
-    }else if (this.segmentValue === 'rejected') {
+    } else if (this.segmentValue === 'rejected') {
       parm = parm.set('Status', 'Rejected');
     }
     else if (this.segmentValue === 'item-list') {
@@ -391,21 +389,21 @@ defaultImageUrl = 'assets/img/mountain.png';
   async approve() {
     this.controller.showloader()
 
-    if(this.images.length > 0){
+    if (this.images.length > 0) {
       await this.uploadAllImages()
     }
-    const data ={
+    const data = {
       id: this.selectedItem?.currentProcess_Id,
       quantity: this.acceptQuantity,
       status: this.acceptStatus,
       templateName: this.acceptTemplate,
       remark: this.decText,
-      images : this.uploadImage
+      images: this.uploadImage
     }
     console.log('approve', data);
     // const parm = new HttpParams().set('id', this.selectedItem?.currentProcess_Id).set('quantity', this.acceptQuantity)
     // .set('status', this.acceptStatus).set('templateName', this.acceptTemplate).set('remark', this.decText);
-    
+
     this.controller.showloader()
     this.httpService.approve(data).subscribe((res: any) => {
       console.log('approve', res)
@@ -454,16 +452,16 @@ defaultImageUrl = 'assets/img/mountain.png';
   }
   handleInput(event: any) {
     const query = event.target.value.toLowerCase();
-    
+
     // Simulate a search operation
     this.results = query ? ['Apple', 'Banana', 'Orange'].filter(item => item.toLowerCase().includes(query)) : [];
   }
-  sortBy(name:string){
-    console.log('sortByName',name);
+  sortBy(name: string) {
+    console.log('sortByName', name);
     this.sortByName = name
   }
-  priority(name:string){
-    console.log('sortByName',name);
+  priority(name: string) {
+    console.log('sortByName', name);
     this.priorityName = name
   }
   closeModalPop() {
@@ -476,7 +474,7 @@ defaultImageUrl = 'assets/img/mountain.png';
     this.isAcceptModalOpen = true;
   }
 
-  images:any = [
+  images: any = [
     // { file: new File([], 'image1.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
     // { file: new File([], 'image2.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
     // { file: new File([], 'image3.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
@@ -490,14 +488,14 @@ defaultImageUrl = 'assets/img/mountain.png';
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const reader = new FileReader();
-  
+
         reader.onload = () => {
           this.images.push({
             file: file, // Store the original File object
             compressedUrl: reader.result as string, // Data URL (can be replaced with actual compression logic)
           });
         };
-  
+
         reader.readAsDataURL(file);
       }
     }
@@ -511,15 +509,15 @@ defaultImageUrl = 'assets/img/mountain.png';
     this.selectedIndex = index;
     this.isModalOpen2 = true;
   }
-  
+
   closeSlider() {
     this.isModalOpen2 = false;
   }
-  async openSwiper(data:any){
+  async openSwiper(data: any) {
     const modal = await this.modalController.create({
       component: SwiperComponent,
       componentProps: {
-        Images : data,
+        Images: data,
       },
     });
     await modal.present();
@@ -542,42 +540,42 @@ defaultImageUrl = 'assets/img/mountain.png';
         console.error('Error converting URL to blob:', error);
       });
   }
-  
+
 
   async uploadAllImages(): Promise<void> {
     this.formData = new FormData();
-    if(this.images.length > 0) {
-  
-    try {
-      // Ensure all images are added to the FormData
-      const uploadPromises = this.images.map((img: { file: File; compressedUrl: string; }) => this.addImageToFormData(img.file, img.compressedUrl));
-      await Promise.all(uploadPromises);
-      if (!this.formData || !this.formData.has('files')) {
-        console.error('No files to upload');
-        return;
-      }
-  
-      // Use an Observable with a Promise-based approach to await completion
-      const uploadResponse = await this.uploadImagesAsync();
-  
-      // Handle the response once all images are uploaded
-      if (uploadResponse) {
-        console.log('Images uploaded successfully:', uploadResponse);
-        this.uploadImage = uploadResponse.filePaths;
+    if (this.images.length > 0) {
+
+      try {
+        // Ensure all images are added to the FormData
+        const uploadPromises = this.images.map((img: { file: File; compressedUrl: string; }) => this.addImageToFormData(img.file, img.compressedUrl));
+        await Promise.all(uploadPromises);
+        if (!this.formData || !this.formData.has('files')) {
+          console.error('No files to upload');
+          return;
+        }
+
+        // Use an Observable with a Promise-based approach to await completion
+        const uploadResponse = await this.uploadImagesAsync();
+
+        // Handle the response once all images are uploaded
+        if (uploadResponse) {
+          console.log('Images uploaded successfully:', uploadResponse);
+          this.uploadImage = uploadResponse.filePaths;
+          this.isAcceptModalOpen = false;
+        } else {
+          console.error('Upload failed, no response');
+          this.isAcceptModalOpen = false;
+        }
+
+      } catch (error) {
+        // Handle errors during image processing or HTTP upload
+        console.error('Error uploading images:', error);
         this.isAcceptModalOpen = false;
-      } else {
-        console.error('Upload failed, no response');
-        this.isAcceptModalOpen = false;
       }
-  
-    } catch (error) {
-      // Handle errors during image processing or HTTP upload
-      console.error('Error uploading images:', error);
-      this.isAcceptModalOpen = false;
     }
   }
-  }
-  
+
   // Utility function to wrap the Observable in a Promise
   private uploadImagesAsync(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -587,7 +585,7 @@ defaultImageUrl = 'assets/img/mountain.png';
       );
     });
   }
-  
+
   delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -633,9 +631,9 @@ defaultImageUrl = 'assets/img/mountain.png';
   }
 
   getItemProcessDetailed(item: any) {
-      // const parm = new HttpParams().set('id', item.currentProcess_Id);
-      this.controller.showloader()
-      return this.httpService.getItemGetImages(item.id)
+    // const parm = new HttpParams().set('id', item.currentProcess_Id);
+    this.controller.showloader()
+    return this.httpService.getItemGetImages(item.id)
       .pipe(
         tap((res: any) => {
           this.controller.hideloader();
@@ -649,7 +647,7 @@ defaultImageUrl = 'assets/img/mountain.png';
           return of(null); // Return null if you want to handle it silently
         })
       );
-    }
+  }
   getBadgeColor(priority: string): string {
     switch (priority) {
       case 'High':
@@ -664,31 +662,31 @@ defaultImageUrl = 'assets/img/mountain.png';
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {
-        this.filter.PageNumber += 1;
-        this.getRequisitionItem(this.requisitionId)
-        setTimeout(() => {
-          event.target.complete();
-        }, 500);
-      }
+    this.filter.PageNumber += 1;
+    this.getRequisitionItem(this.requisitionId)
+    setTimeout(() => {
+      event.target.complete();
+    }, 500);
+  }
 
-      async openImgModal(item:any, index: number) {
-          const response = await this.getItemProcessDetailed(item).toPromise();
-          const modal = await this.modalController.create({
-            component: SwiperComponent,
-            componentProps: {
-              Images: this.selectedItemImage,
-            },
-            cssClass: 'img-modal',
-          });
-          await modal.present();
-        }
+  async openImgModal(item: any, index: number) {
+    const response = await this.getItemProcessDetailed(item).toPromise();
+    const modal = await this.modalController.create({
+      component: SwiperComponent,
+      componentProps: {
+        Images: this.selectedItemImage,
+      },
+      cssClass: 'img-modal',
+    });
+    await modal.present();
+  }
 
-        getImageSrc(item:any): string {
-          const images = item.imageUrl;
-          return images ? images : this.defaultImageUrl;
-        }
-        restartTask(item: any) {
-          const parm = new HttpParams().set('id', item.currentProcess_Id);
+  getImageSrc(item: any): string {
+    const images = item.imageUrl;
+    return images ? images : this.defaultImageUrl;
+  }
+  restartTask(item: any) {
+    const parm = new HttpParams().set('id', item.currentProcess_Id);
     this.controller.showloader()
     this.httpService.restartWork(parm)
       .subscribe(
@@ -699,5 +697,17 @@ defaultImageUrl = 'assets/img/mountain.png';
         }, (error) => {
           this.controller.hideloader()
         });
-        }
+  }
+  async openSearch(){
+    const modal = await this.modalController.create({
+      component: SearchModalComponent,
+      componentProps: {
+        id: this.requisitionId,
+        status: this.segmentValue,
+        // Images: data,
+      },
+      cssClass: 'search-modal',
+    });
+    await modal.present();
+  }
 }

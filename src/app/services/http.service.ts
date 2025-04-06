@@ -32,6 +32,8 @@ export class HttpService {
   readonly GetQADashboard = `/Requisition/GetQADashboard`;
   readonly ItemGetImages = `/Item/GetImages`;
   readonly RestartWork = `/ItemProcess/RestartWork`;
+  readonly ItemSearchItem = `/Item/SearchItem`;
+  
   
   constructor(
     private httpClient: HttpClient
@@ -136,5 +138,9 @@ export class HttpService {
   restartWork(data: any): Observable<any> {
     let url = `${this.apiUrl + this.RestartWork}?${data}`;
     return this.httpClient.post(url, data);
+  }
+  getItemSearchItem(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ItemSearchItem}?${data}`;
+    return this.httpClient.get(url);
   }
 }
