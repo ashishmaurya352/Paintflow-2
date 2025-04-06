@@ -19,7 +19,7 @@ import { HttpService } from 'src/app/services/http.service';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ImgModalComponent implements OnInit {
-  @Input() image = [];  // Control modal visibility
+  @Input() image:any[] = [];  // Control modal visibility
   @Input() isEdit = false;  // Control modal visibility
   formData: FormData = new FormData();
   uploadImage: any
@@ -30,7 +30,9 @@ export class ImgModalComponent implements OnInit {
     private httpService: HttpService,
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() { 
+    console.log('ImgModalComponent', this.image)
+  }
 
   closeModal() { 
     this.modalController.dismiss();
@@ -42,11 +44,11 @@ export class ImgModalComponent implements OnInit {
     this.controller.hideloader()
     this.modalController.dismiss(this.uploadImage);
   }
-  images: any = [
-    // { file: new File([], 'image1.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
-    // { file: new File([], 'image2.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
-    // { file: new File([], 'image3.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
-  ];
+  // images: any = [
+  //   // { file: new File([], 'image1.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
+  //   // { file: new File([], 'image2.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
+  //   // { file: new File([], 'image3.jpg'), compressedUrl: 'https://ionicframework.com/docs/img/demos/thumbnail.svg' },
+  // ];
   onFileSelected(event: any) {
     const files = event.target.files;
     if (files) {
@@ -55,7 +57,7 @@ export class ImgModalComponent implements OnInit {
         const reader = new FileReader();
 
         reader.onload = () => {
-          this.images.push({
+          this.image.push({
             file: file, // Store the original File object
             compressedUrl: reader.result as string, // Data URL (can be replaced with actual compression logic)
           });
@@ -67,7 +69,7 @@ export class ImgModalComponent implements OnInit {
   }
 
   removeImage(index: number) {
-    this.images.splice(index, 1);
+    this.image.splice(index, 1);
   }
   async openSwiper(data: any) {
     const modal = await this.modalController.create({
@@ -81,11 +83,11 @@ export class ImgModalComponent implements OnInit {
 
   async uploadAllImages(): Promise<void> {
     this.formData = new FormData();
-    if (this.images.length > 0) {
+    if (this.image.length > 0) {
 
       try {
         // Ensure all images are added to the FormData
-        const uploadPromises = this.images.map((img: { file: File; compressedUrl: string; }) => this.addImageToFormData(img.file, img.compressedUrl));
+        const uploadPromises = this.image.map((img: { file: File; compressedUrl: string; }) => this.addImageToFormData(img.file, img.compressedUrl));
         await Promise.all(uploadPromises);
         if (!this.formData || !this.formData.has('files')) {
           console.error('No files to upload');

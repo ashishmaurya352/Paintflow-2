@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 // import { HttpParams } from '@capacitor/core';
-import { IonicModule } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, IonicModule } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -17,10 +17,22 @@ import { HttpService } from 'src/app/services/http.service';
 })
 export class OrderPage implements OnInit {
 
+  filter: any = {
+    PageNumber: 1,
+    PageSize: 20,
+    StartDate: null,
+    EndDate: null,
+    // SortBy
+    Keyword: null,
+    Status: null,
+  }
+  finalPage: boolean = false; // Flag to indicate if it's the last page
+
+
   usereRole: any;
   projectData: any;
   isShortView = true
-  segmentValue = 'Active'
+  segmentValue :any
   unAssignedList: any[] = []
   assignedList: any[] = []
   pageTitles: any = "Shot Blast Orders"
@@ -52,14 +64,27 @@ export class OrderPage implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private httpService: HttpService,
-    private controller: ControllerService
+    private controller: ControllerService,
+    private cdr: ChangeDetectorRef
   ) {
-    // addIcons({exitOutline,arrowBack,funnel,chevronUp,chevronDown,exit});
   }
 
   async ngOnInit() {
     this.usereRole = await this.getUserRoleFromLocalStorage();
     this.pageTitles = localStorage.getItem('team')
+
+    // if (this.usereRole == 'Inward Manager') {
+    //   this.segmentValue = 'UnAssigned'
+    //   this.pageTitles = "Recently Created Requisitions"
+    // }
+    // else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
+    //   this.segmentValue = 'Active'
+    // }
+    // else {
+    //   this.segmentValue = 'InQueueQA'
+    //   this.pageTitles = "QA Testing"
+
+    // }
 
     this.route.queryParams.subscribe(params => {
 
@@ -67,47 +92,36 @@ export class OrderPage implements OnInit {
         this.teamsOrders = params['team']
         this.pageTitles = this.teamsOrders + " Orders"
         console.log('this.teamsOrders', this.teamsOrders);
-        this.segmentValue = 'Active';
+        // this.segmentValue = 'Active';
       }
-
-      console.log('params', params);
       const segmentValueParam = params['segmentValue'];
-      console.log('segmentValueParam', segmentValueParam);
-      
-
       if (segmentValueParam) {
-        // Only try to parse if it's a valid stringified JSON
         this.segmentValue = segmentValueParam
-        // if (this.usereRole == 'Executive') {
-        //   this.getRequisitionDetail()
-
-        // } else {
-        //   this.getItem()
-
-        // }
       }
 
         console.log(this.usereRole);
         if (this.usereRole == 'Inward Manager') {
-          this.segmentValue = 'UnAssigned'
+          if(!this.segmentValue){
+            this.segmentValue = 'UnAssigned'
+          }
           this.pageTitles = "Recently Created Requisitions"
           this.getItem()
         }
         else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
+          if(!this.segmentValue){
+            this.segmentValue = 'Active'
+          }
           this.getRequisitionDetail()
-          this.segmentValue = 'Active'
         }
         else {
-          this.segmentValue = 'InQueueQA'
+          if(!this.segmentValue){
+            this.segmentValue = 'InQueueQA'
+          }
           this.pageTitles = "QA Testing"
           this.getRequisitionDetail()
-    
         }
-      
+        console.log('this.segmentValue', this.segmentValue);
     });
-
-    // this.segmentValue = history.state.segmentValue;
-    // 
 
   }
 
@@ -120,6 +134,8 @@ export class OrderPage implements OnInit {
   }
   segmentChange(event: any) {
     this.segmentValue = event.detail.value
+    this.filter.PageNumber = 1;
+    this.finalPage = false; 
     if (this.usereRole == 'Executive' || this.usereRole == 'QA' || this.usereRole == 'Admin') {
       this.getRequisitionDetail()
     } else {
@@ -144,24 +160,29 @@ export class OrderPage implements OnInit {
 
   getRequisitionDetail() {
     console.log('getRequisitionDetail');
-
     // Determine the segment value for the QA role
     let segmentValue = (this.segmentValue === 'InQueueQA') ? 'InQueue' : this.segmentValue;
-    let params
+    let params = new HttpParams()
     if(this.usereRole === 'QA') {
-      params = new HttpParams().set('Status', segmentValue).set('Team', this.teamsOrders)
-
+      params = params.set('Status', segmentValue).set('Team', this.teamsOrders)
     }
     else{
-
-      params = new HttpParams().set('Status', segmentValue);
+      params = params.set('Status', segmentValue);
     }
+    Object.keys(this.filter).forEach(key => {
+      if (this.filter[key] !== null) {
+        params = params.set(key, this.filter[key]);
+      }
+    });
     // Set the parameters
 
     // Make the HTTP request
     this.controller.showloader()
     this.httpService.getRequisition(params)
       .subscribe((res: any) => {
+        if(res.length < 20) {
+          this.finalPage = true; // Set finalPage to true if no items are returned
+        }
         this.controller.hideloader()
         // Handle the response based on user role and segment value
         this.handleRequisitionResponse(res);
@@ -213,10 +234,23 @@ export class OrderPage implements OnInit {
 
 
   getItem() {
+    let params = new HttpParams()
+      .set('Status', this.segmentValue);
+  
+    // Add additional filter parameters if they are not null
+    Object.keys(this.filter).forEach(key => {
+      if (this.filter[key] !== null) {
+        params = params.set(key, this.filter[key]);
+      }
+    });
+    
     this.controller.showloader()
-    this.httpService.getAssignement(this.segmentValue)
+    this.httpService.getAssignement(params)
       .subscribe(
         (res: any) => {
+          if(res.length < 20) {
+            this.finalPage = true; // Set finalPage to true if no items are returned
+          }
           this.controller.hideloader()
           if (this.segmentValue == 'Assigned') {
             this.assignedList = res
@@ -277,10 +311,20 @@ export class OrderPage implements OnInit {
         parm = createHttpParams(id, team);
         break;
     }
+    // parm = parm.set('PageSize', 10)
+
+    Object.keys(this.filter).forEach(key => {
+      if (this.filter[key] !== null) {
+        parm = parm.set(key, this.filter[key]);
+      }
+    });
 
     // Make the HTTP request
     this.httpService.getItemDetail(parm)
       .subscribe((res: any) => {
+        if(res.length < 20) {
+          this.finalPage = true; // Set finalPage to true if no items are returned
+        }
         // Handle the response based on user role and segment value
         switch (this.usereRole) {
           case 'Executive':
@@ -425,6 +469,14 @@ export class OrderPage implements OnInit {
       });
     }
   }
+
+  onIonInfinite(event: InfiniteScrollCustomEvent) {
+      this.filter.PageNumber += 1;
+      this.getItem();
+      setTimeout(() => {
+        event.target.complete();
+      }, 500);
+    }
 
 
 }

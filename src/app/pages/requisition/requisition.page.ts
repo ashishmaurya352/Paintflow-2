@@ -1,28 +1,36 @@
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import { IonicModule, ModalController } from '@ionic/angular';
-import { IonToolbar, IonHeader, IonTitle, IonContent } from "@ionic/angular/standalone";
+import { InfiniteScrollCustomEvent, IonicModule, ModalController } from '@ionic/angular';
+import { tap, catchError, of } from 'rxjs';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
 import { ImgModalComponent } from 'src/app/shares/components/img-modal/img-modal.component';
 import { ReceivedModalComponent } from 'src/app/shares/components/received-modal/received-modal.component';
-import { SwiperComponent } from 'src/app/shares/components/swiper/swiper.component';
 
 @Component({
   selector: 'app-requisition',
   templateUrl: './requisition.page.html',
   styleUrls: ['./requisition.page.scss'],
-  imports: [CommonModule, IonicModule,FormsModule],
+  imports: [CommonModule, IonicModule, FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class RequisitionPage implements OnInit {
 
-  // defaultImageUrl = 'src/assets/img/mountain.png';
-  defaultImageUrl: string = 'https://ionicframework.com/docs/img/demos/thumbnail.svg';
+  defaultImageUrl = 'assets/img/mountain.png';
 
+  filter: any = {
+    PageNumber: 1,
+    PageSize: 20,
+    StartDate: null,
+    EndDate: null,
+    // SortBy
+    Keyword: null,
+    Status: null,
+  }
+  finalPage: boolean = false; // Flag to indicate if it's the last page
 
   requisitionId: any
   RequisitionItemLists: any[] = []
@@ -37,6 +45,7 @@ export class RequisitionPage implements OnInit {
   isSearchbarVisible = false;
   results: string[] = [];
   slipNumber: any;
+  selectedItemImage: any = []
 
   constructor(
     private router: Router,
@@ -52,6 +61,8 @@ export class RequisitionPage implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
+      
+      console.log('params', params)
       this.requisitionId = params['id'];
       this.slipNumber = params['slipNumber'];
     });
@@ -63,13 +74,18 @@ export class RequisitionPage implements OnInit {
     }
 
     this.getItem();
-    this.addcss();
+    
 
   }
 
   backToOrderPage() {
-    const segmentValue = 'accept';
-    this.router.navigate(['/order'], { state: { segmentValue } });
+    let segmentValue = 'InQueue';
+    if (this.usereRole === 'Inward Manager') {
+     segmentValue = 'UnAssigned';
+      this.router.navigate(['/order'], { queryParams: { segmentValue } });
+      return;
+    }
+    this.router.navigate(['/order'], { queryParams: { segmentValue } });
   }
 
   // openModal(i: number, item: any) {
@@ -97,16 +113,13 @@ export class RequisitionPage implements OnInit {
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log('Modal data:', dataReturned);
-      
       if (dataReturned.data !== undefined) {
         this.UpdatedItemLists[i].quantity = dataReturned.data;
-    this.itemChecked[i] = dataReturned.data > 0;
-    console.log('dataReturned.data',dataReturned.data)
-    console.log('this.itemChecked[i]',this.itemChecked[i])
-        // this.filter.PageNumber = 1;
-        // this.getProjectProfileV1(this.allProjects[0].Id);
+        this.itemChecked[i] = dataReturned.data > 0;
+        console.log('this.UpdatedItemLists[i]', this.UpdatedItemLists[i])
+        console.log('this.itemChecked[i]', this.itemChecked[i])
       }
-      else{
+      else {
         console.log('No data returned from modal');
         this.itemChecked[i] = false;
       }
@@ -116,37 +129,84 @@ export class RequisitionPage implements OnInit {
   }
 
   // handleQuantitySubmitted(quantity: any) {
-    
+
   // }
 
   getItem() {
-    const params = new HttpParams()
+    let params = new HttpParams()
       .set('RequisitionId', this.requisitionId)
       .set('Status', 'InQueue');
-    this.controller.showloader()
-    this.httpService.getItem(params).subscribe((res: any) => {
-      this.controller.hideloader()
-      this.RequisitionItemLists = res;
-      this.itemChecked = res.map(() => false);
-
-      if (this.usereRole === 'Executive') {
-        this.UpdatedItemLists = res.map((item: any) => ({
-          itemProcessId: item.currentProcess_Id,
-          quantity: 0,
-        }));
-      } else if (this.usereRole === 'Inward Manager') {
-        this.UpdatedItemLists = res.map((item: any) => ({
-          itemId: item.id,
-          quantity: 0,
-          priority: 'Low'
-        }));
+  
+    // Add additional filter parameters if they are not null
+    Object.keys(this.filter).forEach(key => {
+      if (this.filter[key] !== null) {
+        params = params.set(key, this.filter[key]);
       }
-
-    }, (error) => {
-      this.controller.hideloader()
     });
-  }
+  
+    // Show loader
+    this.controller.showloader();
+  
+    // Make HTTP call
+    this.httpService.getItem(params).subscribe(
+      (res: any) => {
+        this.addcss();
+        if(res.length < 20) {
+          this.finalPage = true; // Set finalPage to true if no items are returned
+        }
+        // Hide loader after response
+        this.controller.hideloader();
+  
+        // If it's the first page, replace the list, otherwise append to it
+        if (this.filter.PageNumber === 1) {
+          this.RequisitionItemLists = res;
+        } else {
+          this.RequisitionItemLists = [...this.RequisitionItemLists, ...res];
+        }
+        // Set checkboxes for each item
+        this.itemChecked = [this.itemChecked, ...res.map(() => false)];
+        // Handle user roles and map the updated item list accordingly
+        if (this.usereRole === 'Executive') {
+          if (this.filter.PageNumber === 1) {
+            this.UpdatedItemLists = res.map((item: any) => ({
+              itemProcessId: item.currentProcess_Id,
+              quantity: 0,
+            }));
+          } else {
+            this.UpdatedItemLists = [...this.UpdatedItemLists, ...res.map((item: any) => ({
+              itemProcessId: item.currentProcess_Id,
+              quantity: 0,
+            }))];
+          }
+        } else if (this.usereRole === 'Inward Manager') {
+          if (this.filter.PageNumber === 1) {
+            console.log('this.filter.PageNumber', this.filter.PageNumber)
+            this.UpdatedItemLists = res.map((item: any) => ({
+              itemId: item.id,
+              quantity: 0,
+              priority: 'Low',
+            }));
+          } else {
+            console.log('this.filter.PageNumber ', this.filter.PageNumber)
 
+            this.UpdatedItemLists = [...this.UpdatedItemLists, ...res.map((item: any) => ({
+              itemId: item.id,
+              quantity: 0,
+              priority: 'Low',
+            }))];
+          }
+        }
+      },
+      (error) => {
+        // Hide loader in case of error
+        this.controller.hideloader();
+  
+        // Optionally, log the error or display a user-friendly message
+        console.error('Error fetching items:', error);
+      }
+    );
+  }
+  
   acceptItems() {
     const items = this.UpdatedItemLists.filter((item, i) => this.itemChecked[i]);
 
@@ -162,8 +222,8 @@ export class RequisitionPage implements OnInit {
       this.httpService.acceptItemForProcess(data).subscribe(() => {
         this.controller.hideloader()
         const segmentValue = 'Active'
-      // const segmentValue = 'Active';
-      this.router.navigate(['/order'], { queryParams: { segmentValue } });
+        // const segmentValue = 'Active';
+        this.router.navigate(['/order'], { queryParams: { segmentValue } });
       }, (error) => {
         this.controller.hideloader()
       });
@@ -284,13 +344,13 @@ export class RequisitionPage implements OnInit {
         return '#4e6e7c'; // Default color
     }
   }
-  disabledAcceptItems(){
+  disabledAcceptItems() {
     const items = this.UpdatedItemLists.filter((item, i) => this.itemChecked[i]);
     return items.length === 0;
   }
 
   // onImageSelected(event: any, index: number) {
-    
+
   //   const file = event.target.files[0]; // Get the first selected file
   //   if (file) {
   //     const reader = new FileReader();
@@ -336,34 +396,64 @@ export class RequisitionPage implements OnInit {
 
   getImageSrc(index: number): string {
     // Ensure that images exists and has at least one element
-    const images = this.UpdatedItemLists[index]?.images;
-    return images && images.length > 0 ? images[0] : this.defaultImageUrl;
+    const images = this.RequisitionItemLists[index]?.imageUrl;
+    console.log('images', images)
+    return images  ? images : this.defaultImageUrl;
   }
 
-  async openImgModal(index: number) {
-    // this.index = i;
+  async openImgModal(item:any, index: number) {
+    let response
+    if(this.usereRole !== 'Inward Manager'){
+      response = await this.getItemProcessDetailed(item).toPromise();
+    }
+    // this.selectedItemImage = [];
     const modal = await this.modalController.create({
       component: ImgModalComponent,
       componentProps: {
-        'image': this.UpdatedItemLists[index].images,
-        'isEdit': true,
+        'image': this.selectedItemImage,
+        'isEdit': this.usereRole === 'Inward Manager'? true : false,
       },
       cssClass: 'img-modal',
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log('Modal data:', dataReturned);
-      
+
       if (dataReturned.data !== undefined) {
         this.UpdatedItemLists[index].images = dataReturned.data;
-        console.log('dataReturned.data',dataReturned.data)
-        console.log('this.UpdatedItemLists[index].images',this.UpdatedItemLists[index].images)
+        console.log('dataReturned.data', dataReturned.data)
+        console.log('this.UpdatedItemLists[index].images', this.UpdatedItemLists[index].images)
       }
-      else{
+      else {
         console.log('No data returned from modal');
       }
     });
     await modal.present();
   }
 
+  onIonInfinite(event: InfiniteScrollCustomEvent) {
+    this.filter.PageNumber += 1;
+    this.getItem();
+    setTimeout(() => {
+      event.target.complete();
+    }, 500);
+  }
+
+  getItemProcessDetailed(item: any) {
+    const parm = new HttpParams().set('id', item.currentProcess_Id);
+    this.controller.showloader()
+    return this.httpService.getItemProcessDetailed(item.currentProcess_Id)
+    .pipe(
+      tap((res: any) => {
+        this.controller.hideloader();
+        this.selectedItemImage = res.itemProcessImages;
+        // openModalPop here if needed
+      }),
+      catchError((error) => {
+        this.controller.hideloader();
+        console.error(error);
+        return of(null); // Return null if you want to handle it silently
+      })
+    );
+  }
 
 }

@@ -30,6 +30,8 @@ export class HttpService {
   readonly RequisitionFetch = `/Requisition/Fetch`;
   readonly ItemProcessDetailed = `/ItemProcess/Detailed`;
   readonly GetQADashboard = `/Requisition/GetQADashboard`;
+  readonly ItemGetImages = `/Item/GetImages`;
+  readonly RestartWork = `/ItemProcess/RestartWork`;
   
   constructor(
     private httpClient: HttpClient
@@ -60,8 +62,8 @@ export class HttpService {
     return this.httpClient.get(url);
   }
 
-  getAssignement(status: any): Observable<any> {
-    let url = `${this.apiUrl + this.assignement}?Status=${status}`;
+  getAssignement(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.assignement}?${data}`;
     return this.httpClient.get(url);
   }
 
@@ -126,5 +128,13 @@ export class HttpService {
   getQADashboard(): Observable<any> {
     let url = `${this.apiUrl + this.GetQADashboard}`;
     return this.httpClient.get(url);
+  }
+  getItemGetImages(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ItemGetImages}/${data}`;
+    return this.httpClient.get(url);
+  }
+  restartWork(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.RestartWork}?${data}`;
+    return this.httpClient.post(url, data);
   }
 }

@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true">
+<ion-header >
   <div class="hader">
     <ion-item>
       <ion-button (click)="isSearchbarVisible?toggleSearch():backToOrderPage()" fill="clear" slot="start"
@@ -19,6 +19,9 @@
 
     </ion-item>
   </div>
+</ion-header>
+<ion-content [fullscreen]="true">
+  
 
   <div>
     <ion-searchbar *ngIf="isSearchbarVisible" [debounce]="1000" (ionInput)="handleInput($event)">
@@ -40,13 +43,12 @@
             </ion-checkbox>
 
             <div>
-              <ion-thumbnail (click)="openImgModal(i)">
+              <ion-thumbnail (click)="openImgModal(item,i)">
                 <img
                   alt="item Image"
                   [src]="getImageSrc(i)"
                 />
               </ion-thumbnail>
-              
             </div>
             <div (click)="openModal(i,item)">
               <div style="display: flex;">
@@ -74,6 +76,10 @@
     </ion-list>
 
   </div>
+
+  <ion-infinite-scroll *ngIf="!finalPage" (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
   <!-- <ion-modal class="image-modal" [isOpen]="isModalOpen" [backdropDismiss]="false">
     <ion-header>

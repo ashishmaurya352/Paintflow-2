@@ -10,16 +10,17 @@
       </div>
       <div class="modal-body" style="margin: 10px;">
         <div class="modal-input">
-          <div *ngIf="images?.length == 0 && !isEdit" class="no-image">
+          <div *ngIf="image?.length == 0 && !isEdit" class="no-image">
             <p>No Image Found</p>
           </div>
           <div class="image">
             <ion-grid>
               <ion-row>
-                <ion-col size="2" *ngFor="let img of images; let i = index">
+                <ion-col size="2" *ngFor="let img of image; let i = index">
                   <div class="image-container">
-                    <img *ngIf="img?.compressedUrl" [src]="img?.compressedUrl" (click)="openSwiper(images)" />
-                    <img *ngIf="img" [src]="img" (click)="openSwiper(images)" />
+                    <img *ngIf="img?.compressedUrl" [src]="img?.compressedUrl" (click)="openSwiper(image)" />
+                    <!-- <img *ngIf="img" [src]="img" (click)="openSwiper(image)" /> -->
+                    <img *ngIf="img.imageUrl" [src]="img.imageUrl" (click)="openSwiper(image)" />
 
                     <ion-icon *ngIf="isEdit" name="close-circle-outline" (click)="removeImage(i)"></ion-icon>
                   </div>

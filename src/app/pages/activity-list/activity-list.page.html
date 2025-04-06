@@ -144,13 +144,20 @@
         <ion-card *ngFor="let item of ItemList">
           <ion-card-content>
             <div class="up-card">
-              <div class="list-name">
-                <div class="badge">
-                  <h6>{{item.partNumber | uppercase}}</h6>
-                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+              <div class="thumbnail-image">
+                <ion-thumbnail (click)="openImgModal(item,i)">
+                  <img alt="item Image" [src]="getImageSrc(item)" />
+                </ion-thumbnail>
+                <div class="list-name">
+                  <div class="badge">
+                    <h6>{{item.partNumber | uppercase}}</h6>
+                    <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                      item.priority }}</ion-badge>
+                  </div>
+                  <h5>{{item.partDesciption | uppercase}}</h5>
                 </div>
-                <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
+
               <div>
                 <ion-button fill="clear" class="pending-btn" *ngIf="item?.qcApprovalPendingQuantity">
                   {{item.qcApprovalPendingQuantity}} Items QA Pending
@@ -202,59 +209,69 @@
         <div style="text-align: center;" *ngIf="handoverItemList.length === 0">
           <p>No Data Found</p>
         </div>
-        <ion-card *ngFor="let item of handoverItemList">
+        <ion-card *ngFor="let item of handoverItemList; let i = index">
           <ion-card-content>
             <div class="up-card">
               <div class="list-name">
-                <div class="badge">
-                  <h6>{{item.partNumber | uppercase}}</h6>
-                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                <div class="thumbnail-image">
+                  
+                  <ion-thumbnail (click)="openImgModal(item,i)">
+                    <!-- <ion-thumbnail (click)="openSwiper(item,i)"> -->
+                    <img alt="item Image" [src]="getImageSrc(item)" />
+                  </ion-thumbnail>
+                  <div class="list-name">
+                    <div class="badge">
+                      <h6>{{item.partNumber | uppercase}}</h6>
+                      <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                        item.priority }}</ion-badge>
+                    </div>
+                    <h5>{{item.partDesciption | uppercase}}</h5>
+                  </div>
+                  <div>
+                    <ion-button fill="clear" class="handoverCompleted-btn"
+                      *ngIf="item?.curretProcess?.hasHandoverCompleted">
+                      Handover Completed
+                      <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+
+                    </ion-button>
+                    <ion-button *ngIf="!item?.curretProcess?.sentForHandover" class="startTask-btn"
+                      (click)="openModal(item,'SendForHandover')">
+                      Handover
+                      <ion-icon slot="start" name="navigate"></ion-icon>
+                    </ion-button>
+                        <!-- <ion-button *ngIf="!item?.curretProcess?.hasHandoverCompleted || !item?.curretProcess?.sentForHandover"
+                      fill="clear" shape="round" class="">
+                      Handover Pending
+                      <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+                    </ion-button> -->
+                    <ion-button fill="outline" class="QARemarks-btn" (click)="openRemarksModal(item)">
+                      QA Remarks
+                      <ion-icon slot="start" name="chatbox-ellipses-outline"></ion-icon>
+                    </ion-button>
+                  </div>
                 </div>
-                <h5>{{item.partDesciption | uppercase}}</h5>
-              </div>
-              <div>
-                <ion-button fill="clear" class="handoverCompleted-btn"
-                  *ngIf="item?.curretProcess?.hasHandoverCompleted">
-                  Handover Completed
-                  <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
 
-                </ion-button>
-                <ion-button *ngIf="!item?.curretProcess?.sentForHandover" class="startTask-btn"
-                  (click)="openModal(item,'SendForHandover')">
-                  Handover
-                  <ion-icon slot="start" name="navigate"></ion-icon>
-                </ion-button>
-                <!-- <ion-button *ngIf="!item?.curretProcess?.hasHandoverCompleted || !item?.curretProcess?.sentForHandover"
-                  fill="clear" shape="round" class="">
-                  Handover Pending
-                  <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
-                </ion-button> -->
-                <ion-button fill="outline" class="QARemarks-btn" (click)="openRemarksModal(item)">
-                  QA Remarks
-                  <ion-icon slot="start" name="chatbox-ellipses-outline"></ion-icon>
-                </ion-button>
-              </div>
-            </div>
-
-            <div class="lower-card">
-              <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
-                <b>Completed:</b> {{item.completedQuantity}}
-                <!-- <b>Missing:</b> {{'NA'}} -->
-              </h6>
-              <!-- <h6><b>Total Quantity:</b> 100 | <b>Received:</b> 60 | <b>Completed:</b> 40 | <b>Approved:</b> 20</h6> -->
-              <div class="">
-                <h6 style="    margin: 15px 0;"><b>Accepted:</b>{{item.qcApprovedQuantity}}
-                </h6>
-                <!-- <ion-button fill="clear" class="accepted-btn">
+                <div class="lower-card">
+                  <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
+                    <b>Completed:</b> {{item.completedQuantity}}
+                    <!-- <b>Missing:</b> {{'NA'}} -->
+                  </h6>
+                  <!-- <h6><b>Total Quantity:</b> 100 | <b>Received:</b> 60 | <b>Completed:</b> 40 | <b>Approved:</b> 20</h6> -->
+                  <div class="">
+                    <h6 style="    margin: 15px 0;"><b>Accepted:</b>{{item.qcApprovedQuantity}}
+                    </h6>
+                    <!-- <ion-button fill="clear" class="accepted-btn">
                   <b>Accepted:</b> 20
                 </ion-button> -->
+                  </div>
+                </div>
               </div>
             </div>
           </ion-card-content>
         </ion-card>
       </ion-list>
     </div>
-    <div *ngIf="segmentValue =='rejected'">
+    <div *ngIf="segmentValue ==='rejected'">
 
       <ion-list>
         <div style="text-align: center;" *ngIf="ItemList.length === 0">
@@ -263,59 +280,45 @@
         <ion-card *ngFor="let item of ItemList">
           <ion-card-content>
             <div class="up-card">
-              <div class="list-name">
-                <div class="badge">
-                  <h6>{{item.partNumber | uppercase}}</h6>
-                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+              <div class="thumbnail-image">
+                <ion-thumbnail (click)="openImgModal(item,i)">
+                  <img alt="item Image" [src]="getImageSrc(item)" />
+                </ion-thumbnail>
+                <div class="list-name">
+                  <div class="badge">
+                    <h6>{{item.partNumber | uppercase}}</h6>
+                    <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                      item.priority }}</ion-badge>
+                  </div>
+                  <h5>{{item.partDesciption | uppercase}}</h5>
                 </div>
-                <h5>{{item.partDesciption | uppercase}}</h5>
-              </div>
-              <div>
-                <ion-button fill="clear" class="pending-btn" *ngIf="item?.qcApprovalPendingQuantity !=0">
-                  {{item.qcApprovalPendingQuantity}} Items QA Pending
-                </ion-button>
-                <!-- <ion-button fill="clear" class="handover-btn" *ngIf="item?.hasHandoverCompleted">
-                  Handover Completed
-                  <ion-icon slot="start" name="checkmark-done"></ion-icon>
-                </ion-button> -->
-
-                <!-- <ion-button fill="clear" class="inProgress-btn"
-                  *ngIf="item?.curretProcess?.hasHandoverCompleted || item?.curretProcess?.statusId !== null">
-                  Work in Progress
-                  <ion-icon slot="start" name="alarm-outline"></ion-icon>
-                </ion-button> -->
-                <ion-button class="startTask-btn" *ngIf="item?.curretProcess?.statusId == null"
-                  (click)="startTask(item)">
-                  Start Task
-                  <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>
-                </ion-button>
-                <ion-button *ngIf="!item?.curretProcess?.sentForHandover" fill="outline" class="QARemarks-btn"
-                  (click)="openRemarksModal(item)">
-                  QA Remarks
-                  <ion-icon slot="start" name="chatbox-ellipses-outline"></ion-icon>
-                </ion-button>
-              </div>
             </div>
 
-            <div class="lower-card">
-              <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
-                <b>Completed:</b> {{item.completedQuantity}} | <b>Approved:</b> {{item.qcApprovedQuantity}}
-              </h6>
-              <div>
-                <!-- <ion-button [ngClass]="{'disabled-btn': isUpdateDisabled(item)}" class="update-btn"
-                  (click)="openModal(item,'Update')">
-                  Update
-                  <ion-icon slot="start" name="sync"></ion-icon>
-                </ion-button> -->
-
-                <!-- <ion-button [ngClass]="{'disabled-btn': isHandoverDisabled(item)}" class="handover-btn"
-                  (click)="openModal(item,'Approval')">
-                  Send for Approval
-                  <ion-icon slot="start" name="navigate"></ion-icon>
-                </ion-button> -->
+                <div>
+                  <ion-button fill="clear" class="pending-btn" *ngIf="item?.qcApprovalPendingQuantity !=0">
+                    {{item.qcApprovalPendingQuantity}} Items QA Pending
+                  </ion-button>
+                  <ion-button class="startTask-btn" *ngIf="item?.masterId == null"
+                    (click)="restartTask(item)">
+                    Restart Task
+                    <ion-icon slot="start" name="caret-forward-circle-outline"></ion-icon>
+                  </ion-button>
+                  <ion-button *ngIf="!item?.curretProcess?.sentForHandover" fill="outline" class="QARemarks-btn"
+                    (click)="openRemarksModal(item)">
+                    QA Remarks
+                    <ion-icon slot="start" name="chatbox-ellipses-outline"></ion-icon>
+                  </ion-button>
+                </div>
               </div>
 
-            </div>
+
+              <div class="lower-card">
+                <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
+                  <b>Completed:</b> {{item.completedQuantity}} | <b>Approved:</b> {{item.qcApprovedQuantity}}
+                </h6>
+
+              </div>
+              
           </ion-card-content>
         </ion-card>
       </ion-list>
@@ -332,7 +335,8 @@
               <div class="list-name">
                 <div class="badge">
                   <h6>{{item.partNumber | uppercase}}</h6>
-                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                    item.priority }}</ion-badge>
                 </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
@@ -374,7 +378,8 @@
               <div class="list-name">
                 <div class="badge">
                   <h6>{{item.partNumber | uppercase}}</h6>
-                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                    item.priority }}</ion-badge>
                 </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
@@ -414,7 +419,8 @@
               <div class="list-name">
                 <div class="badge">
                   <h6>{{item.partNumber | uppercase}}</h6>
-                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                    item.priority }}</ion-badge>
                 </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
@@ -455,7 +461,8 @@
               <div class="list-name">
                 <div class="badge">
                   <h6>{{item.partNumber | uppercase}}</h6>
-                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                    item.priority }}</ion-badge>
                 </div>
                 <h5>{{item.partDesciption | uppercase}}</h5>
               </div>
@@ -625,6 +632,10 @@
     </ion-content>
   </ion-modal>
 
+
+  <ion-infinite-scroll *ngIf="!finalPage" (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
 
   <!-- <app-received-modal [isOpen]="isModalOpen" [totalQuantity]="this.totalQuantity"
     [itemName]="this.selectedItem?.partDesciption" [teams]="teams" (dismiss)="isModalOpen = false"

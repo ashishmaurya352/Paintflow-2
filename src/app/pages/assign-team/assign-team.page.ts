@@ -72,12 +72,19 @@ export class AssignTeamPage implements OnInit {
   this.controller.showloader()
   this.httpService.assignItemProcess(data)
     .subscribe((res:any)=>{
-      this.controller.hideloader()
-      console.log(res);
-      console.log('res');
-      const segmentValue = 'Assigned'
-      // const segmentValue = 'Active';
-      this.router.navigate(['/order'], { queryParams: { segmentValue } });
+      if(res.success){
+        this.controller.hideloader()
+        console.log(res);
+        console.log('res');
+        const segmentValue = 'Assigned'
+        // const segmentValue = 'Active';
+        this.router.navigate(['/order'], { queryParams: { segmentValue } });
+      }
+      else {
+        this.controller.hideloader()
+        this.controller.showToast(res.message);
+
+      }
     },(error) => {
       this.controller.hideloader()
     });

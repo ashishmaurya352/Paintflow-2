@@ -1,7 +1,7 @@
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { ModalController } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, ModalController } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
@@ -9,6 +9,8 @@ import { SwiperComponent } from 'src/app/shares/components/swiper/swiper.compone
 import { ReceivedModalComponent } from "../../shares/components/received-modal/received-modal.component";
 import { IonHeader } from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
+import { ImgModalComponent } from 'src/app/shares/components/img-modal/img-modal.component';
+import { tap, catchError, of } from 'rxjs';
 // import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
 
 @Component({
@@ -19,6 +21,19 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
 })
 export class ActivityListPage implements OnInit {
+defaultImageUrl = 'assets/img/mountain.png';
+
+  filter: any = {
+    PageNumber: 1,
+    PageSize: 20,
+    StartDate: null,
+    EndDate: null,
+    // SortBy
+    Keyword: null,
+    Status: null,
+  }
+  finalPage: boolean = false; // Flag to indicate if it's the last page
+
 
   isShortView = true
   segmentValue = 'item-list'
@@ -65,6 +80,7 @@ export class ActivityListPage implements OnInit {
   qaRemarks: any
   qaRemarksSelected: any
   slipNumber: any
+  selectedItemImage: any = []
   constructor(private router: Router,
     private route: ActivatedRoute,
     private httpService: HttpService,
@@ -105,6 +121,8 @@ export class ActivityListPage implements OnInit {
     this.segmentValue = event.detail.value
     this.isShortView = true
     this.teams = []
+    this.filter.PageNumber = 1;
+    this.finalPage = false;
     if (this.segmentValue == 'handover') {
       this.teams = this.teamsData
     }
@@ -252,6 +270,9 @@ export class ActivityListPage implements OnInit {
     this.httpService.getItemDetail(parm)
       .subscribe(
         (res: any) => {
+          if(res.length < 20) {
+            this.finalPage = true; // Set finalPage to true if no items are returned
+          }
           this.controller.hideloader()
           console.log(res);
           this.processRequisitionItem(res);
@@ -273,6 +294,15 @@ export class ActivityListPage implements OnInit {
     }else if (this.segmentValue === 'rejected') {
       parm = parm.set('Status', 'Rejected');
     }
+    else if (this.segmentValue === 'item-list') {
+      parm = parm.set('Status', 'Active');
+    }
+
+    Object.keys(this.filter).forEach(key => {
+      if (this.filter[key] !== null) {
+        parm = parm.set(key, this.filter[key]);
+      }
+    });
 
 
     return parm;
@@ -558,8 +588,6 @@ export class ActivityListPage implements OnInit {
     });
   }
   
-  
-
   delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
@@ -605,21 +633,23 @@ export class ActivityListPage implements OnInit {
   }
 
   getItemProcessDetailed(item: any) {
-    this.qaRemarksSelected = item
-    console.log('getItemProcessDetailed', item);
-    const parm = new HttpParams().set('id', item.currentProcess_Id);
-    this.controller.showloader()
-    this.httpService.getItemProcessDetailed(item.currentProcess_Id)
-      .subscribe(
-        (res: any) => {
-          this.controller.hideloader()
-          console.log(res);
-          this.qaRemarks = res
-          // this.openModalPop(res)
-        }, (error) => {
-          this.controller.hideloader()
-        });
-  }
+      // const parm = new HttpParams().set('id', item.currentProcess_Id);
+      this.controller.showloader()
+      return this.httpService.getItemGetImages(item.id)
+      .pipe(
+        tap((res: any) => {
+          this.controller.hideloader();
+          this.selectedItemImage = res;
+          console.log('getItemProcessDetailed', this.selectedItemImage);
+          // openModalPop here if needed
+        }),
+        catchError((error) => {
+          this.controller.hideloader();
+          console.error(error);
+          return of(null); // Return null if you want to handle it silently
+        })
+      );
+    }
   getBadgeColor(priority: string): string {
     switch (priority) {
       case 'High':
@@ -633,4 +663,41 @@ export class ActivityListPage implements OnInit {
     }
   }
 
+  onIonInfinite(event: InfiniteScrollCustomEvent) {
+        this.filter.PageNumber += 1;
+        this.getRequisitionItem(this.requisitionId)
+        setTimeout(() => {
+          event.target.complete();
+        }, 500);
+      }
+
+      async openImgModal(item:any, index: number) {
+          const response = await this.getItemProcessDetailed(item).toPromise();
+          const modal = await this.modalController.create({
+            component: SwiperComponent,
+            componentProps: {
+              Images: this.selectedItemImage,
+            },
+            cssClass: 'img-modal',
+          });
+          await modal.present();
+        }
+
+        getImageSrc(item:any): string {
+          const images = item.imageUrl;
+          return images ? images : this.defaultImageUrl;
+        }
+        restartTask(item: any) {
+          const parm = new HttpParams().set('id', item.currentProcess_Id);
+    this.controller.showloader()
+    this.httpService.restartWork(parm)
+      .subscribe(
+        (res: any) => {
+          this.controller.hideloader()
+          console.log(res);
+          this.getRequisitionItem(this.requisitionId)
+        }, (error) => {
+          this.controller.hideloader()
+        });
+        }
 }

@@ -1,4 +1,4 @@
-<ion-content [fullscreen]="true">
+<ion-header>
   <div class="hader">
     <ion-item>
       <ion-button fill="clear" slot="start" aria-label="Show/hide" (click)="logout()">
@@ -11,6 +11,37 @@
       </ion-button>
     </ion-item>
   </div>
+  <div class="content" style="background: white;">
+    <ion-segment [value]="segmentValue"  (ionChange)="segmentChange($event)">
+    <ion-segment-button value="Active" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'" >
+      <ion-label>Active</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Completed" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
+      <ion-label>Completed</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="InQueue" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
+      <ion-label>In Queue</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="UnAssigned" *ngIf="usereRole == 'Inward Manager'">
+      <ion-label>Un-Assigned</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Assigned" *ngIf="usereRole == 'Inward Manager'">
+      <ion-label>Assigned</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="InQueueQA" *ngIf="usereRole == 'QA'">
+      <ion-label>In Queue</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Rejected" *ngIf="usereRole == 'QA'">
+      <ion-label>Rejected</ion-label>
+    </ion-segment-button>
+    <ion-segment-button value="Approved" *ngIf="usereRole == 'QA'">
+      <ion-label>Approved</ion-label>
+    </ion-segment-button>
+    
+  </ion-segment></div>
+</ion-header>
+<ion-content [fullscreen]="true">
+  
 
   <ion-popover trigger="popover-button" [dismissOnSelect]="true"  side="bottom" alignment="start" >
     <ng-template>
@@ -29,33 +60,7 @@
   </ion-popover>
 
   <div class="content">
-    <ion-segment [value]="segmentValue" (ionChange)="segmentChange($event)">
-      <ion-segment-button value="Active" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'" >
-        <ion-label>Active</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Completed" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
-        <ion-label>Completed</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="InQueue" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
-        <ion-label>In Queue</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="UnAssigned" *ngIf="usereRole == 'Inward Manager'">
-        <ion-label>Un-Assigned</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Assigned" *ngIf="usereRole == 'Inward Manager'">
-        <ion-label>Assigned</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="InQueueQA" *ngIf="usereRole == 'QA'">
-        <ion-label>In Queue</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Rejected" *ngIf="usereRole == 'QA'">
-        <ion-label>Rejected</ion-label>
-      </ion-segment-button>
-      <ion-segment-button value="Approved" *ngIf="usereRole == 'QA'">
-        <ion-label>Approved</ion-label>
-      </ion-segment-button>
-      
-    </ion-segment>
+    
     <div>
       <div *ngIf="segmentValue == 'Active'">
         <ion-list class="main-list">
@@ -473,5 +478,9 @@
       </ion-list>
     </div>
   </div>
+
+  <ion-infinite-scroll *ngIf="!finalPage" (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
   
 </ion-content>
