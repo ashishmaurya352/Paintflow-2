@@ -476,15 +476,6 @@ export class ActivityListPage implements OnInit {
   removeImage(index: number) {
     this.images.splice(index, 1);
   }
-  // openImage(image: any) {
-  //   console.log('openImage');
-  //   this.selectedImage = image;
-  //   this.isModalOpen2 = true;
-  // }
-
-  // closeImage() {
-  //   this.isModalOpen2 = false;
-  // }
   openSlider(index: number) {
     console.log('openSlider', index);
     this.selectedIndex = index;

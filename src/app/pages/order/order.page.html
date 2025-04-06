@@ -2,8 +2,8 @@
   <div class="hader">
     <ion-item>
       <ion-button fill="clear" slot="start" aria-label="Show/hide" (click)="logout()">
-        <ion-icon *ngIf="usereRole !== 'Admin'" color="dark" slot="icon-only" name="exit-outline" aria-hidden="true"></ion-icon>
-        <ion-icon *ngIf="usereRole == 'Admin'" color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
+        <ion-icon *ngIf="usereRole !== 'Admin' && usereRole !== 'QA'" color="dark" slot="icon-only" name="exit-outline" aria-hidden="true"></ion-icon>
+        <ion-icon *ngIf="usereRole == 'Admin' || usereRole == 'QA' " color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
       </ion-button>
       <h3>{{pageTitles}}</h3>
       <ion-button fill="clear" slot="end" aria-label="Show/hide" id="popover-button">

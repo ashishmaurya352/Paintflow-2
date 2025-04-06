@@ -77,9 +77,10 @@ export class LoginPage implements OnInit {
 
           if (res.role === 'Admin') {
             this.router.navigate(['/dashboard']);
+          }else if (res.role === 'QA') {
+            this.router.navigate(['/qa-dashboard']);
           }
           else{
-
             this.router.navigate(['/order']);
           }
 

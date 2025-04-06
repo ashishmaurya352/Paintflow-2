@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { IonToolbar, IonHeader, IonTitle, IonContent } from "@ionic/angular/standalone";
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
+import { ImgModalComponent } from 'src/app/shares/components/img-modal/img-modal.component';
 import { ReceivedModalComponent } from 'src/app/shares/components/received-modal/received-modal.component';
 import { SwiperComponent } from 'src/app/shares/components/swiper/swiper.component';
 
@@ -13,10 +15,13 @@ import { SwiperComponent } from 'src/app/shares/components/swiper/swiper.compone
   selector: 'app-requisition',
   templateUrl: './requisition.page.html',
   styleUrls: ['./requisition.page.scss'],
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule,FormsModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class RequisitionPage implements OnInit {
+
+  // defaultImageUrl = 'src/assets/img/mountain.png';
+  defaultImageUrl: string = 'https://ionicframework.com/docs/img/demos/thumbnail.svg';
 
 
   requisitionId: any
@@ -32,6 +37,7 @@ export class RequisitionPage implements OnInit {
   isSearchbarVisible = false;
   results: string[] = [];
   slipNumber: any;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -281,6 +287,82 @@ export class RequisitionPage implements OnInit {
   disabledAcceptItems(){
     const items = this.UpdatedItemLists.filter((item, i) => this.itemChecked[i]);
     return items.length === 0;
+  }
+
+  // onImageSelected(event: any, index: number) {
+    
+  //   const file = event.target.files[0]; // Get the first selected file
+  //   if (file) {
+  //     const reader = new FileReader();
+  //     reader.onload = () => {
+  //       // Update the item's image source with the selected image
+  //       this.UpdatedItemLists[index].images = reader.result as string;
+  //       console.log('Image selected:', this.UpdatedItemLists);
+  //     };
+  //     reader.readAsDataURL(file); // Read the image file as a data URL
+  //   }
+  // }
+  onImageSelected(event: any, index: number) {
+    const files = event.target.files; // Get all selected files
+    if (files && files.length > 0) {
+      const fileReaders: Promise<any>[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        // Read each file and push the promises into the fileReaders array
+        const fileReaderPromise = new Promise<any>((resolve, reject) => {
+          reader.onload = () => {
+            resolve(reader.result);
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+
+        fileReaders.push(fileReaderPromise);
+      }
+
+      // Once all images are read, update the item's imageSrc array with the results
+      Promise.all(fileReaders).then((results: any[]) => {
+        this.UpdatedItemLists[index].images = results; // Store an array of images for the item
+        console.log('Image selected:', this.UpdatedItemLists);
+
+      }).catch((error) => {
+        console.error('Error reading files:', error);
+      });
+    }
+  }
+
+  getImageSrc(index: number): string {
+    // Ensure that images exists and has at least one element
+    const images = this.UpdatedItemLists[index]?.images;
+    return images && images.length > 0 ? images[0] : this.defaultImageUrl;
+  }
+
+  async openImgModal(index: number) {
+    // this.index = i;
+    const modal = await this.modalController.create({
+      component: ImgModalComponent,
+      componentProps: {
+        'image': this.UpdatedItemLists[index].images,
+        'isEdit': true,
+      },
+      cssClass: 'img-modal',
+    });
+    modal.onDidDismiss().then((dataReturned: any) => {
+      console.log('Modal data:', dataReturned);
+      
+      if (dataReturned.data !== undefined) {
+        this.UpdatedItemLists[index].images = dataReturned.data;
+        console.log('dataReturned.data',dataReturned.data)
+        console.log('this.UpdatedItemLists[index].images',this.UpdatedItemLists[index].images)
+      }
+      else{
+        console.log('No data returned from modal');
+      }
+    });
+    await modal.present();
   }
 
 

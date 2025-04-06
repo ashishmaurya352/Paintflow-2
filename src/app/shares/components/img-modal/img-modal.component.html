@@ -1,0 +1,48 @@
+<ion-content>
+
+  <div class="modal-overlay">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3>Images View</h3>
+        <ion-button color="dark" fill="clear" slot="end" (click)="closeModal()">
+          <ion-icon slot="end" name="close"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="modal-body" style="margin: 10px;">
+        <div class="modal-input">
+          <div *ngIf="images?.length == 0 && !isEdit" class="no-image">
+            <p>No Image Found</p>
+          </div>
+          <div class="image">
+            <ion-grid>
+              <ion-row>
+                <ion-col size="2" *ngFor="let img of images; let i = index">
+                  <div class="image-container">
+                    <img *ngIf="img?.compressedUrl" [src]="img?.compressedUrl" (click)="openSwiper(images)" />
+                    <img *ngIf="img" [src]="img" (click)="openSwiper(images)" />
+
+                    <ion-icon *ngIf="isEdit" name="close-circle-outline" (click)="removeImage(i)"></ion-icon>
+                  </div>
+                </ion-col>
+                <ion-col size="2" *ngIf="isEdit">
+                  <label class="upload-btn">
+                    <ion-icon name="add-outline"></ion-icon>
+                    <input type="file" (change)="onFileSelected($event)" accept="image/*" multiple hidden />
+                  </label>
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- </div> -->
+</ion-content>
+
+<ion-footer *ngIf="isEdit">
+  <div class="submit_btn">
+    <ion-button expand="block" (click)="submit()">Submit</ion-button>
+  </div>
+</ion-footer>

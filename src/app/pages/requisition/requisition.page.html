@@ -35,26 +35,35 @@
 
       <ion-card *ngFor="let item of RequisitionItemLists; let i = index">
         <ion-card-content>
-          <ion-checkbox [(ngModel)]="itemChecked[i]" labelPlacement="end" (ionChange)="openModal(i,item) ">
-            <div class="card-content">
-              <div >
-                <ion-thumbnail>
-                  <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-                </ion-thumbnail>
-              </div>
-              <div>
-                <div style="display: flex;">
-                <h6>{{ item.partNumber | uppercase }}</h6>
-                <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
-              </div>
-                  <h5>{{ item.partDesciption | uppercase }}</h5>
-                <h6>Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
-              </div>
+          <div class="card-content">
+            <ion-checkbox [(ngModel)]="itemChecked[i]" labelPlacement="end" (ionChange)="openModal(i,item) ">
+            </ion-checkbox>
+
+            <div>
+              <ion-thumbnail (click)="openImgModal(i)">
+                <img
+                  alt="item Image"
+                  [src]="getImageSrc(i)"
+                />
+              </ion-thumbnail>
+              
             </div>
-          </ion-checkbox>
+            <div (click)="openModal(i,item)">
+              <div style="display: flex;">
+                <h6>{{ item.partNumber | uppercase }}</h6>
+                <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                  item.priority }}</ion-badge>
+              </div>
+              <h5>{{ item.partDesciption | uppercase }}</h5>
+              <h6>Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
+            </div>
+          </div>
+          <!-- Hidden file input element -->
+          <!-- <input #fileInput type="file" accept="image/*" multiple style="display:none" (change)="onImageSelected($event, i)"> -->
           <div class="dropdown" *ngIf="usereRole === 'Inward Manager'">
-            <ion-select [disabled]="!itemChecked[i]" class="custom-select" [value]="UpdatedItemLists[i].priority" 
-              interface="popover" label-placement="floating" shape="round" fill="outline" (ionChange)="onStatusChange($event, i)">
+            <ion-select [disabled]="!itemChecked[i]" class="custom-select" [value]="UpdatedItemLists[i].priority"
+              interface="popover" label-placement="floating" shape="round" fill="outline"
+              (ionChange)="onStatusChange($event, i)">
               <ion-select-option value="High">High</ion-select-option>
               <ion-select-option value="Medium">Medium</ion-select-option>
               <ion-select-option value="Low">Low</ion-select-option>
@@ -66,19 +75,54 @@
 
   </div>
 
+  <!-- <ion-modal class="image-modal" [isOpen]="isModalOpen" [backdropDismiss]="false">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="isModalOpen = false" fill="clear" aria-label="Show/hide">
+            <ion-icon color="dark" slot="icon-only" name="close-sharp" aria-hidden="true"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-title>{{ partDesciption }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <div class="image">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="2" *ngFor="let image of images; let i = index">
+              <div class="image-container">
+                <img [src]="image.compressedUrl" (click)="openSwiper(images)" />
+                <ion-icon name="close-circle-outline" (click)="removeImage(i)"></ion-icon>
+              </div>
+            </ion-col>
+            <ion-col size="2">
+              <label class="upload-btn">
+                <ion-icon name="add-outline"></ion-icon>
+                <input type="file" (change)="onFileSelected($event)" accept="image/*" multiple hidden />
+              </label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </div>
+    </ion-content>
+  </ion-modal> -->
+
   <!-- <app-received-modal [isOpen]="isModalOpen" [totalQuantity]="totalQuantity" [index]="index" [itemName]="partDesciption"
     [getquantity]="quantity" (dismiss)="isModalOpen = false" (quantitySubmitted)="handleQuantitySubmitted($event)">
   </app-received-modal> -->
 </ion-content>
 
+
+
 <ion-footer>
   <div class="accept-btn">
-    <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Executive'" shape="round" size="large" expand="block" slot="start"
-      aria-label="accept" (click)="acceptItems()">
+    <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Executive'" shape="round" size="large"
+      expand="block" slot="start" aria-label="accept" (click)="acceptItems()">
       Accept Items
     </ion-button>
-    <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Inward Manager'" shape="round" size="large" expand="block" slot="start"
-      aria-label="accept" (click)="acceptItems()">
+    <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Inward Manager'" shape="round" size="large"
+      expand="block" slot="start" aria-label="accept" (click)="acceptItems()">
       Assign Team
     </ion-button>
   </div>

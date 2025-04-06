@@ -23,7 +23,7 @@ export class OrderPage implements OnInit {
   segmentValue = 'Active'
   unAssignedList: any[] = []
   assignedList: any[] = []
-  pageTitles:any = "Shot Blast Orders"
+  pageTitles: any = "Shot Blast Orders"
   RequisitionItemLists: any[] = []
   unAssignedRequisitionItemLists: any[] = []
   expandedItems: Set<number> = new Set<number>();
@@ -46,7 +46,7 @@ export class OrderPage implements OnInit {
   approvedList: any[] = []
   approvedListItems: any[] = []
   approvedExpandedItems: Set<number> = new Set<number>();
-  teamsOrders: any[] = []
+  teamsOrders: any
 
   constructor(
     private router: Router,
@@ -62,44 +62,49 @@ export class OrderPage implements OnInit {
     this.pageTitles = localStorage.getItem('team')
 
     this.route.queryParams.subscribe(params => {
-      console.log('params',params);
-      const segmentValueParam = params['segmentValue'];
-      console.log('segmentValueParam',segmentValueParam);
-      
-      if (segmentValueParam) {
-          // Only try to parse if it's a valid stringified JSON
-          this.segmentValue = segmentValueParam
-          if(this.usereRole == 'Executive'){
-            this.getRequisitionDetail()
 
-          }else{
-      this.getItem()
-
-          }
-      }
       if (params['team']) {
         this.teamsOrders = params['team']
         this.pageTitles = this.teamsOrders + " Orders"
-        console.log('this.teamsOrders',this.teamsOrders);
+        console.log('this.teamsOrders', this.teamsOrders);
         this.segmentValue = 'Active';
       }
-    });
-    console.log(this.usereRole);
-    if (this.usereRole == 'Inward Manager') {
-      this.segmentValue = 'UnAssigned'
-      this.pageTitles = "Recently Created Requisitions"
-      this.getItem()
-    }
-    else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
-      this.getRequisitionDetail()
-      this.segmentValue = 'Active'
-    }
-    else {
-      this.segmentValue = 'InQueueQA'
-      this.pageTitles = "QA Testing"
-      this.getRequisitionDetail()
 
-    }
+      console.log('params', params);
+      const segmentValueParam = params['segmentValue'];
+      console.log('segmentValueParam', segmentValueParam);
+      
+
+      if (segmentValueParam) {
+        // Only try to parse if it's a valid stringified JSON
+        this.segmentValue = segmentValueParam
+        // if (this.usereRole == 'Executive') {
+        //   this.getRequisitionDetail()
+
+        // } else {
+        //   this.getItem()
+
+        // }
+      }
+
+        console.log(this.usereRole);
+        if (this.usereRole == 'Inward Manager') {
+          this.segmentValue = 'UnAssigned'
+          this.pageTitles = "Recently Created Requisitions"
+          this.getItem()
+        }
+        else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
+          this.getRequisitionDetail()
+          this.segmentValue = 'Active'
+        }
+        else {
+          this.segmentValue = 'InQueueQA'
+          this.pageTitles = "QA Testing"
+          this.getRequisitionDetail()
+    
+        }
+      
+    });
 
     // this.segmentValue = history.state.segmentValue;
     // 
@@ -110,7 +115,7 @@ export class OrderPage implements OnInit {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(localStorage.getItem('role'));
-      }, 100); 
+      }, 100);
     });
   }
   segmentChange(event: any) {
@@ -122,11 +127,11 @@ export class OrderPage implements OnInit {
     }
   }
 
-  activityListPage(id: any,slipNumber: any) {
-    this.router.navigate(['/activity-list'], { queryParams: { id: id,slipNumber:slipNumber } });
+  activityListPage(id: any, slipNumber: any) {
+    this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber } });
   }
   requisitionListPage(id: any, slipNumber: any) {
-    this.router.navigate(['/requisition'], { queryParams: { id: id,slipNumber: slipNumber } });
+    this.router.navigate(['/requisition'], { queryParams: { id: id, slipNumber: slipNumber } });
   }
 
   detailView(event: any, id?: any) {
@@ -139,12 +144,19 @@ export class OrderPage implements OnInit {
 
   getRequisitionDetail() {
     console.log('getRequisitionDetail');
-    
+
     // Determine the segment value for the QA role
     let segmentValue = (this.segmentValue === 'InQueueQA') ? 'InQueue' : this.segmentValue;
+    let params
+    if(this.usereRole === 'QA') {
+      params = new HttpParams().set('Status', segmentValue).set('Team', this.teamsOrders)
 
+    }
+    else{
+
+      params = new HttpParams().set('Status', segmentValue);
+    }
     // Set the parameters
-    const params = new HttpParams().set('Status', segmentValue);
 
     // Make the HTTP request
     this.controller.showloader()
@@ -153,28 +165,28 @@ export class OrderPage implements OnInit {
         this.controller.hideloader()
         // Handle the response based on user role and segment value
         this.handleRequisitionResponse(res);
-      },(error) => {
+      }, (error) => {
         this.controller.hideloader()
       });
-}
+  }
 
-handleRequisitionResponse(res: any) {
+  handleRequisitionResponse(res: any) {
     switch (this.usereRole) {
       case 'Executive':
-        case 'Admin':
+      case 'Admin':
         this.handleExecutiveRequisition(res);
         break;
       default:
         this.handleOtherRolesRequisition(res);
         break;
     }
-}
+  }
 
-handleExecutiveRequisition(res: any) {
+  handleExecutiveRequisition(res: any) {
     switch (this.segmentValue) {
       case 'Active':
         this.activeList = res;
-        console.log('this.activeList',this.activeList);
+        console.log('this.activeList', this.activeList);
         break;
       case 'InQueue':
         this.inQueueList = res;
@@ -183,9 +195,9 @@ handleExecutiveRequisition(res: any) {
         this.completedList = res;
         break;
     }
-}
+  }
 
-handleOtherRolesRequisition(res: any) {
+  handleOtherRolesRequisition(res: any) {
     switch (this.segmentValue) {
       case 'InQueueQA':
         this.qaCompletedList = res;
@@ -197,7 +209,7 @@ handleOtherRolesRequisition(res: any) {
         this.approvedList = res;
         break;
     }
-}
+  }
 
 
   getItem() {
@@ -212,7 +224,7 @@ handleOtherRolesRequisition(res: any) {
             this.unAssignedList = res
           }
           console.log(res);
-        },(error) => {
+        }, (error) => {
           this.controller.hideloader()
         });
   }
@@ -230,7 +242,7 @@ handleOtherRolesRequisition(res: any) {
   }
   getRequisitionItem(index: number, id: any, team: string) {
     console.log(id);
-    
+
     // Helper function to construct HttpParams
     const createHttpParams = (id: any, team?: string, status?: string) => {
       let params = new HttpParams().set('RequisitionId', id);
@@ -286,35 +298,35 @@ handleOtherRolesRequisition(res: any) {
         }
         console.log(res);
       });
-}
-
-handleExecutiveResponse(res: any, index: number) {
-  if (this.segmentValue === 'Active') {
-    this.activeListItems[index] = res;
-  } else if (this.segmentValue === 'Completed') {
-    this.completedListItems[index] = res;
-  } else {
-    this.inQueueListItems[index] = res;
   }
-}
 
-handleInwardManagerResponse(res: any, index: number) {
-  if (this.segmentValue === 'Assigned') {
-    this.RequisitionItemLists[index] = res;
-  } else {
-    this.unAssignedRequisitionItemLists[index] = res;
+  handleExecutiveResponse(res: any, index: number) {
+    if (this.segmentValue === 'Active') {
+      this.activeListItems[index] = res;
+    } else if (this.segmentValue === 'Completed') {
+      this.completedListItems[index] = res;
+    } else {
+      this.inQueueListItems[index] = res;
+    }
   }
-}
 
-handleQAResponse(res: any, index: number) {
-  if (this.segmentValue === 'InQueueQA') {
-    this.qaCompletedListItems[index] = res;
-  } else if (this.segmentValue === 'Rejected') {
-    this.rejectedListItems[index] = res;
-  } else {
-    this.approvedListItems[index] = res;
+  handleInwardManagerResponse(res: any, index: number) {
+    if (this.segmentValue === 'Assigned') {
+      this.RequisitionItemLists[index] = res;
+    } else {
+      this.unAssignedRequisitionItemLists[index] = res;
+    }
   }
-}
+
+  handleQAResponse(res: any, index: number) {
+    if (this.segmentValue === 'InQueueQA') {
+      this.qaCompletedListItems[index] = res;
+    } else if (this.segmentValue === 'Rejected') {
+      this.rejectedListItems[index] = res;
+    } else {
+      this.approvedListItems[index] = res;
+    }
+  }
 
 
   toggleItemView(event: any, index: number, id?: any, team?: any) {
@@ -354,14 +366,14 @@ handleQAResponse(res: any, index: number) {
     }
   }
 
-  
+
   isItemExpanded(index: number): boolean {
-    const roleSegmentMap:any = {
+    const roleSegmentMap: any = {
       'Executive': {
         'Active': this.activeExpandedItems,
         'Completed': this.completedExpandedItems,
         'InQueue': this.inQueueExpandedItems
-      },'Admin': {
+      }, 'Admin': {
         'Active': this.activeExpandedItems,
         'Completed': this.completedExpandedItems,
         'InQueue': this.inQueueExpandedItems
@@ -384,7 +396,7 @@ handleQAResponse(res: any, index: number) {
     }
 
     return false; // Default return value if no match
-}
+  }
 
 
   getBadgeColor(priority: string): string {
@@ -399,10 +411,14 @@ handleQAResponse(res: any, index: number) {
         return '#4e6e7c'; // Default color
     }
   }
-  logout(){
-    if(this.usereRole == 'Admin'){
+  logout() {
+    if (this.usereRole == 'Admin') {
       this.router.navigate(['/dashboard']);
-    }else{
+    }
+    else if (this.usereRole == 'QA') {
+      this.router.navigate(['/qa-dashboard']);
+    }
+    else {
       localStorage.clear();
       this.router.navigate(['/login']).then(() => {
         window.location.reload();

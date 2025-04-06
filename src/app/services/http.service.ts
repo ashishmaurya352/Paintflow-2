@@ -29,7 +29,7 @@ export class HttpService {
   readonly DocumentsUploadExcel = `/Document/UploadExcel`;
   readonly RequisitionFetch = `/Requisition/Fetch`;
   readonly ItemProcessDetailed = `/ItemProcess/Detailed`;
-  
+  readonly GetQADashboard = `/Requisition/GetQADashboard`;
   
   constructor(
     private httpClient: HttpClient
@@ -121,6 +121,10 @@ export class HttpService {
   }
   getItemProcessDetailed(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ItemProcessDetailed}/${data}`;
+    return this.httpClient.get(url);
+  }
+  getQADashboard(): Observable<any> {
+    let url = `${this.apiUrl + this.GetQADashboard}`;
     return this.httpClient.get(url);
   }
 }
