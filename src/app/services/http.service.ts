@@ -32,7 +32,8 @@ export class HttpService {
   readonly GetQADashboard = `/Requisition/GetQADashboard`;
   readonly ItemGetImages = `/Item/GetImages`;
   readonly RestartWork = `/ItemProcess/RestartWork`;
-  readonly ItemSearchItem = `/Item/SearchItem`;
+  readonly ItemSearchItem = `/Item/Search`;
+  readonly RequisitionSearch = `/Requisition/Search`;
   
   
   constructor(
@@ -141,6 +142,10 @@ export class HttpService {
   }
   getItemSearchItem(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ItemSearchItem}?${data}`;
+    return this.httpClient.get(url);
+  }
+  getRequisitionSearch(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.RequisitionSearch}?${data}`;
     return this.httpClient.get(url);
   }
 }

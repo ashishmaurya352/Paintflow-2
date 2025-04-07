@@ -15,12 +15,19 @@
 
     <div>
 
-      <ion-searchbar [debounce]="1000" (ionInput)="handleInput($event)">
+      <ion-searchbar #searchbar [debounce]="1000" (ionInput)="handleInput($event)">
       </ion-searchbar>
       <!-- Search Results -->
-      <ion-list>
-        <ion-item *ngFor="let result of results">
-          <ion-label>{{ result }}</ion-label>
+      <ion-list *ngIf="id">
+        <ion-item *ngFor="let result of results" (click)="sendItem(result)" >
+          <ion-label slot="start">{{ result.partNumber }} ({{ result.status }})</ion-label>
+          <!-- <ion-label slot="end">{{ result.status }}</ion-label> -->
+        </ion-item>
+      </ion-list>
+      <ion-list *ngIf="!id">
+        <ion-item *ngFor="let result of results" (click)="sendItem(result)" >
+          <ion-label slot="start">{{ result.slipNumber }} ({{ result.priority }})</ion-label>
+          <!-- <ion-label slot="end">{{ result.priority }}</ion-label> -->
         </ion-item>
       </ion-list>
     </div>

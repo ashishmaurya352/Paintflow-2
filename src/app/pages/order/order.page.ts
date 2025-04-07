@@ -518,13 +518,11 @@ export class OrderPage implements OnInit {
     async openSearch(){
         const modal = await this.modalController.create({
           component: SearchModalComponent,
-          componentProps: {
-            // id: this.requisitionId,
-            // status: this.segmentValue,
-            // Images: data,
-          },
           cssClass: 'search-modal',
         });
+        modal.onDidDismiss().then((dataReturned: any) => {
+          console.log('search-modal:', dataReturned);
+        })
         await modal.present();
       }
 

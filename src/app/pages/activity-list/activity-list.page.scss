@@ -12,6 +12,14 @@
       font-size: 32px
     }
   }
+  ion-segment-button {
+    --color-checked:var(--theme-color-primary);
+    --color: var(--theme-color-dark)
+    ion-label{
+        font-size: 14px;
+        font-weight: bold;
+    }
+}
   
   .up-card {
     display: flex;

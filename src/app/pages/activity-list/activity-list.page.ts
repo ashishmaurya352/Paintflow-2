@@ -169,7 +169,7 @@ export class ActivityListPage implements OnInit {
     }
     if (this.typeItem == 'Update') {
       this.totalQuantity = this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity
-    }else if( this.typeItem == 'Approval') {
+    } else if (this.typeItem == 'Approval') {
       this.totalQuantity = Math.abs(this.selectedItem?.receivedQuantity - (this.selectedItem?.qcApprovalPendingQuantity + this.selectedItem?.qcApprovedQuantity));
     }
     else if (this.typeItem == 'AcceptOrder') {
@@ -593,11 +593,11 @@ export class ActivityListPage implements OnInit {
   delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
-  async openRemarksModal(item: any,type='') {
-    if(type == 'QARemarks'){
+  async openRemarksModal(item: any, type = '') {
+    if (type == 'QARemarks') {
       this.getItemProcessDetailed(item)
-      
-    }else{
+
+    } else {
 
       const response = await this.getImageUrl(item).toPromise();
     }
@@ -640,7 +640,7 @@ export class ActivityListPage implements OnInit {
     console.log('acceptStatus', this.acceptStatus);
   }
 
-  getItemProcessDetailed(item: any,type='QARemarks') {
+  getItemProcessDetailed(item: any, type = 'QARemarks') {
     // const parm = new HttpParams().set('id', item.currentProcess_Id);
     this.qaRemarksSelected = item
     console.log('getItemProcessDetailed', item);
@@ -656,7 +656,7 @@ export class ActivityListPage implements OnInit {
         }, (error) => {
           this.controller.hideloader()
         });
-        
+
   }
   getBadgeColor(priority: string): string {
     switch (priority) {
@@ -708,35 +708,68 @@ export class ActivityListPage implements OnInit {
           this.controller.hideloader()
         });
   }
-  async openSearch(){
+  async openSearch() {
     const modal = await this.modalController.create({
       component: SearchModalComponent,
       componentProps: {
         id: this.requisitionId,
-        status: this.segmentValue,
-        // Images: data,
       },
       cssClass: 'search-modal',
     });
+
+    modal.onDidDismiss().then((dataReturned: any) => {
+      console.log('search-modal:', dataReturned);
+      if (dataReturned.data !== undefined) {
+        if (this.usereRole == 'QA') {
+          if (dataReturned.data.status == 'Approved') {
+            this.segmentValue = 'Approved'
+          }
+          else if (dataReturned.data.status == 'InQueue') {
+            this.segmentValue = 'InQueue'
+          }
+          else  {
+            this.segmentValue = 'Rejected'
+          }
+        }
+        else {
+          if (dataReturned.data.status == 'Active') {
+            this.segmentValue = 'item-list'
+          }else if (dataReturned.data.status == 'Handover') {
+            this.segmentValue = 'handover'
+          }
+          else  {
+            this.segmentValue = 'rejected'
+          }
+        }
+        let params = new HttpParams().set('RequisitionId', this.requisitionId).set('ItemId', dataReturned.data.id);
+
+        this.httpService.getItemDetail(params)
+          .subscribe((res: any) => {
+            this.ItemList = res;
+            // this.results = dataReturned.data
+            console.log('search-modal:', res);
+          })
+      }
+    })
     await modal.present();
   }
 
   getImageUrl(item: any) {
-      console.log('getItemProcessDetailed', item);
-      this.controller.showloader()
-      return this.httpService.getItemGetImages(item.id)
-        .pipe(
-          tap((res: any) => {
-            this.controller.hideloader();
-            this.selectedItemImage = res;
-            console.log('getItemProcessDetailed', this.selectedItemImage);
-            // openModalPop here if needed
-          }),
-          catchError((error) => {
-            this.controller.hideloader();
-            console.error(error);
-            return of(null); // Return null if you want to handle it silently
-          })
-        );
+    console.log('getItemProcessDetailed', item);
+    this.controller.showloader()
+    return this.httpService.getItemGetImages(item.id)
+      .pipe(
+        tap((res: any) => {
+          this.controller.hideloader();
+          this.selectedItemImage = res;
+          console.log('getItemProcessDetailed', this.selectedItemImage);
+          // openModalPop here if needed
+        }),
+        catchError((error) => {
+          this.controller.hideloader();
+          console.error(error);
+          return of(null); // Return null if you want to handle it silently
+        })
+      );
   }
 }

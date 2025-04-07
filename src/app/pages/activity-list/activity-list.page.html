@@ -615,12 +615,6 @@
                   <img [src]="image.imageUrl" (click)="openSwiper(qaRemarks?.itemProcessImages)" />
                 </div>
               </ion-col>
-              <!-- <ion-col size="2">
-              <label class="upload-btn">
-                <ion-icon name="add-outline"></ion-icon>
-                <input type="file" (change)="onFileSelected($event)" accept="image/*" multiple hidden  />
-              </label>
-            </ion-col> -->
             </ion-row>
           </ion-grid>
         </div>
@@ -633,8 +627,4 @@
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
-  <!-- <app-received-modal [isOpen]="isModalOpen" [totalQuantity]="this.totalQuantity"
-    [itemName]="this.selectedItem?.partDesciption" [teams]="teams" (dismiss)="isModalOpen = false"
-    (quantitySubmitted)="handleQuantitySubmitted($event)">
-  </app-received-modal> -->
 </ion-content>
