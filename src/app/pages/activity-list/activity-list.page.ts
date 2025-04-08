@@ -82,6 +82,30 @@ export class ActivityListPage implements OnInit {
   selectedItemImage: any = []
   viewTeam: any
   colors: any 
+  qaRejectedList = [
+    "Adhesion",
+    "Bends",
+    "DFT",
+    "Does not meet SA2.5",
+    "Dust",
+    "Gloss",
+    "Impact",
+    "Incorrect selection for PT",
+    "Missing engraved item code",
+    "Oil not removed",
+    "Rundown",
+    "Rusty material",
+    "Salt Spray",
+    "Short quantity",
+    "Touch up pending",
+    "Uncover",
+    "Wet",
+    "Wrong material",
+    "Wrong paint selection"
+]
+qaAcceptedList = [
+  'Accepted']
+
   constructor(private router: Router,
     private route: ActivatedRoute,
     private httpService: HttpService,
@@ -398,6 +422,7 @@ export class ActivityListPage implements OnInit {
 
   async approve() {
     this.controller.showloader()
+    this.resetModal()
 
     if (this.images.length > 0) {
       await this.uploadAllImages()
@@ -612,24 +637,8 @@ export class ActivityListPage implements OnInit {
   }
   onSelectReason(event: any) {
     const reason = event.target.value;
-    this.acceptTemplate = reason
-    console.log('Selected reason:', reason);
-    switch (reason) {
-      case 'Approval template 1':
-        this.decText = 'Approved as its done properly';
-        break;
-      case 'Rejected template 1':
-        this.decText = 'Rejected as its not done';
-        break;
-      case 'Rejected template 2':
-        this.decText = 'Rejected as partially work done';
-        break;
-      case 'Rejected template 3':
-        this.decText = 'There are issues with item';
-        break;
-      default:
-        this.decText = '';  // Default case if needed
-    }
+    this.decText = reason
+    
   }
   onInput(event: any) {
     this.acceptQuantity = event.target.value;
@@ -643,6 +652,7 @@ export class ActivityListPage implements OnInit {
   }
   acceptStatusChange(event: any) {
     this.acceptStatus = event.target.value;
+    this.decText = ''
     console.log('acceptStatus', this.acceptStatus);
   }
 
@@ -804,5 +814,12 @@ export class ActivityListPage implements OnInit {
       console.log('itemUpdateColor', res);
       this.getRequisitionItem(this.requisitionId)
     })
+  }
+
+  resetModal() {
+    this.isRemarksModalOpen = false;
+    this.decText = ''
+    this.qaRemarksSelected = 'Accepted'
+    this.qaRemarks = null
   }
 }

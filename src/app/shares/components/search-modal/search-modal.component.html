@@ -26,8 +26,15 @@
       </ion-list>
       <ion-list *ngIf="!id">
         <ion-item *ngFor="let result of results" (click)="sendItem(result)" >
-          <ion-label slot="start">{{ result.slipNumber }} ({{ result.priority }})</ion-label>
-          <!-- <ion-label slot="end">{{ result.priority }}</ion-label> -->
+          <ion-label slot="start">{{ result.slipNumber }} ({{ result.priority }})
+            <div *ngIf="result.items.length > 0" style="margin-top: 5px; display: flex;">
+              <p style="margin-right: 5px;" *ngFor="let item of result.items; let i = index">
+                <ng-container *ngIf="i < 3">
+                  {{ item?.partNumber }}
+                </ng-container>
+              </p>
+            </div>
+          </ion-label>
         </ion-item>
       </ion-list>
     </div>

@@ -375,7 +375,7 @@
                   </div>
                   <h5>{{item.partDesciption | uppercase}}</h5>
                 </div>
-                <div style="display: flex;">
+                <div style="display: flex; align-items: center;">
                   <ion-button fill="clear" class="pending-btn">
                     Work in Progress
                     <ion-icon slot="start" name="alarm-outline"></ion-icon>
@@ -497,7 +497,7 @@
     <ion-content>
       <div class="accept_modal">
         <div class="accept_modal_title">
-          <h3>Accept Order</h3>
+          <h3>{{ acceptStatus === 'Accepted' ? 'Accept Order:' : 'Reject Order' }}</h3>
           <ion-buttons>
             <ion-button color="dark" (click)="isAcceptModalOpen = false">
               <ion-icon name="close-outline"></ion-icon>
@@ -529,10 +529,12 @@
             <div>
               <ion-select mode="md" [(ngModel)]="acceptTemplate" interface="popover" label="Select Reason"
                 label-placement="floating" fill="outline" (ionChange)="onSelectReason($event)" name="acceptTemplate">
-                <ion-select-option value="Approval template 1">Approval template 1</ion-select-option>
-                <ion-select-option value="Rejected template 2">Rejected template 1</ion-select-option>
-                <ion-select-option value="Rejected template 3">Rejected template 2</ion-select-option>
-                <ion-select-option value="Rejected template 4">Rejected template 3</ion-select-option>
+                <div *ngIf="acceptStatus === 'Accepted'">
+                  <ion-select-option *ngFor="let item of qaAcceptedList">{{item}}</ion-select-option>
+                </div>
+                <div *ngIf="acceptStatus === 'Rejected'">
+                  <ion-select-option *ngFor="let item of qaRejectedList">{{item}}</ion-select-option>
+                </div>
               </ion-select>
             </div>
 

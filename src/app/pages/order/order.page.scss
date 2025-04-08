@@ -170,4 +170,26 @@ ion-badge {
 .priority {
     display: flex;
     margin-bottom: 5px;
+    align-items: anchor-center;
 }
+
+.dropdown {
+    margin-left: auto;
+    width: 145px;
+    height: 32px;
+    margin-top: 7px;
+    color: #A52B54
+  }
+  .custom-select {
+    --border-color: #A52B54
+  }
+  
+  .custom-select::part(icon) {
+    height: 32px;
+    color: #A52B54;
+  
+  }
+  
+  .custom-select::part(container) {
+    margin-top: 7px;
+  }

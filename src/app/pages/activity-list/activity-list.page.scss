@@ -204,6 +204,10 @@
   .custom-select::part(container) {
     margin-top: 7px;
   }
+  // .custom-select .select-popover {
+  //   max-height: calc(5 * 40px); /* Adjust 40px to the height of a single option */
+  //   overflow-y: auto;
+  // }
   
   
   // .block {

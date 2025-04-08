@@ -81,7 +81,15 @@
                   <h5>Challan No. {{item.slipNumber}} 
                     
                   </h5>
-                  <ion-badge [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <div class="dropdown" *ngIf="usereRole === 'Admin'">
+                    <ion-select class="custom-select" [value]="item.priority" interface="popover"
+                      label-placement="floating" shape="round" fill="outline" (click)="$event.stopPropagation()" (ionChange)="onStatusChange($event,item.requisitionId)">
+                      <ion-select-option value="High">High</ion-select-option>
+                      <ion-select-option value="Medium">Medium</ion-select-option>
+                      <ion-select-option value="Low">Low</ion-select-option>
+                    </ion-select>
+                  </div>
+                  <ion-badge *ngIf="usereRole !== 'Admin'" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }} </ion-badge>
                 </div>
 
                   <div class="accept">

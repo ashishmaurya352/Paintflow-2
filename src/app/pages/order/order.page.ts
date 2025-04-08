@@ -190,6 +190,7 @@ export class OrderPage implements OnInit {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         this.controller.hideloader()
+        this.addcss()
         // Handle the response based on user role and segment value
         this.handleRequisitionResponse(res);
       }, (error) => {
@@ -528,6 +529,43 @@ export class OrderPage implements OnInit {
           console.log('search-modal:', dataReturned);
         })
         await modal.present();
+      }
+
+      onStatusChange(event: any,id:any) {
+        const Status = event.target.value;
+        event.stopPropagation();
+        event.preventDefault()
+        let params = new HttpParams().set('id', id).set('status', Status);
+        this.httpService.requisitionUpdatePriorityStatus(params).subscribe((res: any) => {
+          console.log('Status updated successfully:', res);
+          // this.ItemList[i].priority = Status
+        })
+        // console.log('Selected option:', this.selectedOption);
+      }
+      addcss() {
+        const observer = new MutationObserver(() => {
+          document.querySelectorAll("ion-select").forEach((ionSelect) => {
+            if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+              console.log("✅ Styling dynamically added ion-select");
+              const style = document.createElement("style");
+              style.classList.add("custom-style"); // Prevent duplicate styles
+              style.textContent = `
+                .select-outline-container {
+                      height: 32px !important;
+                    left: 20px !important;
+                    width: 80% !important;
+                  }
+                .select-wrapper-inner {
+                  display: block !important;
+              }
+              `;
+              ionSelect.shadowRoot.appendChild(style);
+            }
+          });
+        });
+    
+        // Observe the entire document for new elements
+        observer.observe(document.body, { childList: true, subtree: true });
       }
 
 

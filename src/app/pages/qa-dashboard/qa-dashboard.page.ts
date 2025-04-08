@@ -39,7 +39,6 @@ export class QaDashboardPage implements OnInit {
   }
   showData(item: any) {
     const team = item.team;
-    console.log('team', team)
     this.router.navigate(['/order'],{ queryParams: { team: team }})
   }
   logout() {
