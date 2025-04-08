@@ -1,16 +1,60 @@
 <ion-content [fullscreen]="true">
   <div class="hader">
-    <ion-item>
+    <!-- <ion-item>
       <ion-button fill="clear" slot="start" aria-label="Show/hide" (click)="logout()">
-        <ion-icon color="dark" slot="icon-only" name="exit" aria-hidden="true"></ion-icon>
+        <ion-icon color="dark" slot="icon-only" name="exit-outline" aria-hidden="true"></ion-icon>
       </ion-button>
       <h3>Admin Dashboard</h3>
+    </ion-item> -->
+    <ion-item lines="none" class="header-item">
+      <ion-button fill="clear" slot="start" aria-label="Show/hide" (click)="logout()">
+        <ion-icon color="dark" slot="icon-only" name="exit-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
+    
+      <h3 class="ion-text-center">Admin Dashboard</h3>
+    
+      <ion-segment slot="end" [value]="selectedOption" mode="md" class="custom-toggle">
+        <ion-segment-button value="WPP">
+          <ion-label>WPP</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="WPR">
+          <ion-label>WPR</ion-label>
+        </ion-segment-button>
+      </ion-segment>
     </ion-item>
+    
   </div>
 
   <div class="content">
   <div class="header-title">
-    <strong class="active">Cost</strong> Overview
+    <div>
+
+      <strong class="active">Cost</strong> Overview
+    </div>
+    <div class="time-period">
+      <ion-button fill="clear" size="small">
+        1D
+      </ion-button>
+      <ion-button fill="clear" size="small">
+        1W
+      </ion-button>
+      <ion-button fill="clear" size="small">
+        1M
+      </ion-button>
+      <ion-button fill="clear" size="small">
+        3M
+      </ion-button>
+      <ion-button fill="clear" size="small">
+        6M
+      </ion-button>
+      <ion-button fill="clear" size="small">
+        1Y
+      </ion-button>
+      <ion-button fill="clear" size="small">
+        <ion-icon name="calendar-outline"></ion-icon>
+      </ion-button>
+
+    </div>
   </div>
 
   <ion-grid>
@@ -33,7 +77,10 @@
 <!-- <app-bar-chart canvasId="barChart"></app-bar-chart> -->
 
   <div class="header-title">
-    <strong class="active">Active</strong> Requisitions
+    <div>
+
+      <strong class="active">Active</strong> Requisitions
+    </div>
   </div>
 
   <ion-grid>
@@ -43,7 +90,7 @@
           <ion-card-content>
             <h2 class="requisition-number">{{ item.count }}</h2>
             <p class="requisition-title">{{ item.title }}</p>
-            <a class="view-all" (click)="viewAll(item)">View all &gt;</a>
+            <a class="view-all"  *ngIf="item.title != 'All Teams'" (click)="viewAll(item)">View all &gt;</a>
           </ion-card-content>
         </ion-card>
       </ion-col>

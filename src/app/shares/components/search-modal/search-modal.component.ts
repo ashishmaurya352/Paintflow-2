@@ -22,9 +22,10 @@ export class SearchModalComponent  implements OnInit, AfterViewInit  {
   @ViewChild('searchbar', { static: false }) searchbar!: IonSearchbar;
   @Input() id:any ; 
   @Input() status:any; 
-  team: any; 
+  @Input() team: any; 
   results: any[] = []; 
   notfound = false
+  usereRole: any
 
   constructor(
         private modalController: ModalController,
@@ -39,8 +40,16 @@ export class SearchModalComponent  implements OnInit, AfterViewInit  {
     }, 500);
   }
 
-  ngOnInit() {
+  async ngOnInit() {
+    this.usereRole = await this.getUserRoleFromLocalStorage();
     // this.team =  localStorage.getItem('role')
+  }
+  getUserRoleFromLocalStorage(): Promise<string | null> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(localStorage.getItem('role'));
+      }, 100);
+    });
   }
 
   closeModal() { 
@@ -74,8 +83,14 @@ export class SearchModalComponent  implements OnInit, AfterViewInit  {
   }
 
   getRequisitionSearch(query: string) {
-    // const parm = new HttpParams().set('keyword', query).set('team', this.team);
-    const parm = new HttpParams().set('keyword', query);
+    let parm: any;
+    if(this.usereRole == 'Admin'){
+     parm = new HttpParams().set('keyword', query).set('team', this.team);
+
+    }else{
+       parm = new HttpParams().set('keyword', query);
+
+    }
     this.httpService.getRequisitionSearch(parm).subscribe((res: any) => {
       this.results= res
       res.length === 0 ? this.notfound = true : this.notfound = false

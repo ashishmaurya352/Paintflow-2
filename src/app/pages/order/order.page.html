@@ -2,53 +2,56 @@
   <div class="hader">
     <ion-item>
       <ion-button fill="clear" slot="start" aria-label="Show/hide" (click)="logout()">
-        <ion-icon *ngIf="usereRole !== 'Admin' && usereRole !== 'QA'" color="dark" slot="icon-only" name="exit-outline" aria-hidden="true"></ion-icon>
-        <ion-icon *ngIf="usereRole == 'Admin' || usereRole == 'QA' " color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
+        <ion-icon *ngIf="usereRole !== 'Admin' && usereRole !== 'QA'" color="dark" slot="icon-only" name="exit-outline"
+          aria-hidden="true"></ion-icon>
+        <ion-icon *ngIf="usereRole == 'Admin' || usereRole == 'QA' " color="dark" slot="icon-only" name="arrow-back"
+          aria-hidden="true"></ion-icon>
       </ion-button>
       <h3>{{pageTitles}}</h3>
 
-        <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="openSearch()">
-          <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
-        </ion-button>
+      <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="openSearch()">
+        <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
+      </ion-button>
 
-        <ion-button fill="clear" slot="end" aria-label="Show/hide" id="popover-button">
-          <ion-icon color="dark" slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
-        </ion-button>
+      <ion-button fill="clear" slot="end" aria-label="Show/hide" id="popover-button">
+        <ion-icon color="dark" slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
     </ion-item>
   </div>
   <div class="content" style="background: white;">
-    <ion-segment [value]="segmentValue"  (ionChange)="segmentChange($event)">
-    <ion-segment-button value="Active" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'" >
-      <ion-label>Active</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="Completed" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
-      <ion-label>Completed</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="InQueue" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
-      <ion-label>In Queue</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="UnAssigned" *ngIf="usereRole == 'Inward Manager'">
-      <ion-label>Un-Assigned</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="Assigned" *ngIf="usereRole == 'Inward Manager'">
-      <ion-label>Assigned</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="InQueueQA" *ngIf="usereRole == 'QA'">
-      <ion-label>In Queue</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="Rejected" *ngIf="usereRole == 'QA'">
-      <ion-label>Rejected</ion-label>
-    </ion-segment-button>
-    <ion-segment-button value="Approved" *ngIf="usereRole == 'QA'">
-      <ion-label>Approved</ion-label>
-    </ion-segment-button>
-    
-  </ion-segment></div>
+    <ion-segment [value]="segmentValue" (ionChange)="segmentChange($event)">
+      <ion-segment-button value="Active" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
+        <ion-label>Active</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Completed" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
+        <ion-label>Completed</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="InQueue" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
+        <ion-label>In Queue</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="UnAssigned" *ngIf="usereRole == 'Inward Manager'">
+        <ion-label>Un-Assigned</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Assigned" *ngIf="usereRole == 'Inward Manager'">
+        <ion-label>Assigned</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="InQueueQA" *ngIf="usereRole == 'QA'">
+        <ion-label>In Queue</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Rejected" *ngIf="usereRole == 'QA'">
+        <ion-label>Rejected</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Approved" *ngIf="usereRole == 'QA'">
+        <ion-label>Approved</ion-label>
+      </ion-segment-button>
+
+    </ion-segment>
+  </div>
 </ion-header>
 <ion-content [fullscreen]="true">
-  
 
-  <ion-popover trigger="popover-button" [dismissOnSelect]="true"  side="bottom" alignment="start" >
+
+  <ion-popover trigger="popover-button" [dismissOnSelect]="true" side="bottom" alignment="start">
     <ng-template>
       <ion-content>
         <ion-list>
@@ -65,7 +68,7 @@
   </ion-popover>
 
   <div class="content">
-    
+
     <div>
       <div *ngIf="segmentValue == 'Active'">
         <ion-list class="main-list">
@@ -78,19 +81,21 @@
 
                 <div class="id-no border">
                   <div class="priority">
-                  <h5>Challan No. {{item.slipNumber}} 
-                    
-                  </h5>
-                  <div class="dropdown" *ngIf="usereRole === 'Admin'">
-                    <ion-select class="custom-select" [value]="item.priority" interface="popover"
-                      label-placement="floating" shape="round" fill="outline" (click)="$event.stopPropagation()" (ionChange)="onStatusChange($event,item.requisitionId)">
-                      <ion-select-option value="High">High</ion-select-option>
-                      <ion-select-option value="Medium">Medium</ion-select-option>
-                      <ion-select-option value="Low">Low</ion-select-option>
-                    </ion-select>
+                    <h5>Challan No. {{item.slipNumber}}
+
+                    </h5>
+                    <div class="dropdown" *ngIf="usereRole === 'Admin'">
+                      <ion-select class="custom-select" [value]="item.priority" interface="popover"
+                        label-placement="floating" shape="round" fill="outline" (click)="$event.stopPropagation()"
+                        (ionChange)="onStatusChange($event,item.requisitionId)">
+                        <ion-select-option value="High">High</ion-select-option>
+                        <ion-select-option value="Medium">Medium</ion-select-option>
+                        <ion-select-option value="Low">Low</ion-select-option>
+                      </ion-select>
+                    </div>
+                    <ion-badge *ngIf="usereRole !== 'Admin'"
+                      [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }} </ion-badge>
                   </div>
-                  <ion-badge *ngIf="usereRole !== 'Admin'" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }} </ion-badge>
-                </div>
 
                   <div class="accept">
                     <p>Accepted on </p>
@@ -101,13 +106,17 @@
                 </div>
                 <div class="card-end">
                   <div class="chart">
-                    <app-chart [chartData]="[item.completedPercent,100-item.completedPercent]" [canvasId]="'Active'+i"></app-chart>
+                    <app-chart [chartData]="[item.completedPercent,100-item.completedPercent]"
+                      [canvasId]="'Active'+i"></app-chart>
                   </div>
                   <div class="card-end">
-                    <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
+                    <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
+                      aria-label="Show/hide">
                       <ion-icon color="dark" slot="icon-only" name="chevron-up" aria-hidden="true"></ion-icon>
                     </ion-button>
-                    <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"  fill="clear" slot="end" aria-label="Show/hide">
+                    <ion-button *ngIf="!isItemExpanded(i)"
+                      (click)="toggleItemView($event, i, item.requisitionId,item.team)" fill="clear" slot="end"
+                      aria-label="Show/hide">
                       <ion-icon color="dark" slot="icon-only" name="chevron-down" aria-hidden="true"></ion-icon>
                     </ion-button>
                   </div>
@@ -119,14 +128,17 @@
                 <ion-list>
                   <ion-grid>
                     <ion-row *ngFor="let item of activeListItems[i]; let j = index">
-                      <ion-col size="7" >{{j+1}}. {{ item.partNumber }}</ion-col>
-                    <ion-col size="" class="type">
-                      <h6 class="type" [ngClass]="item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed'">
-                        {{ item.curretProcess.statusName ? item.curretProcess.statusName : 'Not Started' }}
-                      </h6></ion-col>
-                    <ion-col size="2">
-                      <h6 class="quantity">{{ item.qcApprovedQuantity?item.qcApprovedQuantity:0 }} / {{ item.receivedQuantity }}</h6>
-                    </ion-col>
+                      <ion-col size="7">{{j+1}}. {{ item.partNumber }}</ion-col>
+                      <ion-col size="" class="type">
+                        <h6 class="type"
+                          [ngClass]="item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed'">
+                          {{ item.curretProcess.statusName ? item.curretProcess.statusName : 'Not Started' }}
+                        </h6>
+                      </ion-col>
+                      <ion-col size="2">
+                        <h6 class="quantity">{{ item.qcApprovedQuantity?item.qcApprovedQuantity:0 }} / {{
+                          item.receivedQuantity }}</h6>
+                      </ion-col>
                     </ion-row>
                   </ion-grid>
                 </ion-list>
@@ -135,7 +147,7 @@
           </ion-card>
         </ion-list>
       </div>
-      <div *ngIf="segmentValue == 'Completed'" >
+      <div *ngIf="segmentValue == 'Completed'">
         <ion-list class="main-list">
           <div style="text-align: center;" *ngIf="completedList.length === 0">
             <p>No Data Found</p>
@@ -147,7 +159,8 @@
                 <div class="id-no border">
                   <div style="display: flex;">
                     <h5>Challan No. {{item.slipNumber}}</h5>
-                    <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                    <ion-badge style="margin-left: 20px;"
+                      [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
                   </div>
                   <div class="accept">
                     <p>Accepted on </p>
@@ -155,10 +168,13 @@
                   </div>
                 </div>
                 <div class="card-end">
-                  <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
+                  <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
+                    aria-label="Show/hide">
                     <ion-icon color="dark" slot="icon-only" name="chevron-up" aria-hidden="true"></ion-icon>
                   </ion-button>
-                  <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"  fill="clear" slot="end" aria-label="Show/hide">
+                  <ion-button *ngIf="!isItemExpanded(i)"
+                    (click)="toggleItemView($event, i, item.requisitionId,item.team)" fill="clear" slot="end"
+                    aria-label="Show/hide">
                     <ion-icon color="dark" slot="icon-only" name="chevron-down" aria-hidden="true"></ion-icon>
                   </ion-button>
                 </div>
@@ -184,47 +200,64 @@
           </ion-card>
         </ion-list>
       </div>
-      <div *ngIf="segmentValue == 'InQueue'" >
+      <div *ngIf="segmentValue == 'InQueue'">
         <ion-list class="main-list">
           <div style="text-align: center;" *ngIf="inQueueList.length === 0">
             <p>No Data Found</p>
           </div>
-          <ion-card  *ngFor="let item of inQueueList; let i = index">
+          <ion-card *ngFor="let item of inQueueList; let i = index">
             <ion-card-content>
-              <div class="short-view" >
-    
-                <div class="id-no border"  [ngClass]="getRequisitionColor(item.completedPercent)">
-                  <div style="display: flex;">
-                    <h5>Challan No. {{item.slipNumber}}</h5>
-                    <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+              <div class="short-view">
+
+                <div class="id-no border" [ngClass]="getRequisitionColor(item.completedPercent)">
+                  <div class="priority">
+                    <h5>Challan No. {{item.slipNumber}}
+
+                    </h5>
+                    <div class="dropdown" *ngIf="usereRole === 'Admin'">
+                      <ion-select class="custom-select" [value]="item.priority" interface="popover"
+                        label-placement="floating" shape="round" fill="outline" (click)="$event.stopPropagation()"
+                        (ionChange)="onStatusChange($event,item.requisitionId)">
+                        <ion-select-option value="High">High</ion-select-option>
+                        <ion-select-option value="Medium">Medium</ion-select-option>
+                        <ion-select-option value="Low">Low</ion-select-option>
+                      </ion-select>
+                    </div>
+                    <ion-badge *ngIf="usereRole !== 'Admin'"
+                      [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }} </ion-badge>
                   </div>
 
                   <div class="accept">
-                    <p>Assigned to  </p>
+                    <p>Assigned to </p>
                     <h6>{{item.team }}</h6>
                     <p style="margin-left: 5px;">on</p>
                     <h6>{{item.assignedDate | date:'mediumDate'}}</h6>
                   </div>
                 </div>
                 <div class="card-end">
-                  <ion-button *ngIf="usereRole !== 'Admin'" class="accept-btn" (click)="requisitionListPage(item.requisitionId, item?.slipNumber)"  fill="outline" shape="round" slot="end" aria-label="Show/hide">
+                  <ion-button *ngIf="usereRole !== 'Admin'" class="accept-btn"
+                    (click)="requisitionListPage(item.requisitionId, item?.slipNumber)" fill="outline" shape="round"
+                    slot="end" aria-label="Show/hide">
                     Accpet Order
                   </ion-button>
-                  <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
+                  <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
+                    aria-label="Show/hide">
                     <ion-icon color="dark" slot="icon-only" name="chevron-up" aria-hidden="true"></ion-icon>
                   </ion-button>
-                  <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"  fill="clear" slot="end" aria-label="Show/hide">
+                  <ion-button *ngIf="!isItemExpanded(i)"
+                    (click)="toggleItemView($event, i, item.requisitionId,item.team)" fill="clear" slot="end"
+                    aria-label="Show/hide">
                     <ion-icon color="dark" slot="icon-only" name="chevron-down" aria-hidden="true"></ion-icon>
                   </ion-button>
                 </div>
-    
+
               </div>
-    
+
               <div class="long-view" *ngIf="isItemExpanded(i)">
                 <ion-list>
                   <ion-grid>
                     <ion-row *ngFor="let item of inQueueListItems[i]; let j = index">
-                      <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>                   
+                      <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
                       <ion-col>
                         <h6 class="quantity">{{ item.curretProcess.quantity }}</h6>
                       </ion-col>
@@ -245,10 +278,11 @@
             <ion-card-content>
               <div class="short-view">
 
-                <div class="id-no" style= "border-left: 4px solid #A52B54">
+                <div class="id-no" style="border-left: 4px solid #A52B54">
                   <div style="display: flex;">
                     <h5>Challan No. {{item.slipNumber}}</h5>
-                    <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                    <ion-badge style="margin-left: 20px;"
+                      [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
                   </div>
                   <div class="accept">
                     <p>Accepted on </p>
@@ -256,13 +290,17 @@
                   </div>
                 </div>
                 <div class="card-end">
-                  <ion-button class="accept-btn" (click)="requisitionListPage(item.requisitionId ,item.slipNumber)"  fill="outline" shape="round" slot="end" aria-label="Show/hide">
+                  <ion-button class="accept-btn" (click)="requisitionListPage(item.requisitionId ,item.slipNumber)"
+                    fill="outline" shape="round" slot="end" aria-label="Show/hide">
                     Accpet Order
                   </ion-button>
-                  <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
+                  <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
+                    aria-label="Show/hide">
                     <ion-icon color="dark" slot="icon-only" name="chevron-up" aria-hidden="true"></ion-icon>
                   </ion-button>
-                  <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"  fill="clear" slot="end" aria-label="Show/hide">
+                  <ion-button *ngIf="!isItemExpanded(i)"
+                    (click)="toggleItemView($event, i, item.requisitionId,item.team)" fill="clear" slot="end"
+                    aria-label="Show/hide">
                     <ion-icon color="dark" slot="icon-only" name="chevron-down" aria-hidden="true"></ion-icon>
                   </ion-button>
                 </div>
@@ -286,22 +324,23 @@
         </ion-list>
       </div>
     </div>
-    <div *ngIf="segmentValue == 'Assigned'" >
+    <div *ngIf="segmentValue == 'Assigned'">
       <ion-list class="main-list">
         <div style="text-align: center;" *ngIf="assignedList.length === 0">
           <p>No Data Found</p>
         </div>
-        <ion-card  *ngFor="let item of assignedList; let i = index">
+        <ion-card *ngFor="let item of assignedList; let i = index">
           <ion-card-content>
-            <div class="short-view" >
-  
-              <div class="id-no"  [ngClass]="getRequisitionColor(item.completedPercent)">
+            <div class="short-view">
+
+              <div class="id-no" [ngClass]="getRequisitionColor(item.completedPercent)">
                 <div style="display: flex;">
                   <h5>Challan No. {{item.slipNumber}}</h5>
-                  <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <ion-badge style="margin-left: 20px;"
+                    [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
                 </div>
                 <div class="accept">
-                  <p>Assigned to  </p>
+                  <p>Assigned to </p>
                   <h6>{{item.team }}</h6>
                   <p style="margin-left: 5px;">on</p>
                   <h6>{{item.assignedDate | date:'mediumDate'}}</h6>
@@ -309,27 +348,31 @@
               </div>
               <div class="card-end">
                 <div class="chart">
-                  <app-chart [chartData]="[item.completedPercent,100-item.completedPercent]" [canvasId]="'Assigned' + i"></app-chart>
+                  <app-chart [chartData]="[item.completedPercent,100-item.completedPercent]"
+                    [canvasId]="'Assigned' + i"></app-chart>
                 </div>
-                <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
+                <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
+                  aria-label="Show/hide">
                   <ion-icon color="dark" slot="icon-only" name="chevron-up" aria-hidden="true"></ion-icon>
                 </ion-button>
-                <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"  fill="clear" slot="end" aria-label="Show/hide">
+                <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"
+                  fill="clear" slot="end" aria-label="Show/hide">
                   <ion-icon color="dark" slot="icon-only" name="chevron-down" aria-hidden="true"></ion-icon>
                 </ion-button>
               </div>
-  
+
             </div>
-  
+
             <div class="long-view" *ngIf="isItemExpanded(i)">
               <ion-list>
                 <ion-grid>
                   <ion-row *ngFor="let item of RequisitionItemLists[i]; let j = index">
                     <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
                     <ion-col size="2" class="type">
-                      <h6 class="type" [ngClass]="item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed'">
-                        {{ item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed' }}
-                      </h6></ion-col>
+                      <h6 class="type"
+                        [ngClass]="item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed'">
+                        {{ item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed' }} </h6>
+                    </ion-col>
                     <ion-col>
                       <h6 class="quantity">{{ item.receivedQuantity }} / {{ item.quantity }}</h6>
                     </ion-col>
@@ -342,7 +385,7 @@
       </ion-list>
     </div>
 
-    <div *ngIf="segmentValue == 'InQueueQA'" >
+    <div *ngIf="segmentValue == 'InQueueQA'">
       <ion-list class="main-list">
         <div style="text-align: center;" *ngIf="qaCompletedList.length === 0">
           <p>No Data Found</p>
@@ -354,7 +397,8 @@
               <div class="id-no border">
                 <div style="display: flex;">
                   <h5>Challan No. {{item.slipNumber}}</h5>
-                  <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <ion-badge style="margin-left: 20px;"
+                    [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
                 </div>
                 <div class="accept">
                   <p>Accepted on </p>
@@ -362,10 +406,12 @@
                 </div>
               </div>
               <div class="card-end">
-                <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
+                <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
+                  aria-label="Show/hide">
                   <ion-icon color="dark" slot="icon-only" name="chevron-up" aria-hidden="true"></ion-icon>
                 </ion-button>
-                <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"  fill="clear" slot="end" aria-label="Show/hide">
+                <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"
+                  fill="clear" slot="end" aria-label="Show/hide">
                   <ion-icon color="dark" slot="icon-only" name="chevron-down" aria-hidden="true"></ion-icon>
                 </ion-button>
               </div>
@@ -391,20 +437,21 @@
         </ion-card>
       </ion-list>
     </div>
-    <div *ngIf="segmentValue == 'Rejected'" >
+    <div *ngIf="segmentValue == 'Rejected'">
       <ion-list class="main-list">
         <div style="text-align: center;" *ngIf="rejectedList.length === 0">
           <p>No Data Found</p>
         </div>
-        
+
         <ion-card *ngFor="let item of rejectedList; let i = index">
-          <ion-card-content >
+          <ion-card-content>
             <div class="short-view">
 
               <div class="id-no border">
                 <div style="display: flex;">
                   <h5>Challan No. {{item.slipNumber}}</h5>
-                  <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <ion-badge style="margin-left: 20px;"
+                    [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
                 </div>
                 <div class="accept">
                   <p>Accepted on </p>
@@ -412,10 +459,12 @@
                 </div>
               </div>
               <div class="card-end">
-                <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
+                <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
+                  aria-label="Show/hide">
                   <ion-icon color="dark" slot="icon-only" name="chevron-up" aria-hidden="true"></ion-icon>
                 </ion-button>
-                <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"  fill="clear" slot="end" aria-label="Show/hide">
+                <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"
+                  fill="clear" slot="end" aria-label="Show/hide">
                   <ion-icon color="dark" slot="icon-only" name="chevron-down" aria-hidden="true"></ion-icon>
                 </ion-button>
               </div>
@@ -441,19 +490,20 @@
         </ion-card>
       </ion-list>
     </div>
-    <div *ngIf="segmentValue == 'Approved'" >
+    <div *ngIf="segmentValue == 'Approved'">
       <ion-list class="main-list">
         <div style="text-align: center;" *ngIf="approvedList.length === 0">
           <p>No Data Found</p>
         </div>
         <ion-card *ngFor="let item of approvedList; let i = index">
-          <ion-card-content >
+          <ion-card-content>
             <div class="short-view">
 
               <div class="id-no border">
                 <div style="display: flex;">
                   <h5>Challan No. {{item.slipNumber}}</h5>
-                  <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
+                  <ion-badge style="margin-left: 20px;"
+                    [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
                 </div>
                 <div class="accept">
                   <p>Accepted on </p>
@@ -461,10 +511,12 @@
                 </div>
               </div>
               <div class="card-end">
-                <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end" aria-label="Show/hide">
+                <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
+                  aria-label="Show/hide">
                   <ion-icon color="dark" slot="icon-only" name="chevron-up" aria-hidden="true"></ion-icon>
                 </ion-button>
-                <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"  fill="clear" slot="end" aria-label="Show/hide">
+                <ion-button *ngIf="!isItemExpanded(i)" (click)="toggleItemView($event, i, item.requisitionId,item.team)"
+                  fill="clear" slot="end" aria-label="Show/hide">
                   <ion-icon color="dark" slot="icon-only" name="chevron-down" aria-hidden="true"></ion-icon>
                 </ion-button>
               </div>
@@ -495,5 +547,5 @@
   <ion-infinite-scroll *ngIf="!finalPage" (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
-  
+
 </ion-content>

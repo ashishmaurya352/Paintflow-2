@@ -422,7 +422,6 @@ qaAcceptedList = [
 
   async approve() {
     this.controller.showloader()
-    this.resetModal()
 
     if (this.images.length > 0) {
       await this.uploadAllImages()
@@ -436,14 +435,17 @@ qaAcceptedList = [
       images: this.uploadImage
     }
     console.log('approve', data);
-    // const parm = new HttpParams().set('id', this.selectedItem?.currentProcess_Id).set('quantity', this.acceptQuantity)
-    // .set('status', this.acceptStatus).set('templateName', this.acceptTemplate).set('remark', this.decText);
+    this.resetModal()
+
+    const parm = new HttpParams().set('id', this.selectedItem?.currentProcess_Id).set('quantity', this.acceptQuantity)
+    .set('status', this.acceptStatus).set('templateName', this.acceptTemplate).set('remark', this.decText);
 
     this.controller.showloader()
     this.httpService.approve(data).subscribe((res: any) => {
       console.log('approve', res)
       this.controller.hideloader()
       this.isAcceptModalOpen = false
+
       this.getRequisitionItem(this.requisitionId)
     }, (error) => {
       this.controller.hideloader()
@@ -746,6 +748,9 @@ qaAcceptedList = [
           else {
             this.segmentValue = 'Rejected'
           }
+        }
+        else if (this.usereRole == 'Admin') {
+
         }
         else {
           if (dataReturned.data.status == 'Active') {

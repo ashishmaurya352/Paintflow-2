@@ -25,7 +25,7 @@ export class AppComponent {
         });
         setTimeout(() => {
           SplashScreen.hide();
-        }, 4000);
+        }, 2000);
         this.checkAuthStatus();
   }
   checkAuthStatus(): void {

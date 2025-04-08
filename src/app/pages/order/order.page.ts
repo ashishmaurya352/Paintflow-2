@@ -33,7 +33,7 @@ export class OrderPage implements OnInit {
   usereRole: any;
   projectData: any;
   isShortView = true
-  segmentValue :any
+  segmentValue: any
   unAssignedList: any[] = []
   assignedList: any[] = []
   pageTitles: any = "Shot Blast Orders"
@@ -66,8 +66,8 @@ export class OrderPage implements OnInit {
     private route: ActivatedRoute,
     private httpService: HttpService,
     private controller: ControllerService,
-        private modalController: ModalController
-    
+    private modalController: ModalController
+
   ) {
   }
 
@@ -100,28 +100,28 @@ export class OrderPage implements OnInit {
         this.segmentValue = segmentValueParam
       }
 
-        console.log(this.usereRole);
-        if (this.usereRole == 'Inward Manager') {
-          if(!this.segmentValue){
-            this.segmentValue = 'UnAssigned'
-          }
-          this.pageTitles = "Recently Created Requisitions"
-          this.getItem()
+      console.log(this.usereRole);
+      if (this.usereRole == 'Inward Manager') {
+        if (!this.segmentValue) {
+          this.segmentValue = 'UnAssigned'
         }
-        else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
-          if(!this.segmentValue){
-            this.segmentValue = 'Active'
-          }
-          this.getRequisitionDetail()
+        this.pageTitles = "Recently Created Requisitions"
+        this.getItem()
+      }
+      else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
+        if (!this.segmentValue) {
+          this.segmentValue = 'Active'
         }
-        else {
-          if(!this.segmentValue){
-            this.segmentValue = 'InQueueQA'
-          }
-          this.pageTitles = "QA Testing"
-          this.getRequisitionDetail()
+        this.getRequisitionDetail()
+      }
+      else {
+        if (!this.segmentValue) {
+          this.segmentValue = 'InQueueQA'
         }
-        console.log('this.segmentValue', this.segmentValue);
+        this.pageTitles = "QA Testing"
+        this.getRequisitionDetail()
+      }
+      console.log('this.segmentValue', this.segmentValue);
     });
 
   }
@@ -136,7 +136,7 @@ export class OrderPage implements OnInit {
   segmentChange(event: any) {
     this.segmentValue = event.detail.value
     this.filter.PageNumber = 1;
-    this.finalPage = false; 
+    this.finalPage = false;
     if (this.usereRole == 'Executive' || this.usereRole == 'QA' || this.usereRole == 'Admin') {
       this.getRequisitionDetail()
     } else {
@@ -148,10 +148,10 @@ export class OrderPage implements OnInit {
     if (this.usereRole == 'Admin') {
       this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber, team: this.teamsOrders } });
     }
-    else  {
-    this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber } });
+    else {
+      this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber } });
+    }
   }
-}
   requisitionListPage(id: any, slipNumber: any) {
     this.router.navigate(['/requisition'], { queryParams: { id: id, slipNumber: slipNumber } });
   }
@@ -169,10 +169,11 @@ export class OrderPage implements OnInit {
     // Determine the segment value for the QA role
     let segmentValue = (this.segmentValue === 'InQueueQA') ? 'InQueue' : this.segmentValue;
     let params = new HttpParams()
-    if(this.usereRole === 'QA') {
-      params = params.set('Status', segmentValue).set('Team', this.teamsOrders)
+    if (this.usereRole === 'QA' || this.usereRole === 'Admin') {
+      const team = this.teamsOrders == 'All Teams' ? '' : this.teamsOrders
+      params = params.set('Status', segmentValue).set('Team', team)
     }
-    else{
+    else {
       params = params.set('Status', segmentValue);
     }
     Object.keys(this.filter).forEach(key => {
@@ -186,11 +187,10 @@ export class OrderPage implements OnInit {
     this.controller.showloader()
     this.httpService.getRequisition(params)
       .subscribe((res: any) => {
-        if(res.length < 20) {
+        if (res.length < 20) {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         this.controller.hideloader()
-        this.addcss()
         // Handle the response based on user role and segment value
         this.handleRequisitionResponse(res);
       }, (error) => {
@@ -218,6 +218,7 @@ export class OrderPage implements OnInit {
         } else {
           this.activeList = [...this.activeList, ...res];
         }
+        this.addcss()
         console.log('this.activeList', this.activeList);
         break;
       case 'InQueue':
@@ -270,19 +271,19 @@ export class OrderPage implements OnInit {
   getItem() {
     let params = new HttpParams()
       .set('Status', this.segmentValue);
-  
+
     // Add additional filter parameters if they are not null
     Object.keys(this.filter).forEach(key => {
       if (this.filter[key] !== null) {
         params = params.set(key, this.filter[key]);
       }
     });
-    
+
     this.controller.showloader()
     this.httpService.getAssignement(params)
       .subscribe(
         (res: any) => {
-          if(res.length < 20) {
+          if (res.length < 20) {
             this.finalPage = true; // Set finalPage to true if no items are returned
           }
           this.controller.hideloader()
@@ -364,7 +365,7 @@ export class OrderPage implements OnInit {
     // Make the HTTP request
     this.httpService.getItemDetail(parm)
       .subscribe((res: any) => {
-        if(res.length < 20) {
+        if (res.length < 20) {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         // Handle the response based on user role and segment value
@@ -513,43 +514,52 @@ export class OrderPage implements OnInit {
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {
-      this.filter.PageNumber += 1;
-      this.getItem();
-      setTimeout(() => {
-        event.target.complete();
-      }, 500);
-    }
+    this.filter.PageNumber += 1;
+    this.getItem();
+    setTimeout(() => {
+      event.target.complete();
+    }, 500);
+  }
 
-    async openSearch(){
-        const modal = await this.modalController.create({
-          component: SearchModalComponent,
-          cssClass: 'search-modal',
-        });
-        modal.onDidDismiss().then((dataReturned: any) => {
-          console.log('search-modal:', dataReturned);
-        })
-        await modal.present();
+  async openSearch() {
+    const modal = await this.modalController.create({
+      component: SearchModalComponent,
+      componentProps: {
+        team: this.teamsOrders,
+      },
+      cssClass: 'search-modal',
+    });
+    modal.onDidDismiss().then((dataReturned: any) => {
+      if (dataReturned.data) {
+        const id = dataReturned.data.id
+        const slipNumber = dataReturned.data.slipNumber
+        this.activityListPage(id, slipNumber)
+        // this.filter.Keyword = dataReturned.data.keyword
       }
+      console.log('search-modal:', dataReturned);
+    })
+    await modal.present();
+  }
 
-      onStatusChange(event: any,id:any) {
-        const Status = event.target.value;
-        event.stopPropagation();
-        event.preventDefault()
-        let params = new HttpParams().set('id', id).set('status', Status);
-        this.httpService.requisitionUpdatePriorityStatus(params).subscribe((res: any) => {
-          console.log('Status updated successfully:', res);
-          // this.ItemList[i].priority = Status
-        })
-        // console.log('Selected option:', this.selectedOption);
-      }
-      addcss() {
-        const observer = new MutationObserver(() => {
-          document.querySelectorAll("ion-select").forEach((ionSelect) => {
-            if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
-              console.log("✅ Styling dynamically added ion-select");
-              const style = document.createElement("style");
-              style.classList.add("custom-style"); // Prevent duplicate styles
-              style.textContent = `
+  onStatusChange(event: any, id: any) {
+    const Status = event.target.value;
+    event.stopPropagation();
+    event.preventDefault()
+    let params = new HttpParams().set('id', id).set('status', Status);
+    this.httpService.requisitionUpdatePriorityStatus(params).subscribe((res: any) => {
+      console.log('Status updated successfully:', res);
+      // this.ItemList[i].priority = Status
+    })
+    // console.log('Selected option:', this.selectedOption);
+  }
+  addcss() {
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll("ion-select").forEach((ionSelect) => {
+        if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+          console.log("✅ Styling dynamically added ion-select");
+          const style = document.createElement("style");
+          style.classList.add("custom-style"); // Prevent duplicate styles
+          style.textContent = `
                 .select-outline-container {
                       height: 32px !important;
                     left: 20px !important;
@@ -559,14 +569,14 @@ export class OrderPage implements OnInit {
                   display: block !important;
               }
               `;
-              ionSelect.shadowRoot.appendChild(style);
-            }
-          });
-        });
-    
-        // Observe the entire document for new elements
-        observer.observe(document.body, { childList: true, subtree: true });
-      }
+          ionSelect.shadowRoot.appendChild(style);
+        }
+      });
+    });
+
+    // Observe the entire document for new elements
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
 
 
 }

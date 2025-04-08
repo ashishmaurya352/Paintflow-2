@@ -17,6 +17,7 @@ import { HttpService } from 'src/app/services/http.service';
 })
 export class DashboardPage implements OnInit {
   @ViewChild('fileInput') fileInput:any;
+  selectedOption ='WPP'
   constructor(
     
         private router: Router,

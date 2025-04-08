@@ -17,6 +17,23 @@
     font-size: 20px;
     font-weight: bold;
     margin: 16px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .time-period{
+      display: flex;
+      ion-button{
+        --background: transparent;
+        --color: var(--theme-color-primary);
+        font-size: 14px;
+        font-weight: bold;
+        margin-left: 5px;
+      }
+      ion-button::part(native) {
+        padding: 0 5px;
+      }
+    }
   }
   
   .active {
@@ -92,3 +109,26 @@
         0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
     }
   }
+
+  .custom-toggle {
+    background-color: #a7345d;
+    border-radius: 30px;
+    padding: 2px;
+    // height: 30px;
+    width: min-content;
+  
+    ion-segment-button {
+      --background: transparent;
+      --color: white;
+      --indicator-color: none;
+      --border-radius: 30px;
+      font-weight: bold;
+      // padding: 0 16px;
+  
+      &.segment-button-checked {
+        background-color: white;
+        color: #a7345d;
+      }
+    }
+  }
+  
