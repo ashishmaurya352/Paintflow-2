@@ -183,6 +183,14 @@
     margin-top: 7px;
     color: #A52B54
   }
+  .dropdown2{
+    margin-left: auto;
+    width: 160px;
+    height: 32px;
+    margin-top: 7px;
+    color: #A52B54
+    
+  }
   .custom-select {
     --border-color: #A52B54
   }
@@ -438,4 +446,8 @@
     background-color: rgb(232, 181, 0);
     align-items: anchor-center;
     }
+  }
+  .color-dropdown{
+    display: flex;
+        align-items: baseline;
   }

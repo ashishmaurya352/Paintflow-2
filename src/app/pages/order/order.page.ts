@@ -93,7 +93,6 @@ export class OrderPage implements OnInit {
       if (params['team']) {
         this.teamsOrders = params['team']
         this.pageTitles = this.teamsOrders + " Orders"
-        console.log('this.teamsOrders', this.teamsOrders);
         // this.segmentValue = 'Active';
       }
       const segmentValueParam = params['segmentValue'];
@@ -146,8 +145,13 @@ export class OrderPage implements OnInit {
   }
 
   activityListPage(id: any, slipNumber: any) {
+    if (this.usereRole == 'Admin') {
+      this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber, team: this.teamsOrders } });
+    }
+    else  {
     this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber } });
   }
+}
   requisitionListPage(id: any, slipNumber: any) {
     this.router.navigate(['/requisition'], { queryParams: { id: id, slipNumber: slipNumber } });
   }

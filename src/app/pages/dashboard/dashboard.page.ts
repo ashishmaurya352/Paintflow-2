@@ -32,15 +32,15 @@ export class DashboardPage implements OnInit {
     this.getCostOverview()
   }
   requisitions = [
-    { count: 0, title: 'Short Blasting' },
-    { count: 0, title: 'PT-UT' },
-    { count: 0, title: 'Paint' },
-    { count: 0, title: 'Touch-up' },
-    { count: 0, title: 'QA' },
+    { count: 0, title: 'Shot Blasting Team' },
+    { count: 0, title: 'PT-UT Team' },
+    { count: 0, title: 'Paint Team' },
+    { count: 0, title: 'Touch Up Team' },
+    { count: 0, title: 'QA Team' },
     { count: 0, title: 'All Teams' },
   ];
   paintData = [
-    { title: 'Short Blasting', value: 0, qty: 0, unit: 'kg', rate: 0.0 },
+    { title: 'Shot Blasting', value: 0, qty: 0, unit: 'kg', rate: 0.0 },
     { title: 'Powder Coating', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
     { title: 'Paint Total Value', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
     { title: 'Primer + Regular', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
@@ -51,7 +51,6 @@ export class DashboardPage implements OnInit {
   viewAll(item: any) {
     // console.log('Viewing all for:', item.title);
     const team = item.title;
-    console.log('Selected team:', team);
     this.router.navigate(['/order'],{ queryParams: { team: team }});
     // Add navigation logic here
   }
@@ -68,11 +67,11 @@ export class DashboardPage implements OnInit {
       (apidata: any) => {
         // Define a mapping between the requisition titles and the corresponding apidata fields
         const dataMapping: { [key: string]: string }  = {
-          'Short Blasting': 'shortblastingCount',
-          'PT-UT': 'ptUtCount',
-          'Paint': 'paintCount',
-          'Touch-up': 'touchUpCount',
-          'QA': 'qaCount',
+          'Shot Blasting Team': 'shortblastingCount',
+          'PT-UT Team': 'ptUtCount',
+          'Paint Team': 'paintCount',
+          'Touch Up Team': 'touchUpCount',
+          'QA Team': 'qaCount',
           'All Teams': 'all'
         };
   
@@ -92,7 +91,7 @@ export class DashboardPage implements OnInit {
   getCostOverview(){
     this.httpService.getCostOverview().subscribe((res:any)=>{
       this.paintData = [
-        { title: 'Short Blasting', value: res.shortBlasting.amount, qty: res.shortBlasting.quantity, unit: 'kg', rate: res.shortBlasting.rate },
+        { title: 'Shot Blasting ', value: res.shortBlasting.amount, qty: res.shortBlasting.quantity, unit: 'kg', rate: res.shortBlasting.rate },
         { title: 'Powder Coating', value: res.powderCoating.amount, qty: res.powderCoating.quantity, unit: 'sq.ft.', rate: res.powderCoating.rate },
         { title: 'Paint Total Value', value: res.paintTotalValue.amount, qty: res.paintTotalValue.quantity, unit: 'sq.ft.', rate: 'NA' },
         { title: 'Primer + Regular', value: res.primerRegular.amount, qty: res.primerRegular.quantity, unit: 'sq.ft.', rate: res.primerRegular.rate },

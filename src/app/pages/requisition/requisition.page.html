@@ -52,7 +52,7 @@
             </div>
             <div (click)="openModal(i,item)">
               <div style="display: flex;">
-                <h6>{{ item.partNumber | uppercase }}</h6>
+                <h6>{{ item.partNumber | uppercase }}  ({{item.color}})</h6>
                 <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                   item.priority }}</ion-badge>
               </div>

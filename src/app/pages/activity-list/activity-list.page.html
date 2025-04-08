@@ -15,16 +15,6 @@
         <ion-icon color="dark" slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-item>
-
-    <!-- <div>
-      <ion-searchbar [debounce]="1000" (ionInput)="handleInput($event)">
-      </ion-searchbar>
-      <ion-list>
-        <ion-item *ngFor="let result of results">
-          <ion-label>{{ result }}</ion-label>
-        </ion-item>
-      </ion-list>
-    </div> -->
   
     <div >
       <ion-segment [value]="segmentValue" (ionChange)="segmentChange($event)">
@@ -64,7 +54,7 @@
                   </ion-thumbnail>
                   <div class="list-name">
                     <div class="badge">
-                      <h6>{{item.partNumber | uppercase}}</h6>
+                      <h6>{{item.partNumber | uppercase}} ({{item.color}})</h6>
                       <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                         item.priority }}</ion-badge>
                     </div>
@@ -135,7 +125,7 @@
                     </ion-thumbnail>
                     <div class="list-name">
                       <div class="badge">
-                        <h6>{{item.partNumber | uppercase}}</h6>
+                        <h6>{{item.partNumber | uppercase}}  ({{item.color}})</h6>
                         <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                           item.priority }}</ion-badge>
                       </div>
@@ -197,7 +187,7 @@
                   </ion-thumbnail>
                   <div class="list-name">
                     <div class="badge">
-                      <h6>{{item.partNumber | uppercase}}</h6>
+                      <h6>{{item.partNumber | uppercase}}  ({{item.color}})</h6>
                       <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                         item.priority }}</ion-badge>
                     </div>
@@ -245,7 +235,7 @@
               <div class="up-card">
                 <div class="list-name">
                   <div class="badge">
-                    <h6>{{item.partNumber | uppercase}}</h6>
+                    <h6>{{item.partNumber | uppercase}}  ({{item.color}})</h6>
                     <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                       item.priority }}</ion-badge>
                   </div>
@@ -288,7 +278,7 @@
               <div class="up-card">
                 <div class="list-name">
                   <div class="badge">
-                    <h6>{{item.partNumber | uppercase}}</h6>
+                    <h6>{{item.partNumber | uppercase}}  ({{item.color}})</h6>
                     <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                       item.priority }}</ion-badge>
                   </div>
@@ -329,7 +319,7 @@
               <div class="up-card">
                 <div class="list-name">
                   <div class="badge">
-                    <h6>{{item.partNumber | uppercase}}</h6>
+                    <h6>{{item.partNumber | uppercase}}  ({{item.color}})</h6>
                     <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                       item.priority }}</ion-badge>
                   </div>
@@ -363,17 +353,25 @@
   
       <div *ngIf="segmentValue == 'Admin'">
         <ion-list>
-          <div style="text-align: center;" *ngIf="InQueueList.length === 0">
+          <div style="text-align: center;" *ngIf="ItemList.length === 0">
             <p>No Data Found</p>
           </div>
-          <ion-card *ngFor="let item of InQueueList">
+          <ion-card *ngFor="let item of ItemList">
             <ion-card-content>
               <div class="up-card">
                 <div class="list-name">
                   <div class="badge">
-                    <h6>{{item.partNumber | uppercase}}</h6>
-                    <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
-                      item.priority }}</ion-badge>
+                    <div class="color-dropdown">
+                    <h6>{{item.partNumber | uppercase}}  ({{item.color}}) </h6>
+                      <div class="dropdown2">
+                        <ion-select class="custom-select" [value]="item.color" interface="popover"
+                          label-placement="floating" shape="round" fill="outline" (ionChange)="onColorChange($event,item.id)">
+                          <ion-select-option *ngFor="let color of colors" >{{color}}</ion-select-option>
+                        </ion-select>
+                      </div>
+                    </div>
+                    <!-- <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                      item.priority }}</ion-badge> -->
                   </div>
                   <h5>{{item.partDesciption | uppercase}}</h5>
                 </div>
@@ -383,8 +381,8 @@
                     <ion-icon slot="start" name="alarm-outline"></ion-icon>
                   </ion-button>
                   <div class="dropdown">
-                    <ion-select class="custom-select" [value]="selectedOption" interface="popover"
-                      label-placement="floating" shape="round" fill="outline">
+                    <ion-select class="custom-select" [value]="item.priority" interface="popover"
+                      label-placement="floating" shape="round" fill="outline" (ionChange)="onStatusChange($event,item.id)">
                       <ion-select-option value="High">High</ion-select-option>
                       <ion-select-option value="Medium">Medium</ion-select-option>
                       <ion-select-option value="Low">Low</ion-select-option>

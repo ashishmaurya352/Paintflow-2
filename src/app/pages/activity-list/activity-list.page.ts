@@ -80,6 +80,8 @@ export class ActivityListPage implements OnInit {
   qaRemarksSelected: any
   slipNumber: any
   selectedItemImage: any = []
+  viewTeam: any
+  colors: any 
   constructor(private router: Router,
     private route: ActivatedRoute,
     private httpService: HttpService,
@@ -97,11 +99,14 @@ export class ActivityListPage implements OnInit {
     }
     else if (this.usereRole == 'Admin') {
       this.addcss()
+    this.getItemGetColors()
       this.segmentValue = 'Admin'
     }
     this.route.queryParams.subscribe(params => {
       this.requisitionId = params['id'];
       this.slipNumber = params['slipNumber'];
+      this.viewTeam = params['team'];
+      // console.log('params',params)
       this.getRequisitionItem(this.requisitionId)
     });
   }
@@ -290,7 +295,8 @@ export class ActivityListPage implements OnInit {
     if (this.usereRole === 'QA') {
       parm = parm.set('Status', this.segmentValue);
     } else if (this.usereRole === 'Admin') {
-      // parm = parm.set('Status', 'Handover');
+      parm = parm.set('Status', 'Active');
+      parm = parm.set('Team', this.viewTeam);
     } else if (this.segmentValue === 'handover') {
       parm = parm.set('Status', 'Handover');
     } else if (this.segmentValue === 'rejected') {
@@ -727,17 +733,17 @@ export class ActivityListPage implements OnInit {
           else if (dataReturned.data.status == 'InQueue') {
             this.segmentValue = 'InQueue'
           }
-          else  {
+          else {
             this.segmentValue = 'Rejected'
           }
         }
         else {
           if (dataReturned.data.status == 'Active') {
             this.segmentValue = 'item-list'
-          }else if (dataReturned.data.status == 'Handover') {
+          } else if (dataReturned.data.status == 'Handover') {
             this.segmentValue = 'handover'
           }
-          else  {
+          else {
             this.segmentValue = 'rejected'
           }
         }
@@ -771,5 +777,32 @@ export class ActivityListPage implements OnInit {
           return of(null); // Return null if you want to handle it silently
         })
       );
+  }
+
+  onStatusChange(event: any,id:any) {
+    const Status = event.target.value;
+    let params = new HttpParams().set('id', id).set('status', Status);
+    this.httpService.itemUpdatePriorityStatus(params).subscribe((res: any) => {
+      console.log('Status updated successfully:', res);
+      // this.ItemList[i].priority = Status
+    })
+    // console.log('Selected option:', this.selectedOption);
+  }
+
+  getItemGetColors(){
+    let params = new HttpParams();
+
+    this.httpService.getItemGetColors(params).subscribe((res:any)=>{
+      console.log('getItemGetColors', res);
+      this.colors = res
+    })
+  }
+  onColorChange( event: any,item:any){
+    const color = event.target.value;
+    let params = new HttpParams().set('id', item).set('color', color);
+    this.httpService.itemUpdateColor(params).subscribe((res:any)=>{
+      console.log('itemUpdateColor', res);
+      this.getRequisitionItem(this.requisitionId)
+    })
   }
 }

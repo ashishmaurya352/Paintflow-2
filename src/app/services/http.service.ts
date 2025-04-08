@@ -34,6 +34,10 @@ export class HttpService {
   readonly RestartWork = `/ItemProcess/RestartWork`;
   readonly ItemSearchItem = `/Item/Search`;
   readonly RequisitionSearch = `/Requisition/Search`;
+  readonly ItemUpdatePriorityStatus = `/Item/UpdatePriorityStatus`;
+  readonly RequisitionUpdatePriorityStatus = `/Requisition/UpdatePriorityStatus`;
+  readonly ItemUpdateColor = `/Item/UpdateColor`;
+  readonly ItemGetColors = `/Item/GetColors`;
   
   
   constructor(
@@ -146,6 +150,22 @@ export class HttpService {
   }
   getRequisitionSearch(data: any): Observable<any> {
     let url = `${this.apiUrl + this.RequisitionSearch}?${data}`;
+    return this.httpClient.get(url);
+  }
+  itemUpdatePriorityStatus(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ItemUpdatePriorityStatus}?${data}`;
+    return this.httpClient.put(url, '');
+  }
+  requisitionUpdatePriorityStatus(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.RequisitionUpdatePriorityStatus}?${data}`;
+    return this.httpClient.put(url, '');
+  }
+  itemUpdateColor(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ItemUpdateColor}?${data}`;
+    return this.httpClient.put(url, '');
+  }
+  getItemGetColors(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ItemGetColors}/${data}`;
     return this.httpClient.get(url);
   }
 }
