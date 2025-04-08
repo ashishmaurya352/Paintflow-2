@@ -34,7 +34,7 @@ export class DashboardPage implements OnInit {
   }
   requisitions = [
     { count: 0, title: 'Shot Blasting Team' },
-    { count: 0, title: 'PT-UT Team' },
+    { count: 0, title: 'PT/PH Team' },
     { count: 0, title: 'Paint Team' },
     { count: 0, title: 'Touch Up Team' },
     { count: 0, title: 'QA Team' },
@@ -69,7 +69,7 @@ export class DashboardPage implements OnInit {
         // Define a mapping between the requisition titles and the corresponding apidata fields
         const dataMapping: { [key: string]: string }  = {
           'Shot Blasting Team': 'shortblastingCount',
-          'PT-UT Team': 'ptUtCount',
+          'PT/PH Team': 'ptUtCount',
           'Paint Team': 'paintCount',
           'Touch Up Team': 'touchUpCount',
           'QA Team': 'qaCount',
