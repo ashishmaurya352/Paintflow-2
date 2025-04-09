@@ -1,0 +1,55 @@
+.modal-content {
+    margin: 10px 15px;
+  
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18px;
+      font-weight: bold;
+      border-bottom: 1px solid #ccc;
+  
+      ion-button {
+        --color: #A52B54;
+      }
+    }
+  
+    .modal-title {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+  
+    .section {
+      display: flex;
+      padding: 20px 0;
+      border-bottom: 1px solid #ccc;
+      padding: 5px 18px;
+  
+      ion-button {
+        margin: 5px 15px;
+        --color: #333333;
+  
+        --border-color: #333333;
+      }
+  
+      .selected {
+        --color: #A52B54;
+        --background: rgba(165, 43, 84, 0.12);
+      }
+    }
+  
+    .modal-footer {
+      ion-button {
+        --background: #A52B54;
+        // --background: rgba(165, 43, 84, 0.12);  
+      }
+    }
+  
+  
+  
+  }
+
+  ion-popover::part(content){
+    width: auto;
+  }

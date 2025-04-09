@@ -12,6 +12,9 @@
       font-size: 32px
     }
   }
+  ion-segment{
+    background-color: white;
+  }
   ion-segment-button {
     --color-checked:var(--theme-color-primary);
     --color: var(--theme-color-dark)

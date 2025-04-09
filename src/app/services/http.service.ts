@@ -38,6 +38,8 @@ export class HttpService {
   readonly RequisitionUpdatePriorityStatus = `/Requisition/UpdatePriorityStatus`;
   readonly ItemUpdateColor = `/Item/UpdateColor`;
   readonly ItemGetColors = `/Item/GetColors`;
+  readonly PaintDescWiseCostOverview = `/Dashboard/PaintDescWiseCostOverview`;
+  
   
   
   constructor(
@@ -166,6 +168,10 @@ export class HttpService {
   }
   getItemGetColors(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ItemGetColors}/${data}`;
+    return this.httpClient.get(url);
+  }
+  getPaintDescWiseCostOverview(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.PaintDescWiseCostOverview}?${data}`;
     return this.httpClient.get(url);
   }
 }

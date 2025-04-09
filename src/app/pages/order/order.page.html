@@ -13,7 +13,7 @@
         <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
       </ion-button>
 
-      <ion-button fill="clear" slot="end" aria-label="Show/hide" id="popover-button">
+      <ion-button fill="clear" slot="end" aria-label="Show/hide" id="popover-button" (click)="openFilter()">
         <ion-icon color="dark" slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
       </ion-button>
     </ion-item>
@@ -51,7 +51,7 @@
 <ion-content [fullscreen]="true">
 
 
-  <ion-popover trigger="popover-button" [dismissOnSelect]="true" side="bottom" alignment="start">
+  <!-- <ion-popover trigger="popover-button" [dismissOnSelect]="true" side="bottom" alignment="start">
     <ng-template>
       <ion-content>
         <ion-list>
@@ -65,7 +65,7 @@
         </ion-list>
       </ion-content>
     </ng-template>
-  </ion-popover>
+  </ion-popover> -->
 
   <div class="content">
 

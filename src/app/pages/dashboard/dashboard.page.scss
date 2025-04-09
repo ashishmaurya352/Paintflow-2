@@ -25,7 +25,7 @@
       display: flex;
       ion-button{
         --background: transparent;
-        --color: var(--theme-color-primary);
+        --color: #767676;
         font-size: 14px;
         font-weight: bold;
         margin-left: 5px;
@@ -131,4 +131,21 @@
       }
     }
   }
-  
+  .dropdown {
+    margin-left: auto;
+    width: 200px;
+    height: 32px;
+    margin-top: 7px;
+    color: #A52B54;
+    ion-select::part(icon){
+height: 50%;
+    }
+  }
+  .sub-title{
+    display: flex;
+    align-items: center;
+  }
+  ion-button.active {
+    --background: transparent;
+    --color: var(--theme-color-primary);
+  }

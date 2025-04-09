@@ -18,6 +18,26 @@ import { HttpService } from 'src/app/services/http.service';
 export class DashboardPage implements OnInit {
   @ViewChild('fileInput') fileInput:any;
   selectedOption ='WPP'
+  paintData:any
+  paintDesc:any
+
+  filter: any = {
+    ReqFrom: 'WPP',
+    Status: 'Completed',
+    StartDate:this.getStartOfLastMonth().toISOString(),
+    EndDate:new Date().toISOString(),
+  }
+  dateRange = { start: new Date(), end: new Date() };
+
+  timePeriods = [
+    { label: '1D' },
+    { label: '1W' },
+    { label: '1M' },
+    { label: '3M' },
+    { label: '6M' },
+    { label: '1Y' }
+  ];
+  
   constructor(
     
         private router: Router,
@@ -30,7 +50,9 @@ export class DashboardPage implements OnInit {
 
   ngOnInit() {
     this.getActiveRequisitionCount()
+    this.getPaintDescWiseCostOverview()
     this.getCostOverview()
+    this.addcss()
   }
   requisitions = [
     { count: 0, title: 'Shot Blasting Team' },
@@ -40,14 +62,14 @@ export class DashboardPage implements OnInit {
     { count: 0, title: 'QA Team' },
     { count: 0, title: 'All Teams' },
   ];
-  paintData = [
-    { title: 'Shot Blasting', value: 0, qty: 0, unit: 'kg', rate: 0.0 },
-    { title: 'Powder Coating', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
-    { title: 'Paint Total Value', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
-    { title: 'Primer + Regular', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
-    { title: 'Finish Paint Regular', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
-    { title: 'Red Paint Transportation', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 }
-  ];
+  // paintData = [
+  //   { title: 'Shot Blasting', value: 0, qty: 0, unit: 'kg', rate: 0.0 },
+  //   { title: 'Powder Coating', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
+  //   { title: 'Paint Total Value', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
+  //   { title: 'Primer + Regular', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
+  //   { title: 'Finish Paint Regular', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 },
+  //   { title: 'Red Paint Transportation', value: 0, qty: 0, unit: 'sq.ft.', rate: 0.0 }
+  // ];
 
   viewAll(item: any) {
     // console.log('Viewing all for:', item.title);
@@ -91,14 +113,15 @@ export class DashboardPage implements OnInit {
   }
   getCostOverview(){
     this.httpService.getCostOverview().subscribe((res:any)=>{
-      this.paintData = [
-        { title: 'Shot Blasting ', value: res.shortBlasting.amount, qty: res.shortBlasting.quantity, unit: 'kg', rate: res.shortBlasting.rate },
-        { title: 'Powder Coating', value: res.powderCoating.amount, qty: res.powderCoating.quantity, unit: 'sq.ft.', rate: res.powderCoating.rate },
-        { title: 'Paint Total Value', value: res.paintTotalValue.amount, qty: res.paintTotalValue.quantity, unit: 'sq.ft.', rate: 'NA' },
-        { title: 'Primer + Regular', value: res.primerRegular.amount, qty: res.primerRegular.quantity, unit: 'sq.ft.', rate: res.primerRegular.rate },
-        { title: 'Finish Paint Regular', value: res.finishPaintRegular.amount, qty: res.finishPaintRegular.quantity, unit: 'sq.ft.', rate: res.finishPaintRegular.rate },
-        { title: 'Red Paint Transportation', value: res.redPaintTransportation.amount, qty: res.redPaintTransportation.quantity, unit: 'sq.ft.', rate: res.redPaintTransportation.rate }
-      ];
+      this.paintData = res
+      // this.paintData = [
+      //   { title: 'Shot Blasting ', value: res.shortBlasting.amount, qty: res.shortBlasting.quantity, unit: 'kg', rate: res.shortBlasting.rate },
+      //   { title: 'Powder Coating', value: res.powderCoating.amount, qty: res.powderCoating.quantity, unit: 'sq.ft.', rate: res.powderCoating.rate },
+      //   { title: 'Paint Total Value', value: res.paintTotalValue.amount, qty: res.paintTotalValue.quantity, unit: 'sq.ft.', rate: 'NA' },
+      //   { title: 'Primer + Regular', value: res.primerRegular.amount, qty: res.primerRegular.quantity, unit: 'sq.ft.', rate: res.primerRegular.rate },
+      //   { title: 'Finish Paint Regular', value: res.finishPaintRegular.amount, qty: res.finishPaintRegular.quantity, unit: 'sq.ft.', rate: res.finishPaintRegular.rate },
+      //   { title: 'Red Paint Transportation', value: res.redPaintTransportation.amount, qty: res.redPaintTransportation.quantity, unit: 'sq.ft.', rate: res.redPaintTransportation.rate }
+      // ];
     })
   }
   openFileInput() {
@@ -140,8 +163,6 @@ export class DashboardPage implements OnInit {
     this.httpService.getRequisitionFetch().subscribe((res:any)=>{
       this.controller.hideloader()
       this.controller.showToast('100 records synced successfully')
-
-
       console.log('res', res);
     },(error) => {
       this.controller.hideloader()
@@ -162,6 +183,155 @@ export class DashboardPage implements OnInit {
 
     // Programmatically click the link to trigger the download
     link.click();
+  }
+
+  onStatusChange(event: any) {
+    const Status = event.target.value;
+    this.filter.Status = Status
+    this.getPaintDescWiseCostOverview()
+
+
+  }
+  addcss() {
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll("ion-select").forEach((ionSelect) => {
+        if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+          console.log("✅ Styling dynamically added ion-select");
+          const style = document.createElement("style");
+          style.classList.add("custom-style"); // Prevent duplicate styles
+          style.textContent = `
+            .select-outline-container {
+                  height: 32px !important;
+                left: 20px !important;
+                width: 80% !important;
+              }
+            .select-wrapper-inner {
+              display: block !important;
+          }
+          `;
+          ionSelect.shadowRoot.appendChild(style);
+        }
+      });
+    });
+
+    // Observe the entire document for new elements
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
+  getPaintDescWiseCostOverview(filter:any = false){
+    let parm = new HttpParams()
+    
+    if(filter){
+      this.filter.StartDate = this.dateRange.start.toISOString()
+      this.filter.EndDate = this.dateRange.end.toISOString()
+    }
+    Object.keys(this.filter).forEach(key => {
+      if (this.filter[key] !== null) {
+        parm = parm.set(key, this.filter[key]);
+      }
+    });
+    this.httpService.getPaintDescWiseCostOverview(parm).subscribe(async (res:any)=>{
+      this.paintDesc = res
+    })
+  }
+  objectKeys(obj: any): string[] {
+    return obj ? Object.keys(obj) : [];
+  }
+  selectedPeriod: string = '1M';
+
+  // Function to set the active period
+  async setActive(period: any) {
+    this.selectedPeriod = period;
+    await this.calculateDateRange(period);
+    this.getActiveRequisitionCount()
+    this.getPaintDescWiseCostOverview(true)
+    this.getCostOverview()
+
+    console.log('this.selectedPeriod',this.selectedPeriod)
+    console.log('this.dateRange',this.dateRange)
+  }
+
+  async calculateDateRange(period: string): Promise<{ start: Date; end: Date }> {
+    const currentDate = new Date();
+  
+    switch (period) {
+      case '1D':
+        this.dateRange.start = await this.getStartOfDay(currentDate);
+        this.dateRange.end = currentDate;
+        break;
+      case '1W':
+        this.dateRange.start = await this.getStartOfDay(await this.addDays(currentDate, -7));
+        this.dateRange.end = currentDate;
+        break;
+      case '1M':
+        this.dateRange.start = await this.getStartOfDay(await this.addMonths(currentDate, -1));
+        this.dateRange.end = currentDate;
+        break;
+      case '3M':
+        this.dateRange.start = await this.getStartOfDay(await this.addMonths(currentDate, -3));
+        this.dateRange.end = currentDate;
+        break;
+      case '6M':
+        this.dateRange.start = await this.getStartOfDay(await this.addMonths(currentDate, -6));
+        this.dateRange.end = currentDate;
+        break;
+      case '1Y':
+        this.dateRange.start = await this.getStartOfDay(await this.addYears(currentDate, -1));
+        this.dateRange.end = currentDate;
+        break;
+      case 'Custom Date':
+        this.dateRange.start = currentDate;
+        this.dateRange.end = currentDate;
+        break;
+      default:
+        this.dateRange.start = currentDate;
+        this.dateRange.end = currentDate;
+        break;
+    }
+  
+    // Return the date range at the end
+    return this.dateRange;
+  }
+  
+
+  // Helper function to set the time to the start of the day (midnight)
+  getStartOfDay(date: Date): Date {
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }
+
+  // Helper function to add days to a date
+  addDays(date: Date, days: number): Date {
+    const result = new Date(date);
+    result.setDate(date.getDate() + days);
+    return result;
+  }
+
+  // Helper function to add months to a date
+  addMonths(date: Date, months: number): Date {
+    const result = new Date(date);
+    result.setMonth(date.getMonth() + months);
+    return result;
+  }
+
+  // Helper function to add years to a date
+  addYears(date: Date, years: number): Date {
+    const result = new Date(date);
+    result.setFullYear(date.getFullYear() + years);
+    return result;
+  }
+  getStartOfLastMonth(): Date {
+    const currentDate = new Date();
+    const lastMonth = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+    
+    // Set time to 00:00:00 for consistency
+    lastMonth.setHours(0, 0, 0, 0);
+
+    return lastMonth;
+  }
+  segment(event: any){
+    this.filter.ReqFrom =  event.target.value;
+    this.getPaintDescWiseCostOverview()
   }
 
 }

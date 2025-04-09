@@ -7,6 +7,7 @@ import { InfiniteScrollCustomEvent, IonicModule, ModalController } from '@ionic/
 import { addIcons } from 'ionicons';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
+import { FilterModalComponent } from 'src/app/shares/components/filter-modal/filter-modal.component';
 import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
 
 @Component({
@@ -577,6 +578,20 @@ export class OrderPage implements OnInit {
     // Observe the entire document for new elements
     observer.observe(document.body, { childList: true, subtree: true });
   }
-
+  async openFilter(){
+      const modal = await this.modalController.create({
+        component: FilterModalComponent,
+        componentProps: {
+          // id: this.requisitionId,
+        },
+        cssClass: 'filter_model',
+        mode:'ios'
+      });
+  
+      modal.onDidDismiss().then((dataReturned: any) => {
+        console.log('search-modal:', dataReturned);
+      })
+      await modal.present();
+    }
 
 }

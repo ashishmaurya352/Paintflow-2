@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { ImgModalComponent } from 'src/app/shares/components/img-modal/img-modal.component';
 import { tap, catchError, of } from 'rxjs';
 import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
+import { FilterModalComponent } from 'src/app/shares/components/filter-modal/filter-modal.component';
 // import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/compiler';
 
 @Component({
@@ -826,5 +827,20 @@ qaAcceptedList = [
     this.decText = ''
     this.qaRemarksSelected = 'Accepted'
     this.qaRemarks = null
+  }
+  async openFilter(){
+    const modal = await this.modalController.create({
+      component: FilterModalComponent,
+      componentProps: {
+        // id: this.requisitionId,
+      },
+      cssClass: 'filter_model',
+      mode:'ios'
+    });
+
+    modal.onDidDismiss().then((dataReturned: any) => {
+      console.log('search-modal:', dataReturned);
+    })
+    await modal.present();
   }
 }
