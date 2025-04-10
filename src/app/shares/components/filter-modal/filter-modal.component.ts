@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
-import { IonicModule } from '@ionic/angular';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, OnInit } from '@angular/core';
+import { IonicModule, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-filter-modal',
@@ -10,20 +10,47 @@ import { IonicModule } from '@ionic/angular';
   imports: [IonicModule, CommonModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class FilterModalComponent  implements OnInit {
-  sortByName:any
-  priorityName:any
-  startDate: string;
-  endDate: string;
+export class FilterModalComponent implements OnInit {
+  @Input() page: any;
+  @Input() usereRole: any;
+  @Input() tab: any;
+  @Input() filter: any ={
+    StartDate:'',
+    EndDate:'',
+    SortBy:'',
+    Priority:'',
+    IsDecsending:false
+  }
+  sortByName: any
+  priorityName: any
+  startDate: any = null
+  endDate: any = null
   range: number = 0;
   rangeApplied: boolean = false;
-  constructor() { 
-    const currentDate = new Date().toISOString();
-    this.startDate = currentDate;
-    this.endDate = currentDate;
+  isDescending = false
+  constructor(
+            private modalController: ModalController,
+    
+  ) {
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log('filter', this.filter);
+  
+    if (this.filter?.StartDate) {
+      this.startDate = this.filter.StartDate;
+    }
+  
+    if (this.filter?.EndDate) {
+      this.endDate = this.filter.EndDate;
+    }
+  
+    this.sortByName = this.filter?.SortBy || '';
+    this.priorityName = this.filter?.Priority || '';
+    this.isDescending = this.filter?.IsDecsending || false
+   }
+
+
   sortBy(name: string) {
     console.log('sortByName', name);
     this.sortByName = name
@@ -40,9 +67,57 @@ export class FilterModalComponent  implements OnInit {
     this.range = Math.ceil(diffTime / (1000 * 3600 * 24));
     this.rangeApplied = true;
   }
-  onDateChange(event: any) {
+  onStartDateChange(event: any) {
     const selectedDate = event.detail.value;
-    console.log('selectedDate',selectedDate)
+    this.startDate = selectedDate
+    console.log('selectedDate', selectedDate)
   }
+  onEndDateChange(event: any) {
+    const selectedDate = event.detail.value;
+    this.endDate = selectedDate
+    console.log('selectedDate', selectedDate)
+  }
+
+  resetFilter(){
+    if(this.usereRole == 'Inward Manager'){
+        let SortBy
+      if(this.tab == 'UnAssigned'){
+        SortBy = 'CreatedDate'
+      }
+      else{
+        SortBy = 'AssignedDate'
+      }
+      this.filter = {
+        StartDate:'',
+        EndDate:'',
+        SortBy:SortBy,
+        Priority:'',
+        IsDecsending:1
+      };
+      this.startDate = '';
+      this.endDate = '';
+      this.sortByName = SortBy;
+      this.priorityName = '';
+      this.isDescending = false
+    }
+  }
+  
+
+  submit(){
+    this.filter = {
+      StartDate: this.startDate,
+      EndDate: this.endDate,
+      SortBy: this.sortByName,
+      Priority: this.priorityName,
+      IsDecsending: this.isDescending
+    };
+    this.modalController.dismiss(this.filter); 
+  }
+
+  segment(event: any){
+    this.isDescending =  event.target.value;
+    // this.getPaintDescWiseCostOverview()
+  }
+  
 
 }

@@ -340,9 +340,9 @@
                     [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{ item.priority }}</ion-badge>
                 </div>
                 <div class="accept">
-                  <p>Assigned to </p>
-                  <h6>{{item.team }}</h6>
-                  <p style="margin-left: 5px;">on</p>
+                  <p>Assigned on </p>
+                  <!-- <h6>{{item.team }}</h6>
+                  <p style="margin-left: 5px;">on</p> -->
                   <h6>{{item.assignedDate | date:'mediumDate'}}</h6>
                 </div>
               </div>
@@ -367,12 +367,12 @@
               <ion-list>
                 <ion-grid>
                   <ion-row *ngFor="let item of RequisitionItemLists[i]; let j = index">
-                    <ion-col size="8">{{j+1}}. {{ item.partNumber }}</ion-col>
-                    <ion-col size="2" class="type">
+                    <ion-col size="8">{{j+1}}. {{ item.partNumber }} ({{item.firstAssignedTeam}})</ion-col>
+                    <!-- <ion-col size="2" class="type">
                       <h6 class="type"
                         [ngClass]="item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed'">
                         {{ item.qcApprovedQuantity < item.quantity ? 'In-Progress' : 'Completed' }} </h6>
-                    </ion-col>
+                    </ion-col> -->
                     <ion-col>
                       <h6 class="quantity">{{ item.receivedQuantity }} / {{ item.quantity }}</h6>
                     </ion-col>

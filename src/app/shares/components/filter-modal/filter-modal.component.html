@@ -1,70 +1,119 @@
-  <div class="modal-content">
-    <div class="modal-header">
+<div class="modal-content">
+  <div class="modal-header">
 
-      <ion-buttons>
-        <ion-button >Cancel</ion-button>
-      </ion-buttons>
-      <h3>Sort & Filter</h3>
-      <ion-buttons>
-        <ion-button>Reset</ion-button>
-      </ion-buttons>
-    </div>
+    <ion-buttons>
+      <ion-button>Cancel</ion-button>
+    </ion-buttons>
+    <h3>Sort & Filter</h3>
+    <ion-buttons>
+      <ion-button (click)="resetFilter()">Reset</ion-button>
+    </ion-buttons>
+  </div>
 
-    <div style="margin: 10px 20px;">
+  <div style="margin: 10px 20px;">
 
-      <div class="section">
-        <p class="modal-title">Date</p>
-        <ion-button id="click-trigger"  shape="round"
-          [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
+    <div class="section">
+      <p class="modal-title">Date</p>
+      <div class="date">
+        <ion-label>Start Date</ion-label>
+        <ion-button id="startDate-trigger" shape="round" label="Start Date"
+          [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
           <ion-icon slot="start" name="calendar"></ion-icon>
           {{startDate | date:'mediumDate'}}
         </ion-button>
-        <ion-button  shape="round"
-          [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
+      </div>
+      <div>
+        <ion-label>End Date</ion-label>
+        <ion-button shape="round" id="endDate-trigger" [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
           <ion-icon slot="start" name="calendar"></ion-icon>
           {{endDate | date:'mediumDate'}}
         </ion-button>
-        <ion-popover mode="md" trigger="click-trigger" >
-          <ng-template>
-            <ion-datetime (ionChange)="onDateChange($event)" [showDefaultButtons]="true" presentation="date"></ion-datetime>
-          </ng-template>
-        </ion-popover>
       </div>
 
-      <div class="section">
-        <p class="modal-title">Sort By</p>
-        <ion-button [class.selected]="sortByName === 'Priority'" shape="round"
-          [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
-          <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
-          Priority
-        </ion-button>
-        <ion-button [class.selected]="sortByName === 'Product ID'" shape="round"
-          [fill]="sortByName === 'Product ID' ? 'solid' : 'outline'" (click)="sortBy('Product ID')">
-          <ion-icon *ngIf="sortByName === 'Product ID'" slot="start" name="checkmark-outline"></ion-icon>
-          Product ID
-        </ion-button>
-      </div>
+      <ion-popover mode="md" trigger="startDate-trigger">
+        <ng-template>
+          <ion-datetime [value]="startDate" (ionChange)="onStartDateChange($event)" [showDefaultButtons]="true"
+            presentation="date"></ion-datetime>
+        </ng-template>
+      </ion-popover>
+      <ion-popover mode="md" trigger="endDate-trigger">
+        <ng-template>
+          <ion-datetime [min]="startDate" [value]="endDate" (ionChange)="onEndDateChange($event)"
+            [showDefaultButtons]="true" presentation="date"></ion-datetime>
+        </ng-template>
+      </ion-popover>
+    </div>
 
-      <div class="section">
-        <p class="modal-title">Priority</p>
-        <ion-button [class.selected]="priorityName === 'High'" shape="round"
-          [fill]="priorityName === 'High' ? 'solid' : 'outline'" (click)="priority('High')">
-          <ion-icon *ngIf="priorityName === 'High'" slot="start" name="checkmark-outline"></ion-icon>
-          High
-        </ion-button>
-        <ion-button [class.selected]="priorityName === 'Medium'" shape="round"
-          [fill]="priorityName === 'Medium' ? 'solid' : 'outline'" (click)="priority('Medium')">
-          <ion-icon *ngIf="priorityName === 'Medium'" slot="start" name="checkmark-outline"></ion-icon>
-          Medium
-        </ion-button>
-        <ion-button [class.selected]="priorityName === 'Low'" shape="round"
-          [fill]="priorityName === 'Low' ? 'solid' : 'outline'" (click)="priority('Low')">
-          <ion-icon *ngIf="priorityName === 'Low'" slot="start" name="checkmark-outline"></ion-icon>
-          Low
-        </ion-button>
-      </div>
+    <div class="section">
+      <p class="modal-title">Priority</p>
+      <ion-button [class.selected]="priorityName === 'High'" shape="round"
+        [fill]="priorityName === 'High' ? 'solid' : 'outline'" (click)="priority('High')">
+        <ion-icon *ngIf="priorityName === 'High'" slot="start" name="checkmark-outline"></ion-icon>
+        High
+      </ion-button>
+      <ion-button [class.selected]="priorityName === 'Medium'" shape="round"
+        [fill]="priorityName === 'Medium' ? 'solid' : 'outline'" (click)="priority('Medium')">
+        <ion-icon *ngIf="priorityName === 'Medium'" slot="start" name="checkmark-outline"></ion-icon>
+        Medium
+      </ion-button>
+      <ion-button [class.selected]="priorityName === 'Low'" shape="round"
+        [fill]="priorityName === 'Low' ? 'solid' : 'outline'" (click)="priority('Low')">
+        <ion-icon *ngIf="priorityName === 'Low'" slot="start" name="checkmark-outline"></ion-icon>
+        Low
+      </ion-button>
+    </div>
 
-      <div class="section">
+    <div class="section">
+      <p class="modal-title">Sort By</p>
+      <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'UnAssigned'"
+        [class.selected]="sortByName === 'CreatedDate'" shape="round"
+        [fill]="sortByName === 'CreatedDate' ? 'solid' : 'outline'" (click)="sortBy('CreatedDate')">
+        <ion-icon *ngIf="sortByName === 'CreatedDate'" slot="start" name="checkmark-outline"></ion-icon>
+        Created Date
+      </ion-button>
+      <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'Assigned'"
+        [class.selected]="sortByName === 'AssignedDate'" shape="round"
+        [fill]="sortByName === 'AssignedDate' ? 'solid' : 'outline'" (click)="sortBy('AssignedDate')">
+        <ion-icon *ngIf="sortByName === 'AssignedDate'" slot="start" name="checkmark-outline"></ion-icon>
+        Assigned Date
+      </ion-button>
+      <!-- <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'Assigned'" [class.selected]="sortByName === 'Priority'" shape="round"
+        [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
+        <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
+        Accepted Date
+      </ion-button>
+      <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'Assigned'" [class.selected]="sortByName === 'Priority'" shape="round"
+        [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
+        <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
+        Completed Date
+      </ion-button> -->
+      <!-- <ion-button [class.selected]="sortByName === 'Priority'" shape="round"
+        [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
+        <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
+        Accepted Date
+      </ion-button> -->
+      <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'UnAssigned' ||tab == 'Assigned' "
+        [class.selected]="sortByName === 'Priority'" shape="round"
+        [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
+        <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
+        Priority
+      </ion-button>
+
+      <div style="margin-left: auto;">
+        <ion-segment slot="end" [value]="isDescending" mode="md" class="custom-toggle" (ionChange)="segment($event)">
+          <ion-segment-button [value]="true">
+            <ion-label>Asc</ion-label>
+          </ion-segment-button>
+          <ion-segment-button [value]= "false">
+            <ion-label>Dese</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+    </div>
+
+    
+
+    <!-- <div class="section">
         <p class="modal-title">Status</p>
         <ion-button [class.selected]="priorityName === 'High'" shape="round"
           [fill]="priorityName === 'High' ? 'solid' : 'outline'" (click)="priority('High')">
@@ -81,11 +130,11 @@
           <ion-icon *ngIf="priorityName === 'Low'" slot="start" name="checkmark-outline"></ion-icon>
           In-Queue
         </ion-button>
-      </div>
-    </div>
-    <div class="modal-footer">
-
-      <ion-button expand="block">Show Results</ion-button>
-    </div>
-
+      </div> -->
   </div>
+  <div class="modal-footer">
+
+    <ion-button expand="block" (click)="submit()">Show Results</ion-button>
+  </div>
+
+</div>

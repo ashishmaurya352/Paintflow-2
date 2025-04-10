@@ -137,7 +137,8 @@
     <div class="header-title">
       <div>
 
-        <strong class="active">Active</strong> Requisitions
+        <strong class="active">Active</strong> Requisitions  
+        <!-- <strong class="active">Active</strong> Requisitions  ({{this.allItem}})  -->
       </div>
     </div>
     <!-- size="6" size-md="4"  -->
@@ -147,11 +148,11 @@
   <ion-grid>
     <ion-row>
       <ion-col size="6" size-md="4" *ngFor="let item of requisitions">
-        <ion-card class="requisition-card">
+        <ion-card class="requisition-card" >
           <ion-card-content>
             <h2 class="requisition-number">{{ item.count }}</h2>
-            <p class="requisition-title">{{ item.title }}</p>
-            <a class="view-all" *ngIf="item.title != 'All Teams'" (click)="viewAll(item)">View all &gt;</a>
+            <p class="requisition-title">{{ item.name }}</p>
+            <a class="view-all" *ngIf="item.name != 'All'" (click)="viewAll(item)">View all &gt;</a>
           </ion-card-content>
         </ion-card>
       </ion-col>

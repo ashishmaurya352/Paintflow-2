@@ -24,7 +24,6 @@ export class OrderPage implements OnInit {
     PageSize: 20,
     StartDate: null,
     EndDate: null,
-    // SortBy
     Keyword: null,
     Status: null,
   }
@@ -138,6 +137,7 @@ export class OrderPage implements OnInit {
     this.segmentValue = event.detail.value
     this.filter.PageNumber = 1;
     this.finalPage = false;
+    this.resetFilter()
     if (this.usereRole == 'Executive' || this.usereRole == 'QA' || this.usereRole == 'Admin') {
       this.getRequisitionDetail()
     } else {
@@ -534,7 +534,12 @@ export class OrderPage implements OnInit {
       if (dataReturned.data) {
         const id = dataReturned.data.id
         const slipNumber = dataReturned.data.slipNumber
-        this.activityListPage(id, slipNumber)
+        if (this.usereRole == 'Inward Manager') {
+          this.requisitionListPage(id, slipNumber)
+        } else {
+
+          this.activityListPage(id, slipNumber)
+        }
         // this.filter.Keyword = dataReturned.data.keyword
       }
       console.log('search-modal:', dataReturned);
@@ -578,20 +583,52 @@ export class OrderPage implements OnInit {
     // Observe the entire document for new elements
     observer.observe(document.body, { childList: true, subtree: true });
   }
-  async openFilter(){
-      const modal = await this.modalController.create({
-        component: FilterModalComponent,
-        componentProps: {
-          // id: this.requisitionId,
-        },
-        cssClass: 'filter_model',
-        mode:'ios'
-      });
-  
-      modal.onDidDismiss().then((dataReturned: any) => {
-        console.log('search-modal:', dataReturned);
-      })
-      await modal.present();
+  async openFilter() {
+    const modal = await this.modalController.create({
+      component: FilterModalComponent,
+      componentProps: {
+        page: 'challan',
+        usereRole: this.usereRole,
+        filter: this.filter,
+        tab: this.segmentValue
+        // id: this.requisitionId,
+      },
+      cssClass: 'filter_model',
+      mode: 'ios'
+    });
+
+    modal.onDidDismiss().then((dataReturned: any) => {
+      if (dataReturned.data) {
+        this.filter.StartDate = dataReturned.data.StartDate,
+          this.filter.EndDate = dataReturned.data.EndDate,
+          this.filter.SortBy = dataReturned.data.SortBy,
+          this.filter.Priority = dataReturned.data.Priority,
+          this.filter.IsDecsending = dataReturned.data.IsDecsending
+        console.log('this.filter:', this.filter);
+
+        this.filter.PageNumber = 1;
+        this.finalPage = false;
+        if (this.usereRole == 'Executive' || this.usereRole == 'QA' || this.usereRole == 'Admin') {
+          this.getRequisitionDetail()
+        } else {
+          this.getItem()
+        }
+
+      }
+      console.log('search-modal:', dataReturned);
+    })
+    await modal.present();
+  }
+
+  resetFilter() {
+    this.filter = {
+      PageNumber: 1,
+      PageSize: 20,
+      StartDate: null,
+      EndDate: null,
+      Keyword: null,
+      Status: null,
     }
+  }
 
 }
