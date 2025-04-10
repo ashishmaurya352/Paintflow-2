@@ -71,28 +71,28 @@
         <ion-icon *ngIf="sortByName === 'CreatedDate'" slot="start" name="checkmark-outline"></ion-icon>
         Created Date
       </ion-button>
-      <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'Assigned'"
+      <ion-button *ngIf="tab == 'Assigned' || tab == 'InQueue'  "
         [class.selected]="sortByName === 'AssignedDate'" shape="round"
         [fill]="sortByName === 'AssignedDate' ? 'solid' : 'outline'" (click)="sortBy('AssignedDate')">
         <ion-icon *ngIf="sortByName === 'AssignedDate'" slot="start" name="checkmark-outline"></ion-icon>
         Assigned Date
       </ion-button>
-      <!-- <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'Assigned'" [class.selected]="sortByName === 'Priority'" shape="round"
-        [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
-        <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
+      <ion-button *ngIf="tab == 'Active' || tab == 'item-list' || tab == 'handover' || tab == 'rejected'  "  [class.selected]="sortByName === 'AcceptedDate'" shape="round"
+        [fill]="sortByName === 'AcceptedDate' ? 'solid' : 'outline'" (click)="sortBy('AcceptedDate')">
+        <ion-icon *ngIf="sortByName === 'AcceptedDate'" slot="start" name="checkmark-outline"></ion-icon>
         Accepted Date
       </ion-button>
-      <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'Assigned'" [class.selected]="sortByName === 'Priority'" shape="round"
-        [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
-        <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
+      <ion-button *ngIf="tab == 'Completed'" [class.selected]="sortByName === 'CompletedDate'" shape="round"
+        [fill]="sortByName === 'CompletedDate' ? 'solid' : 'outline'" (click)="sortBy('CompletedDate')">
+        <ion-icon *ngIf="sortByName === 'CompletedDate'" slot="start" name="checkmark-outline"></ion-icon>
         Completed Date
-      </ion-button> -->
+      </ion-button>
       <!-- <ion-button [class.selected]="sortByName === 'Priority'" shape="round"
         [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
         <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
         Accepted Date
       </ion-button> -->
-      <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'UnAssigned' ||tab == 'Assigned' "
+      <ion-button 
         [class.selected]="sortByName === 'Priority'" shape="round"
         [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
         <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>

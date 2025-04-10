@@ -31,10 +31,13 @@ export class ReceivedModalComponent  implements OnInit {
   @Output() quantitySubmitted = new EventEmitter<any>(); // Pass quantity value
   quantity = 0;
   selectedTeam: string | null = null
+  loginTeam:any
   constructor(
     private modalCtrl: ModalController,
   ){}
   ngOnInit() {
+    this.loginTeam = localStorage.getItem('team')
+
     this.quantity = this.getquantity == 0 ? this.totalQuantity : this.getquantity;  // Update the quantity based on new input value
 
   }
@@ -64,7 +67,7 @@ export class ReceivedModalComponent  implements OnInit {
     if(this.quantity > this.totalQuantity){
       this.quantity = this.totalQuantity
     }
-    if(this.teams.length > 0){
+    if(this.teams.length > 0 || this.loginTeam == 'Touch Up Team'){
       const data = {
         quantity: this.quantity,
         team:this.selectedTeam

@@ -147,7 +147,13 @@
                 </ion-button>
                 <ion-button *ngIf="!item?.curretProcess?.sentForHandover" class="startTask-btn"
                   (click)="openModal(item,'SendForHandover')">
-                  Handover
+                  <div *ngIf="loginTeam !== 'Touch Up Team'">
+
+                    Handover
+                  </div>
+                  <div *ngIf="loginTeam == 'Touch Up Team'">
+                    Complete
+                  </div>
                   <ion-icon slot="start" name="navigate"></ion-icon>
                 </ion-button>
                 <!-- <ion-button *ngIf="!item?.curretProcess?.hasHandoverCompleted || !item?.curretProcess?.sentForHandover"

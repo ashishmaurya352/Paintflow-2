@@ -20,7 +20,7 @@ export class LoginPage implements OnInit {
 
   
   email: string = '';
-  password: string = 'Pass@123';
+  password: string = '';
   showPassword: boolean = false;
   rememberPassword: boolean = false;
 

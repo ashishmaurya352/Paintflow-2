@@ -2,14 +2,11 @@ import { HttpParams } from '@angular/common/http';
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { InfiniteScrollCustomEvent, ModalController } from '@ionic/angular';
-import { addIcons } from 'ionicons';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
 import { SwiperComponent } from 'src/app/shares/components/swiper/swiper.component';
 import { ReceivedModalComponent } from "../../shares/components/received-modal/received-modal.component";
-import { IonHeader } from "@ionic/angular/standalone";
 import { CommonModule } from '@angular/common';
-import { ImgModalComponent } from 'src/app/shares/components/img-modal/img-modal.component';
 import { tap, catchError, of } from 'rxjs';
 import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
 import { FilterModalComponent } from 'src/app/shares/components/filter-modal/filter-modal.component';
@@ -106,6 +103,7 @@ export class ActivityListPage implements OnInit {
 ]
 qaAcceptedList = [
   'Accepted']
+  loginTeam:any
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -118,6 +116,7 @@ qaAcceptedList = [
 
   async ngOnInit() {
     this.usereRole = await this.getUserRoleFromLocalStorage();
+    this.loginTeam = localStorage.getItem('team')
     this.getTeams()
     if (this.usereRole == 'QA') {
       this.segmentValue = 'InQueue'
@@ -131,6 +130,7 @@ qaAcceptedList = [
       this.requisitionId = params['id'];
       this.slipNumber = params['slipNumber'];
       this.viewTeam = params['team'];
+      console.log('this.viewTeam',this.viewTeam)
       // console.log('params',params)
       this.getRequisitionItem(this.requisitionId)
     });
@@ -151,6 +151,7 @@ qaAcceptedList = [
     this.teams = []
     this.filter.PageNumber = 1;
     this.finalPage = false;
+    this.resetFilter()
     if (this.segmentValue == 'handover') {
       this.teams = this.teamsData
     }
@@ -319,6 +320,7 @@ qaAcceptedList = [
 
     if (this.usereRole === 'QA') {
       parm = parm.set('Status', this.segmentValue);
+      parm = parm.set('Team', this.viewTeam);
     } else if (this.usereRole === 'Admin') {
       parm = parm.set('Status', 'Active');
       parm = parm.set('Team', this.viewTeam);
@@ -832,15 +834,48 @@ qaAcceptedList = [
     const modal = await this.modalController.create({
       component: FilterModalComponent,
       componentProps: {
+        page: 'challan',
+        usereRole: this.usereRole,
+        filter: this.filter,
+        tab: this.segmentValue
         // id: this.requisitionId,
       },
       cssClass: 'filter_model',
-      mode:'ios'
+      mode: 'ios'
     });
 
     modal.onDidDismiss().then((dataReturned: any) => {
+      if (dataReturned.data) {
+        this.filter.StartDate = dataReturned.data.StartDate,
+          this.filter.EndDate = dataReturned.data.EndDate,
+          this.filter.SortBy = dataReturned.data.SortBy,
+          this.filter.Priority = dataReturned.data.Priority,
+          this.filter.IsDecsending = dataReturned.data.IsDecsending
+        console.log('this.filter:', this.filter);
+
+        this.filter.PageNumber = 1;
+        this.finalPage = false;
+        this.getRequisitionItem(this.requisitionId)
+        // if (this.usereRole == 'Executive' || this.usereRole == 'QA' || this.usereRole == 'Admin') {
+        //   this.getRequisitionDetail()
+        // } else {
+        //   this.getItem()
+        // }
+
+      }
       console.log('search-modal:', dataReturned);
     })
     await modal.present();
+  }
+
+  resetFilter() {
+    this.filter = {
+      PageNumber: 1,
+      PageSize: 20,
+      StartDate: null,
+      EndDate: null,
+      Keyword: null,
+      Status: null,
+    }
   }
 }

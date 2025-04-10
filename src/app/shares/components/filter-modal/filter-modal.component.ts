@@ -36,6 +36,7 @@ export class FilterModalComponent implements OnInit {
 
   ngOnInit() {
     console.log('filter', this.filter);
+    console.log('tab', this.tab);
   
     if (this.filter?.StartDate) {
       this.startDate = this.filter.StartDate;
@@ -99,6 +100,22 @@ export class FilterModalComponent implements OnInit {
       this.sortByName = SortBy;
       this.priorityName = '';
       this.isDescending = false
+    }
+    else{
+      this.filter = {
+        StartDate:'',
+        EndDate:'',
+        SortBy:'',
+        Priority:'',
+        IsDecsending:1
+      };
+
+      this.startDate = '';
+      this.endDate = '';
+      this.sortByName = '';
+      this.priorityName = '';
+      this.isDescending = false
+
     }
   }
   

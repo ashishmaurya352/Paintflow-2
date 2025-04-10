@@ -67,7 +67,6 @@ export class OrderPage implements OnInit {
     private httpService: HttpService,
     private controller: ControllerService,
     private modalController: ModalController
-
   ) {
   }
 
@@ -146,7 +145,7 @@ export class OrderPage implements OnInit {
   }
 
   activityListPage(id: any, slipNumber: any) {
-    if (this.usereRole == 'Admin') {
+    if (this.usereRole == 'Admin' || this.usereRole == 'QA') {
       this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber, team: this.teamsOrders } });
     }
     else {
