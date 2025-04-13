@@ -117,7 +117,13 @@ export class DashboardPage implements OnInit {
     );
   }
   getCostOverview(){
-    this.httpService.getCostOverview().subscribe((res:any)=>{
+    let parm = new HttpParams()
+    Object.keys(this.filter).forEach(key => {
+      if (this.filter[key] !== null) {
+        parm = parm.set(key, this.filter[key]);
+      }
+    });
+    this.httpService.getCostOverview(parm).subscribe((res:any)=>{
       this.paintData = res
       // this.paintData = [
       //   { title: 'Shot Blasting ', value: res.shortBlasting.amount, qty: res.shortBlasting.quantity, unit: 'kg', rate: res.shortBlasting.rate },
@@ -194,6 +200,8 @@ export class DashboardPage implements OnInit {
     const Status = event.target.value;
     this.filter.Status = Status
     this.getPaintDescWiseCostOverview()
+    this.getActiveRequisitionCount()
+    this.getCostOverview()
 
 
   }
@@ -336,7 +344,9 @@ export class DashboardPage implements OnInit {
   }
   segment(event: any){
     this.filter.ReqFrom =  event.target.value;
+    this.getActiveRequisitionCount()
     this.getPaintDescWiseCostOverview()
+    this.getCostOverview()
   }
 
 }

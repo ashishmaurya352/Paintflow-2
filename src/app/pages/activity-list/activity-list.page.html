@@ -170,12 +170,12 @@
 
             <div class="lower-card">
               <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
-                <b>Completed:</b> {{item.completedQuantity}}
+                <b>Completed:</b> {{item.qcApprovedQuantity}}
                 <!-- <b>Missing:</b> {{'NA'}} -->
               </h6>
               <!-- <h6><b>Total Quantity:</b> 100 | <b>Received:</b> 60 | <b>Completed:</b> 40 | <b>Approved:</b> 20</h6> -->
               <div class="">
-                <h6 style="margin: 15px 0;"><b>Accepted:</b>{{item.qcApprovedQuantity}}
+                <h6 style="margin: 15px 0;"><b>Accepted:</b>{{item.acceptedQuantity?item.acceptedQuantity:0}}
                 </h6>
               </div>
             </div>

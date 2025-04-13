@@ -52,11 +52,11 @@
             </div>
             <div (click)="openModal(i,item)">
               <div style="display: flex;">
-                <h6>{{ item.partNumber | uppercase }}  ({{item.color}})</h6>
+                <h5>{{ item.partNumber | uppercase }}  ({{item.color}})</h5>
                 <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                   item.priority }}</ion-badge>
               </div>
-              <h5>{{ item.partDesciption | uppercase }}</h5>
+              <h6>{{ item.partDesciption | uppercase }}</h6>
               <h6 *ngIf="usereRole === 'Inward Manager'">Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
               <h6 *ngIf="usereRole !== 'Inward Manager'">Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.curretProcess.quantity }} pcs</h6>
             </div>

@@ -184,7 +184,7 @@ qaAcceptedList = [
   async openModal(item: any, type: any) {
     this.typeItem = type
     this.selectedItem = item
-
+    let isCompleted = false
     if (type == 'Approval' && this.isHandoverDisabled(item)) {
       return
     }
@@ -207,10 +207,15 @@ qaAcceptedList = [
       this.totalQuantity = item.receivedQuantity
     } else if (this.typeItem == 'SendForHandover') {
       this.totalQuantity = item.qcApprovedQuantity
+      if(this.loginTeam == 'Touch Up Team'){
+        isCompleted = true
+      }
     }
     else {
       this.totalQuantity = item.completedQuantity
     }
+
+
 
     this.selectedItem = item
     const modal = await this.modalController.create({
@@ -220,7 +225,8 @@ qaAcceptedList = [
         getquantity: this.selectedItem?.receivedQuantity - this.selectedItem?.completedQuantity,
         itemName: this.selectedItem?.partDesciption,
         teams: this.teams,
-        height: true
+        height: true,
+        isCompleted:isCompleted
       },
       cssClass: cssClass,
     });

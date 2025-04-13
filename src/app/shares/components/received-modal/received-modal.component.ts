@@ -27,6 +27,8 @@ export class ReceivedModalComponent  implements OnInit {
   @Input() itemName:any = 'itemName';  // Control modal visibility
   @Input() teams = []  // Control modal visibility
   @Input() height = false
+  @Input() isCompleted :any
+  
   @Output() dismiss = new EventEmitter<void>(); // Close event
   @Output() quantitySubmitted = new EventEmitter<any>(); // Pass quantity value
   quantity = 0;
@@ -67,7 +69,8 @@ export class ReceivedModalComponent  implements OnInit {
     if(this.quantity > this.totalQuantity){
       this.quantity = this.totalQuantity
     }
-    if(this.teams.length > 0 || this.loginTeam == 'Touch Up Team'){
+    if(this.teams.length > 0 || this.isCompleted){
+    // if(this.teams.length > 0){
       const data = {
         quantity: this.quantity,
         team:this.selectedTeam

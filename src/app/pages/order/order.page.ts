@@ -170,7 +170,7 @@ export class OrderPage implements OnInit {
     let segmentValue = (this.segmentValue === 'InQueueQA') ? 'InQueue' : this.segmentValue;
     let params = new HttpParams()
     if (this.usereRole === 'QA' || this.usereRole === 'Admin') {
-      const team = this.teamsOrders == 'All Teams' ? '' : this.teamsOrders
+      const team = this.teamsOrders == 'All' ? '' : this.teamsOrders
       params = params.set('Status', segmentValue).set('Team', team)
     }
     else {

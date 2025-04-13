@@ -114,8 +114,8 @@ export class HttpService {
     let url = `${this.apiUrl + this.ActiveRequisitionCount}?${data}`;
     return this.httpClient.get(url);
   }
-  getCostOverview(): Observable<any> {
-    let url = `${this.apiUrl + this.CostOverview}`;
+  getCostOverview(data:any): Observable<any> {
+    let url = `${this.apiUrl + this.CostOverview}?${data}`;
     return this.httpClient.get(url);
   }
   documentsUpload(data: any) {

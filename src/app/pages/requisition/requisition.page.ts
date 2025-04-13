@@ -115,6 +115,7 @@ export class RequisitionPage implements OnInit {
         'totalQuantity': totalQuantity,
         'getquantity': this.UpdatedItemLists[i].quantity,
         itemName: item.partDesciption,
+        
       },
       cssClass: 'quantity-modal',
     });
