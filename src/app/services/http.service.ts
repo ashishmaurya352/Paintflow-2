@@ -6,8 +6,10 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class HttpService {
-
-  private apiUrl = 'https://paintflow.runasp.net/api';
+// 
+  // private apiUrl = 'https://paintflow.runasp.net/api';
+  private apiUrl = 'https://paintflowtest.runasp.net/api';
+  
 
 
   readonly login = `/User/login`;
@@ -39,6 +41,7 @@ export class HttpService {
   readonly ItemUpdateColor = `/Item/UpdateColor`;
   readonly ItemGetColors = `/Item/GetColors`;
   readonly PaintDescWiseCostOverview = `/Dashboard/PaintDescWiseCostOverview`;
+  readonly PaintDescriptionGet = `/PaintDescription/Get`;
   
   
   
@@ -172,6 +175,10 @@ export class HttpService {
   }
   getPaintDescWiseCostOverview(data: any): Observable<any> {
     let url = `${this.apiUrl + this.PaintDescWiseCostOverview}?${data}`;
+    return this.httpClient.get(url);
+  }
+  getPaintDescriptionGet(): Observable<any> {
+    let url = `${this.apiUrl + this.PaintDescriptionGet}`;
     return this.httpClient.get(url);
   }
 }

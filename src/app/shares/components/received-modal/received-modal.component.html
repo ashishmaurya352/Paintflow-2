@@ -1,10 +1,7 @@
-
-<ion-content>
-
-<div  class="modal-overlay">
+<div class="modal-overlay">
   <div class="modal-container">
     <div class="modal-header">
-      <h3 (click)="$event.stopPropagation()">Enter Quantity Received</h3>
+      <h3 (click)="$event.stopPropagation()">Item Flow</h3>
       <ion-button color="dark" fill="clear" slot="end" (click)="closeModal()">
         <ion-icon slot="end" name="close"></ion-icon>
       </ion-button>
@@ -12,22 +9,128 @@
         <ion-icon name="close"></ion-icon>
       </ion-by> -->
     </div>
-    <div class="modal-body" (click)="$event.stopPropagation()">
-      <h6>{{ itemName }}</h6>
-      <div class="modal-input">
+    <div class="modal-body">
+      <div class="modal-container">
 
-        <!-- <ion-input type="number" size="small" fill="outline"   [(ngModel)]="quantity" placeholder="Enter quantity"></ion-input> -->
+        <div class="modal-queantity">
 
-        <input type="number" [(ngModel)]="quantity" placeholder="Enter quantity" />
-        <h6>/ {{ totalQuantity }} pcs</h6>
+          <h3>Enter Quantity Received</h3>
+
+          <h6>{{ itemName }}</h6>
+          <div class="modal-input">
+
+            <!-- <ion-input type="number" size="small" fill="outline"   [(ngModel)]="quantity" placeholder="Enter quantity"></ion-input> -->
+
+            <input type="number" [(ngModel)]="quantity" placeholder="Enter quantity" />
+            <h6>/ {{ totalQuantity }} pcs</h6>
+          </div>
+          <div *ngIf="teams.length > 0" class="team">
+            <h6>Setect Team </h6>
+            <ion-button *ngFor="let team of teams" (click)="selectTeam(team)" expand="block" fill="outline"
+              shape="round" [ngClass]="{'selected': selectedTeam === team, 'notselected': selectedTeam !== team}">
+              {{team}}
+            </ion-button>
+          </div>
+        </div>
+
+        <div>
+          <div class="modal-select">
+            <h3>Select Teams</h3>
+            <ion-button fill="clear" color="primary" (click)="addSelect()">
+              <ion-icon name="add-circle"></ion-icon>
+            </ion-button>
+          </div>
+
+          <div class="dropdown" *ngFor="let item of selectList; let i = index">
+
+            <!-- First Dropdown -->
+            <ion-item (click)="openPopover($event, i)" lines="none" button>
+              <ion-buttons class="remove-circle" slot="start">
+                <ion-button (click)="removeSelect(i)">
+                  <ion-icon name="remove-circle"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+          
+              <ion-label>{{ item?.selectedOptionLabel || 'Select Teams' }}</ion-label>
+              <ion-icon name="chevron-down" slot="end"></ion-icon>
+            </ion-item>
+          
+            <!-- First Popover -->
+            <ion-popover 
+              [isOpen]="item.isPopoverOpen"
+              (didDismiss)="item.isPopoverOpen = false"
+              [event]="item.popoverEvent"
+              showBackdrop="true"
+            >
+              <ng-template>
+                <ion-list>
+                  <ion-item button *ngFor="let teams of teams2" (click)="selectOption(teams, i)">
+                    {{ teams }}
+                  </ion-item>
+                </ion-list>
+              </ng-template>
+            </ion-popover>
+          
+            <!-- Conditionally render Second Dropdown -->
+            <ion-item *ngIf="PaintDescriptionlist[i]?.length" (click)="openSecondPopover($event, i)" lines="none" button>
+              <ion-label>
+                {{ selectList2[i]?.selectedOptionLabel || 'Select description' }}
+              </ion-label>
+              <ion-icon name="chevron-down" slot="end"></ion-icon>
+            </ion-item>
+          
+            <!-- Second Popover -->
+            <ion-popover 
+              *ngIf="PaintDescriptionlist[i]?.length"
+              [isOpen]="selectList2[i]?.isPopoverOpen"
+              [event]="selectList2[i]?.popoverEvent"
+              (didDismiss)="selectList2[i].isPopoverOpen = false"
+              showBackdrop="true"
+            >
+              <ng-template>
+                <ion-list>
+                  <ion-item 
+                    button 
+                    *ngFor="let desc of PaintDescriptionlist[i]" 
+                    (click)="selectSecondOption(desc, i)">
+                    {{ desc.name }}
+                  </ion-item>
+                </ion-list>
+              </ng-template>
+            </ion-popover>
+          
+          </div>
+          
+          
+          <!-- <ion-item>
+            <ion-label>Choose an option</ion-label>
+            <select [(ngModel)]="selectedOption" style="width: 100%; border: none; background: transparent;">
+              <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
+            </select>
+          </ion-item>
+          <ion-item (click)="toggleDropdown()" lines="none" button>
+            <ion-label>{{ selectedOptionLabel || 'Select an option' }}</ion-label>
+            <ion-icon [name]="isDropdownOpen ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
+          </ion-item>
+          
+          <ion-list *ngIf="isDropdownOpen" class="custom-dropdown">
+            <ion-item *ngFor="let option of options" (click)="selectOption(option)" button>
+              {{ option.label }}
+            </ion-item>
+          </ion-list> -->
+          
+          
+          
+        
+          
+        </div>
+
+
+
       </div>
-      <div *ngIf="teams.length > 0" class="team">
-        <h6>Setect Team </h6>
-        <ion-button *ngFor="let team of teams" (click)="selectTeam(team)" expand="block" fill="outline" shape="round"
-          [ngClass]="{'selected': selectedTeam === team, 'notselected': selectedTeam !== team}">
-          {{team}}
-        </ion-button>
-      </div>
+
+
+
       <div class="modal-actions">
         <ion-button class="close-btn" shape="round" (click)="closeModal()">
           Cancel
@@ -37,8 +140,7 @@
             (click)="submitQuantity()">
             Submit
           </ion-button>
-          <ion-button *ngIf="teams.length === 0" class="submit-btn" shape="round"
-            (click)="submitQuantity()">
+          <ion-button *ngIf="teams.length === 0" class="submit-btn" shape="round" (click)="submitQuantity()">
             Submit
           </ion-button>
 
@@ -47,4 +149,4 @@
     </div>
   </div>
 </div>
-</ion-content>
+<!-- </ion-content> -->

@@ -1,4 +1,4 @@
-<ion-header >
+<ion-header>
   <div class="hader">
     <ion-item>
       <ion-button (click)="isSearchbarVisible?toggleSearch():backToOrderPage()" fill="clear" slot="start"
@@ -21,7 +21,7 @@
   </div>
 </ion-header>
 <ion-content [fullscreen]="true">
-  
+
 
   <div>
     <ion-searchbar *ngIf="isSearchbarVisible" [debounce]="1000" (ionInput)="handleInput($event)">
@@ -39,26 +39,26 @@
       <ion-card *ngFor="let item of RequisitionItemLists; let i = index">
         <ion-card-content>
           <div class="card-content">
-            <ion-checkbox [(ngModel)]="this.itemChecked[i]"  labelPlacement="end" (ionChange)="openModal(i,item) ">
+            <ion-checkbox [(ngModel)]="this.itemChecked[i]" labelPlacement="end" (ionChange)="openModal(i,item) ">
             </ion-checkbox>
 
             <div>
               <ion-thumbnail (click)="openImgModal(item,i)">
-                <img
-                  alt="item Image"
-                  [src]="getImageSrc(i)"
-                />
+                <img alt="item Image" [src]="getImageSrc(i)" />
               </ion-thumbnail>
             </div>
             <div (click)="openModal(i,item)">
               <div style="display: flex;">
-                <h5>{{ item.partNumber | uppercase }}  ({{item.color}})</h5>
+                <h5>{{ item.partNumber | uppercase }} ({{item.color}})</h5>
                 <ion-badge style="margin-left: 20px;" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
                   item.priority }}</ion-badge>
               </div>
               <h6>{{ item.partDesciption | uppercase }}</h6>
-              <h6 *ngIf="usereRole === 'Inward Manager'">Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
-              <h6 *ngIf="usereRole !== 'Inward Manager'">Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.curretProcess.quantity }} pcs</h6>
+              <h6 *ngIf="usereRole === 'Inward Manager'">
+                Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
+              <h6 *ngIf="usereRole !== 'Inward Manager'">
+                Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.curretProcess.quantity }}
+                pcs</h6>
             </div>
           </div>
           <!-- Hidden file input element -->
@@ -120,6 +120,33 @@
   </app-received-modal> -->
 </ion-content>
 
+<ion-modal mode="ios" class="priority-modal" [isOpen]="isModalOpen" (didDismiss)="isModalOpen = false">
+  <ng-template>
+    
+
+    <ion-footer style="padding: 0;">
+      <ion-item lines="none">
+        <h3><b>Select Priority</b></h3>
+      </ion-item>
+
+      <ion-item *ngFor="let team of priority" lines="none">
+        <ion-button class="custom-select" expand="block" shape="round" fill="outline" size="large"
+          [class.selected]="team === selectedPriority" (click)="selectPriority(team)">
+          <b>{{ team }}</b>
+        </ion-button>
+      </ion-item>
+      <div class="accept-btn" style="display: flex; width: 100%;">
+        <ion-button style="width:100%" shape="round" size="large" expand="block" slot="start" aria-label="accept" (click)="isModalOpen = false">
+          Cancle
+        </ion-button>
+        <ion-button style="width:100%" shape="round" size="large" expand="block" slot="start" aria-label="accept" (click)="submit()">
+          Submit
+        </ion-button>
+      </div>
+    </ion-footer>
+  </ng-template>
+</ion-modal>
+
 
 
 <ion-footer>
@@ -130,7 +157,7 @@
     </ion-button>
     <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Inward Manager'" shape="round" size="large"
       expand="block" slot="start" aria-label="accept" (click)="acceptItems()">
-      Assign Team
+      Select Priority and Accept Items
     </ion-button>
   </div>
 </ion-footer>

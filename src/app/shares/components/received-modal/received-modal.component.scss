@@ -13,11 +13,11 @@
     // justify-content: center;
     // z-index: 1000; /* Ensure it is above all other elements */
         /* position: fixed; */
-        top: 0;
-        left: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        // top: 0;
+        // left: 0;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
     
   }
   
@@ -29,12 +29,12 @@
     // max-width: 300px;
     // text-align: center;
     // box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-    background: white; 
-    /* padding: 0; */
-    /* border-radius: 8px; */
-    width: 90%;
-    max-width: 300px;
-    text-align: center;
+    // background: white; 
+    // /* padding: 0; */
+    // /* border-radius: 8px; */
+    // width: 90%;
+    // max-width: 300px;
+    // text-align: center;
     /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3); */
   }
   
@@ -118,3 +118,34 @@ h3{
   }
 }
 
+.dropdown {
+  border-bottom: 1px solid black
+  // margin-left: auto;
+  // width: 145px;
+  // height: 32px;
+  // margin-top: 7px;
+  // color: #A52B54;
+  // display: flex;
+}
+.remove-circle{
+  color: #A52B54;
+  font-size: 20px;
+  margin-left: auto;
+  margin-top: 5px;
+}
+// .custom-select {
+//   --border-color: #A52B54
+// }
+
+// .custom-select::part(icon) {
+//   height: 32px;
+//   color: #A52B54;
+// }
+
+// .custom-select::part(container) {
+//   margin-top: 7px;
+// }
+
+.modal-select{
+  display: flex;
+}

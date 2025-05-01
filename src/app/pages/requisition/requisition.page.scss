@@ -203,3 +203,18 @@ ion-footer {
     }
   }
 }
+
+.selected {
+  --color: #A52B54!important;
+  --border-color: #A52B54!important;
+}
+.custom-select{
+  width: 100%;
+  --color: #333333;
+  --border-color: #333333;
+}
+.priority-modal{
+  --height: auto;
+  // --width: 100%;
+  // --border-radius: 16px;
+}

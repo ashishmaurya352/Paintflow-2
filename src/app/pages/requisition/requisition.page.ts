@@ -47,7 +47,11 @@ export class RequisitionPage implements OnInit {
   results: string[] = [];
   slipNumber: any;
   selectedItemImage: any = []
-
+  teams: any[] = []
+  PaintDescription: any = []
+  selectedPriority:any = 'Low';
+  priority = ['High', 'Medium', 'Low'];
+  inwardManagerData:any
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -62,7 +66,7 @@ export class RequisitionPage implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
-      
+
       console.log('params', params)
       this.requisitionId = params['id'];
       this.slipNumber = params['slipNumber'];
@@ -75,14 +79,16 @@ export class RequisitionPage implements OnInit {
     }
 
     this.getItem();
-    
+    this.getPaintDescriptionGet()
+    this.getTeams()
+
 
   }
 
   backToOrderPage() {
     let segmentValue = 'InQueue';
     if (this.usereRole === 'Inward Manager') {
-     segmentValue = 'UnAssigned';
+      segmentValue = 'UnAssigned';
       this.router.navigate(['/order'], { queryParams: { segmentValue } });
       return;
     }
@@ -104,9 +110,9 @@ export class RequisitionPage implements OnInit {
   async openModal(i: number, item: any) {
     // this.index = i;
     let totalQuantity
-    if(this.usereRole === 'Inward Manager'){
+    if (this.usereRole === 'Inward Manager') {
       totalQuantity = item.quantity;
-    }else{
+    } else {
       totalQuantity = item.curretProcess.quantity;
     }
     const modal = await this.modalController.create({
@@ -114,16 +120,20 @@ export class RequisitionPage implements OnInit {
       componentProps: {
         'totalQuantity': totalQuantity,
         'getquantity': this.UpdatedItemLists[i].quantity,
-        itemName: item.partDesciption,
-        
+        'itemName': item.partDesciption,
+        'teams2': this.teams,
+        'PaintDescription': this.PaintDescription,
+
+
       },
       cssClass: 'quantity-modal',
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log('Modal data:', dataReturned);
       if (dataReturned.data !== undefined) {
-        this.UpdatedItemLists[i].quantity = dataReturned.data;
-        this.itemChecked[i] = dataReturned.data > 0;
+        this.UpdatedItemLists[i].quantity = dataReturned.data.quantity;
+        this.UpdatedItemLists[i].itemPaintDescriptions = dataReturned.data.itemPaintDescriptions;
+        this.itemChecked[i] = dataReturned.data.quantity > 0;
       }
       else {
         console.log('No data returned from modal');
@@ -142,27 +152,27 @@ export class RequisitionPage implements OnInit {
     let params = new HttpParams()
       .set('RequisitionId', this.requisitionId)
       .set('Status', 'InQueue');
-  
+
     // Add additional filter parameters if they are not null
     Object.keys(this.filter).forEach(key => {
       if (this.filter[key] !== null) {
         params = params.set(key, this.filter[key]);
       }
     });
-  
+
     // Show loader
     this.controller.showloader();
-  
+
     // Make HTTP call
     this.httpService.getItem(params).subscribe(
       (res: any) => {
         this.addcss();
-        if(res.length < 20) {
+        if (res.length < 20) {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         // Hide loader after response
         this.controller.hideloader();
-  
+
         // If it's the first page, replace the list, otherwise append to it
         if (this.filter.PageNumber === 1) {
           this.RequisitionItemLists = res;
@@ -182,6 +192,7 @@ export class RequisitionPage implements OnInit {
             this.UpdatedItemLists = [...this.UpdatedItemLists, ...res.map((item: any) => ({
               itemProcessId: item.currentProcess_Id,
               quantity: 0,
+              itemPaintDescriptions: []
             }))];
           }
         } else if (this.usereRole === 'Inward Manager') {
@@ -206,13 +217,13 @@ export class RequisitionPage implements OnInit {
       (error) => {
         // Hide loader in case of error
         this.controller.hideloader();
-  
+
         // Optionally, log the error or display a user-friendly message
         console.error('Error fetching items:', error);
       }
     );
   }
-  
+
   acceptItems() {
     const items = this.UpdatedItemLists.filter((item, i) => this.itemChecked[i]);
 
@@ -234,7 +245,13 @@ export class RequisitionPage implements OnInit {
         this.controller.hideloader()
       });
     } else if (this.usereRole === 'Inward Manager') {
-      this.router.navigate(['/assign-team'], { queryParams: { items: JSON.stringify(items), id: this.requisitionId } });
+       this.isModalOpen = true
+      this.inwardManagerData = {
+        "requisitionId": this.requisitionId,
+        "priority": this.selectedPriority,
+        "items": items
+    }
+      // this.router.navigate(['/assign-team'], { queryParams: { items: JSON.stringify(items), id: this.requisitionId } });
     }
   }
 
@@ -368,23 +385,23 @@ export class RequisitionPage implements OnInit {
   getImageSrc(index: number) {
     // Ensure that images exists and has at least one element
     let images
-     if(this.usereRole === 'Inward Manager'){
-       images = this.UpdatedItemLists[index].images;
-    return images  ? images[0] : this.defaultImageUrl;
+    if (this.usereRole === 'Inward Manager') {
+      images = this.UpdatedItemLists[index].images;
+      return images ? images[0] : this.defaultImageUrl;
 
-      } else if(this.usereRole === 'Executive'){
-        images = this.RequisitionItemLists[index]?.imageUrl;
-    return images  ? images : this.defaultImageUrl;
+    } else if (this.usereRole === 'Executive') {
+      images = this.RequisitionItemLists[index]?.imageUrl;
+      return images ? images : this.defaultImageUrl;
 
-      }else{
-        return images  ? images : this.defaultImageUrl;
+    } else {
+      return images ? images : this.defaultImageUrl;
 
-      }
+    }
     // return images  ? images[0] : this.defaultImageUrl;
   }
 
-  async openImgModal(item:any, index: number) {
-    if(this.usereRole == 'Executive'){
+  async openImgModal(item: any, index: number) {
+    if (this.usereRole == 'Executive') {
       // response = await this.getItemProcessDetailed(item).toPromise();
       const response = await this.getImageUrl(item).toPromise();
       this.openSwiper()
@@ -398,14 +415,14 @@ export class RequisitionPage implements OnInit {
     const modal = await this.modalController.create({
       component: ImgModalComponent,
       componentProps: {
-        'image': this.UpdatedItemLists[index].images?this.UpdatedItemLists[index].images:this.selectedItemImage,
-        'isEdit': this.usereRole === 'Inward Manager'? true : false,
+        'image': this.UpdatedItemLists[index].images ? this.UpdatedItemLists[index].images : this.selectedItemImage,
+        'isEdit': this.usereRole === 'Inward Manager' ? true : false,
       },
       cssClass: 'img-modal',
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log('Modal data:', dataReturned);
-    this.selectedItemImage = [];
+      this.selectedItemImage = [];
 
       if (dataReturned.data !== undefined) {
         this.UpdatedItemLists[index].images = dataReturned.data;
@@ -431,18 +448,18 @@ export class RequisitionPage implements OnInit {
     const parm = new HttpParams().set('id', item.currentProcess_Id);
     this.controller.showloader()
     return this.httpService.getItemProcessDetailed(item.currentProcess_Id)
-    .pipe(
-      tap((res: any) => {
-        this.controller.hideloader();
-        this.selectedItemImage = res.itemProcessImages;
-        // openModalPop here if needed
-      }),
-      catchError((error) => {
-        this.controller.hideloader();
-        console.error(error);
-        return of(null); // Return null if you want to handle it silently
-      })
-    );
+      .pipe(
+        tap((res: any) => {
+          this.controller.hideloader();
+          this.selectedItemImage = res.itemProcessImages;
+          // openModalPop here if needed
+        }),
+        catchError((error) => {
+          this.controller.hideloader();
+          console.error(error);
+          return of(null); // Return null if you want to handle it silently
+        })
+      );
   }
 
   getImageUrl(item: any) {
@@ -462,8 +479,8 @@ export class RequisitionPage implements OnInit {
           return of(null); // Return null if you want to handle it silently
         })
       );
-}
- async openSwiper() {
+  }
+  async openSwiper() {
     const modal = await this.modalController.create({
       component: SwiperComponent,
       componentProps: {
@@ -471,6 +488,69 @@ export class RequisitionPage implements OnInit {
       },
     });
     await modal.present();
+  }
+
+  getPaintDescriptionGet() {
+    this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
+      console.log('getPaintDescriptionGet', res);
+      const paintList = res.item1; // Assuming 'data' is the key that contains the list
+      // const uniqueTeams = [...new Set(paintList.map((item: any) => item.team))];
+
+      // Step 2: Group by team
+      const groupedByTeam = paintList.reduce((groups: any, item: any) => {
+        if (!groups[item.team]) {
+          groups[item.team] = [];
+        }
+        groups[item.team].push(item);
+        return groups;
+      }, {} as { [key: string]: any[] });
+
+      // Example: How to access
+      // console.log('Grouped Data:', groupedByTeam);
+      this.PaintDescription = groupedByTeam;
+
+    })
+  }
+
+  getTeams() {
+    // this.controller.showloader()
+    this.httpService.getTeams()
+      .subscribe(
+        (res: any) => {
+          // this.controller.hideloader()
+          this.teams = res;
+          console.log(res);
+        }, (error) => {
+          // this.controller.hideloader()
+        });
+  }
+  selectPriority(team: string) {
+    this.selectedPriority = team
+  }
+
+  submit(){
+    this.isModalOpen = false
+
+  this.inwardManagerData.priority = this.selectedPriority
+    this.httpService.assignItemProcess(this.inwardManagerData)
+    .subscribe((res:any)=>{
+      if(res.success){
+        this.isModalOpen = false
+        this.controller.hideloader()
+        console.log(res);
+        console.log('res');
+        const segmentValue = 'Assigned'
+        // const segmentValue = 'Active';
+        this.router.navigate(['/order'], { queryParams: { segmentValue } });
+      }
+      else {
+        this.controller.hideloader()
+        this.controller.showToast(res.message);
+
+      }
+    },(error) => {
+      this.controller.hideloader()
+    });
   }
 
 }
