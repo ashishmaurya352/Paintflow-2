@@ -1,6 +1,6 @@
+
 import { Component, Input, OnInit } from '@angular/core';
 import { Chart, ChartOptions, registerables } from 'chart.js';
-
 
 @Component({
   selector: 'app-chart',
@@ -46,7 +46,7 @@ export class ChartComponent  implements OnInit {
         },
       ],
       // Optionally, you can use labels like:
-      // labels: ['Complete', 'Pending']
+      // labels: ['Complete', 'Pending'] 
     };
   
     // Define the custom plugin to draw text inside the doughnut chart

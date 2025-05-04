@@ -7,6 +7,7 @@ import { InfiniteScrollCustomEvent, IonicModule, ModalController } from '@ionic/
 import { addIcons } from 'ionicons';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
+import { ChartComponent } from 'src/app/shares/components/chart/chart.component';
 import { FilterModalComponent } from 'src/app/shares/components/filter-modal/filter-modal.component';
 import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
 
@@ -14,7 +15,7 @@ import { SearchModalComponent } from 'src/app/shares/components/search-modal/sea
   selector: 'app-order',
   templateUrl: './order.page.html',
   styleUrls: ['./order.page.scss'],
-  imports: [CommonModule, IonicModule],
+  imports: [CommonModule, IonicModule,ChartComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class OrderPage implements OnInit {

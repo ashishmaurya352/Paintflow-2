@@ -13,7 +13,7 @@ import { HttpInterceptorService } from './services/http-interceptor.service';
 @NgModule({
   declarations: [AppComponent],
   imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule, HttpClientModule,
-    FormsModule,HttpClientModule],
+    FormsModule, HttpClientModule],
   providers: [{
     provide: HTTP_INTERCEPTORS,   // Register the interceptor
     useClass: HttpInterceptorService,  // Use your custom interceptor
