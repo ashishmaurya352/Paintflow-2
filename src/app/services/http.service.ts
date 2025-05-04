@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +43,7 @@ export class HttpService {
   readonly ItemGetColors = `/Item/GetColors`;
   readonly PaintDescWiseCostOverview = `/Dashboard/PaintDescWiseCostOverview`;
   readonly PaintDescriptionGet = `/PaintDescription/Get`;
+  readonly PaintDescriptionUpdateRate = `/PaintDescription/UpdateRate`;
   
   
   
@@ -180,5 +182,16 @@ export class HttpService {
   getPaintDescriptionGet(): Observable<any> {
     let url = `${this.apiUrl + this.PaintDescriptionGet}`;
     return this.httpClient.get(url);
+  }
+  paintDescriptionUpdateRate(data: any): Observable<any> {
+    let params = new HttpParams();
+    for (const key in data) {
+      if (data.hasOwnProperty(key)) {
+        params = params.set(key, data[key]);
+      }
+    }
+  
+    const url = `${this.apiUrl + this.PaintDescriptionUpdateRate}`;
+    return this.httpClient.put(url, '', { params }); // sending as query params
   }
 }

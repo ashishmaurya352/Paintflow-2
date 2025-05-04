@@ -38,6 +38,7 @@ export class DashboardPage implements OnInit {
     { label: '6M' },
     { label: '1Y' }
   ];
+  costAnalysisType = 'External'
   
   constructor(
     
@@ -122,6 +123,7 @@ export class DashboardPage implements OnInit {
       if (this.filter[key] !== null) {
         parm = parm.set(key, this.filter[key]);
       }
+      parm = parm.set('Type', this.costAnalysisType);
     });
     this.httpService.getCostOverview(parm).subscribe((res:any)=>{
       this.paintData = res
@@ -348,5 +350,17 @@ export class DashboardPage implements OnInit {
     this.getPaintDescWiseCostOverview()
     this.getCostOverview()
   }
+  onCostAnalysisStatusChange(event: any) {
+    this.costAnalysisType = event.target.value;
+    // this.filter.Status = Status
+    // this.getPaintDescWiseCostOverview()
+    // this.getActiveRequisitionCount()
+    this.getCostOverview()
+  }
+  changearePage(){
+    this.router.navigate(['/change-rate']);
+  }
+  
+ 
 
 }

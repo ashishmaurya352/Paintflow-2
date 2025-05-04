@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <!-- <ion-toolbar>
+    <ion-title>changeRate</ion-title>
+  </ion-toolbar> -->
+  <div class="hader">
+    <ion-item>
+      <ion-button (click)="backToDashboardPage()" fill="clear" slot="start" aria-label="Show/hide">
+        <!-- <ion-icon name="arrow-back"></ion-icon> -->
+        <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
+      </ion-button>
+      <h3>{{pageTitles}}</h3>
+
+      <ion-segment slot="end" [value]="rate" mode="md" class="custom-toggle" (ionChange)="segment($event)">
+        <ion-segment-button value="INTR">
+          <ion-label>INTR</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="EXTR">
+          <ion-label>EXTR</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+
+    </ion-item>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-list *ngFor="let group of teamData">
+    <ion-item-divider>
+      <ion-label style="color: black;">
+        <strong>{{ group[0] }}</strong>
+      </ion-label>
+    </ion-item-divider>
+
+    <ion-item *ngFor="let item of group[1]">
+      <ion-label>
+        <ion-item>
+          <ion-input *ngIf="rate == 'EXTR'" type="number" [label]="item.name" [(ngModel)]="item.externalRate">
+          </ion-input>
+          <ion-input *ngIf="rate == 'INTR'" type="number" [label]="item.name" [(ngModel)]="item.internalRate">
+          </ion-input>
+        </ion-item>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+
+</ion-content>
+
+<ion-footer>
+  <div class="sub-btn">
+    <ion-button shape="round" size="large" expand="block" slot="start" aria-label="accept"
+      (click)="submitChangedRates()">
+      Submit
+    </ion-button>
+  </div>
+</ion-footer>

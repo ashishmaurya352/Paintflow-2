@@ -21,19 +21,19 @@
 
             <!-- <ion-input type="number" size="small" fill="outline"   [(ngModel)]="quantity" placeholder="Enter quantity"></ion-input> -->
 
-            <input type="number" [(ngModel)]="quantity" placeholder="Enter quantity" />
+            <input type="number" [(ngModel)]="quantity" (ngModelChange)="onQuantityChange()" placeholder="Enter quantity" />
             <h6>/ {{ totalQuantity }} pcs</h6>
           </div>
-          <div *ngIf="teams.length > 0" class="team">
+          <!-- <div *ngIf="teams.length > 0" class="team">
             <h6>Setect Team </h6>
             <ion-button *ngFor="let team of teams" (click)="selectTeam(team)" expand="block" fill="outline"
               shape="round" [ngClass]="{'selected': selectedTeam === team, 'notselected': selectedTeam !== team}">
               {{team}}
             </ion-button>
-          </div>
+          </div> -->
         </div>
 
-        <div>
+        <div *ngIf="isInwardManager">
           <div class="modal-select">
             <h3>Select Teams</h3>
             <ion-button fill="clear" color="primary" (click)="addSelect()">
@@ -100,47 +100,16 @@
             </ion-popover>
           
           </div>
-          
-          
-          <!-- <ion-item>
-            <ion-label>Choose an option</ion-label>
-            <select [(ngModel)]="selectedOption" style="width: 100%; border: none; background: transparent;">
-              <option *ngFor="let option of options" [value]="option.value">{{ option.label }}</option>
-            </select>
-          </ion-item>
-          <ion-item (click)="toggleDropdown()" lines="none" button>
-            <ion-label>{{ selectedOptionLabel || 'Select an option' }}</ion-label>
-            <ion-icon [name]="isDropdownOpen ? 'chevron-up' : 'chevron-down'" slot="end"></ion-icon>
-          </ion-item>
-          
-          <ion-list *ngIf="isDropdownOpen" class="custom-dropdown">
-            <ion-item *ngFor="let option of options" (click)="selectOption(option)" button>
-              {{ option.label }}
-            </ion-item>
-          </ion-list> -->
-          
-          
-          
-        
-          
         </div>
-
-
-
       </div>
-
-
 
       <div class="modal-actions">
         <ion-button class="close-btn" shape="round" (click)="closeModal()">
           Cancel
         </ion-button>
         <div>
-          <ion-button *ngIf="teams.length !== 0" [disabled]="!selectedTeam" class="submit-btn" shape="round"
-            (click)="submitQuantity()">
-            Submit
-          </ion-button>
-          <ion-button *ngIf="teams.length === 0" class="submit-btn" shape="round" (click)="submitQuantity()">
+        
+          <ion-button  class="submit-btn" shape="round" (click)="submitQuantity()">
             Submit
           </ion-button>
 
@@ -149,4 +118,3 @@
     </div>
   </div>
 </div>
-<!-- </ion-content> -->

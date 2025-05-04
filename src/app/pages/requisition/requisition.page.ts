@@ -123,8 +123,7 @@ export class RequisitionPage implements OnInit {
         'itemName': item.partDesciption,
         'teams2': this.teams,
         'PaintDescription': this.PaintDescription,
-
-
+        isInwardManager : this.usereRole === 'Inward Manager' ? true : false,
       },
       cssClass: 'quantity-modal',
     });
@@ -132,7 +131,9 @@ export class RequisitionPage implements OnInit {
       console.log('Modal data:', dataReturned);
       if (dataReturned.data !== undefined) {
         this.UpdatedItemLists[i].quantity = dataReturned.data.quantity;
-        this.UpdatedItemLists[i].itemPaintDescriptions = dataReturned.data.itemPaintDescriptions;
+        if (this.usereRole === 'Inward Manager') {
+          this.UpdatedItemLists[i].itemPaintDescriptions = dataReturned.data.itemPaintDescriptions;
+        }
         this.itemChecked[i] = dataReturned.data.quantity > 0;
       }
       else {

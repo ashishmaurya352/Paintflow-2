@@ -83,13 +83,13 @@
         <div>
           <strong class="active">Paint Desc Wise</strong> Cost Analysis
         </div>
-        <!-- <div class="dropdown">
-          <ion-select class="custom-select" [value]="'Completed'" interface="popover" label-placement="floating"
-            shape="round" fill="outline" (ionChange)="onStatusChange($event)">
-            <ion-select-option value="Completed">Completed</ion-select-option>
-            <ion-select-option value="Medium">Ongoing</ion-select-option>
+        <div class="dropdown">
+          <ion-select class="custom-select" [value]="'External'" interface="popover" label-placement="floating"
+            shape="round" fill="outline" (ionChange)="onCostAnalysisStatusChange($event)">
+            <ion-select-option value="External">External</ion-select-option>
+            <ion-select-option value="Internal">Internal</ion-select-option>
           </ion-select>
-        </div> -->
+        </div>
       </div>
       <!-- <div class="time-period">
         <ion-button fill="clear" size="small">
@@ -181,7 +181,10 @@
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
     <ion-fab-list side="top">
-      <ion-fab-button data-desc="Refresh App Data" aria-label="Repeat Action" (click)="getRequisitionFetch()">
+      <ion-fab-button data-desc="Update Rate Data " aria-label="Refresh App Data" (click)="changearePage()">
+        <ion-icon name="clipboard-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button data-desc="Refresh App Data" aria-label="Update Rate Data" (click)="getRequisitionFetch()">
         <ion-icon name="repeat-outline"></ion-icon>
       </ion-fab-button>
       <!-- <ion-fab-button data-desc="Download Master File" (click)="downloadFile()">

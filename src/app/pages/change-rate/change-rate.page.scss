@@ -1,0 +1,43 @@
+.hader {
+    h3 {
+      font-size: 32px;
+      margin: auto;
+      color: #333333;
+      margin-top: 16px !important;
+      margin-bottom: 16px !important;
+      font-weight: bold;
+    }
+  
+    ion-icon {
+      font-size: 32px
+    }
+  }
+
+  .custom-toggle {
+    background-color: #a7345d;
+    border-radius: 30px;
+    padding: 2px;
+    // height: 30px;
+    width: min-content;
+  
+    ion-segment-button {
+      --background: transparent;
+      --color: white;
+      --indicator-color: none;
+      --border-radius: 30px;
+      font-weight: bold;
+      // padding: 0 16px;
+  
+      &.segment-button-checked {
+        background-color: white;
+        color: #a7345d;
+      }
+    }
+  }
+
+  .sub-btn{
+    ion-button{
+        --background: #A52B54;  /* Apply color to button background */
+        --color: white;         /* Apply text color inside the button */
+    }
+  }

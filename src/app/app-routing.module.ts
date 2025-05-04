@@ -40,6 +40,10 @@ const routes: Routes = [
     path: 'requisition',
     loadChildren: () => import('./pages/requisition/requisition.module').then( m => m.RequisitionPageModule)
   },
+  {
+    path: 'change-rate',
+    loadChildren: () => import('./pages/change-rate/change-rate.module').then( m => m.ChangeRatePageModule)
+  },
 ];
 
 @NgModule({

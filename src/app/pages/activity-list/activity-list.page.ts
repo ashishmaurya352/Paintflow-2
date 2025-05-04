@@ -239,7 +239,7 @@ qaAcceptedList = [
           this.selectedTeam = dataReturned.data.team
         }
         else {
-          this.completed = dataReturned.data
+          this.completed = dataReturned.data.quantity
         }
         if (this.typeItem == 'Update') {
           this.updateItemStatus(this.selectedItem, 'CompleteStatus');
@@ -405,10 +405,12 @@ qaAcceptedList = [
       parm = new HttpParams().set('id', item.currentProcess_Id).set('quantity', this.completed).set('type', 'CompleteStatus');
 
     } else if (type == 'SendForApproval') {
-      parm = new HttpParams().set('id', item.currentProcess_Id).set('quantity', this.completed).set('type', 'SendForApproval').set('team', this.selectedTeam);
+      // parm = new HttpParams().set('id', item.currentProcess_Id).set('quantity', this.completed).set('type', 'SendForApproval').set('team', this.selectedTeam);
+      parm = new HttpParams().set('id', item.currentProcess_Id).set('quantity', this.completed).set('type', 'SendForApproval');
     }
     else {
-      parm = new HttpParams().set('id', item.currentProcess_Id).set('quantity', this.completed).set('type', 'SendForHandover').set('team', this.selectedTeam);
+      parm = new HttpParams().set('id', item.currentProcess_Id).set('quantity', this.completed).set('type', 'SendForHandover') ;
+      // parm = new HttpParams().set('id', item.currentProcess_Id).set('quantity', this.completed).set('type', 'SendForHandover').set('team', this.selectedTeam);
     }
     this.httpService.updateItemStatus(parm)
       .subscribe(
