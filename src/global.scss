@@ -77,3 +77,8 @@ ion-footer{
   --height: auto;
   --width: 100%;
 }
+@media (min-width: 1024px) {
+    .filter_model {
+        --width: 80%;
+    }
+}
