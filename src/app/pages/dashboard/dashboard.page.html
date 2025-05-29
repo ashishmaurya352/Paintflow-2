@@ -26,7 +26,7 @@
   </div>
 </ion-header>
 <ion-content [fullscreen]="true">
-  
+
 
   <div class="content">
     <div class="header-title">
@@ -43,26 +43,17 @@
         </div>
       </div>
       <div class="time-period">
-        <ion-button 
-          *ngFor="let period of timePeriods" 
-          fill="clear" 
-          size="small" 
-          [attr.aria-label]="period.label" 
-          [ngClass]="{'active': selectedPeriod === period.label}" 
-          (click)="setActive(period.label)">
+        <ion-button *ngFor="let period of timePeriods" fill="clear" size="small" [attr.aria-label]="period.label"
+          [ngClass]="{'active': selectedPeriod === period.label}" (click)="setActive(period.label)">
           {{ period.label }}
         </ion-button>
-        <ion-button 
-          fill="clear" 
-          size="small" 
-          aria-label="Select Custom Date" 
-          [ngClass]="{'active': selectedPeriod === 'Custom Date'}" 
-          (click)="setActive('Custom Date')">
+        <ion-button fill="clear" size="small" aria-label="Select Custom Date"
+          [ngClass]="{'active': selectedPeriod === 'Custom Date'}" (click)="setActive('Custom Date')">
           <ion-icon name="calendar-outline"></ion-icon>
         </ion-button>
       </div>
-      
-      
+
+
     </div>
 
     <ion-grid>
@@ -121,8 +112,35 @@
     </div>
     <!-- size="6" size-md="4"  -->
 
-    <ion-row>
+    <!-- <ion-row>
       <ion-col size="6" size-md="4" *ngFor="let key of objectKeys(paintDesc)">
+        <ion-card class="requisition-card">
+          <ion-card-content class="overview">
+            <h3>{{ paintDesc[key].name }}</h3>
+            <h2>{{ paintDesc[key].amount | number }}</h2>
+            <p>Qty in {{ paintDesc[key].type }}: <b>{{ paintDesc[key].quantity | number }}</b></p>
+            <p>Rate: <b>{{ paintDesc[key].rate }}</b></p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row> -->
+    <!-- First Row (6 items only) -->
+    <ion-row>
+      <ion-col size-xl="2" size="4" *ngFor="let key of getFirstSixKeys(paintDesc)">
+        <ion-card class="requisition-card">
+          <ion-card-content class="overview">
+            <h3>{{ paintDesc[key].name }}</h3>
+            <h2>{{ paintDesc[key].amount | number }}</h2>
+            <p>Qty in {{ paintDesc[key].type }}: <b>{{ paintDesc[key].quantity | number }}</b></p>
+            <p>Rate: <b>{{ paintDesc[key].rate }}</b></p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- Following rows -->
+    <ion-row>
+      <ion-col size="6" size-md="4" *ngFor="let key of getRemainingKeys(paintDesc)">
         <ion-card class="requisition-card">
           <ion-card-content class="overview">
             <h3>{{ paintDesc[key].name }}</h3>
@@ -135,12 +153,13 @@
     </ion-row>
 
 
+
     <!-- <app-bar-chart canvasId="barChart"></app-bar-chart> -->
 
     <div class="header-title">
       <div>
 
-        <strong class="active">Active</strong> Requisitions  
+        <strong class="active">Active</strong> Requisitions
         <!-- <strong class="active">Active</strong> Requisitions  ({{this.allItem}})  -->
       </div>
     </div>
@@ -151,11 +170,10 @@
   <ion-grid>
     <ion-row>
       <ion-col size="6" size-md="4" *ngFor="let item of requisitions">
-        <ion-card class="requisition-card" >
+        <ion-card class="requisition-card">
           <ion-card-content>
             <h2 class="requisition-number">{{ item.count }}</h2>
             <p class="requisition-title">{{ item.name }}</p>
-            <a class="view-all" *ngIf="item.name != 'All'" (click)="viewAll(item)">View all &gt;</a>
           </ion-card-content>
         </ion-card>
       </ion-col>

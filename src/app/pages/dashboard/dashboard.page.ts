@@ -249,9 +249,19 @@ export class DashboardPage implements OnInit {
       this.paintDesc = res
     })
   }
-  objectKeys(obj: any): string[] {
-    return obj ? Object.keys(obj) : [];
-  }
+  // objectKeys(obj: any): string[] {
+  //   return obj ? Object.keys(obj) : [];
+  // }
+  objectKeys = Object.keys;
+
+getFirstSixKeys(obj: any): string[] {
+  return Object.keys(obj).slice(0, 6);
+}
+
+getRemainingKeys(obj: any): string[] {
+  return Object.keys(obj)
+}
+
   selectedPeriod: string = '1M';
 
   // Function to set the active period
