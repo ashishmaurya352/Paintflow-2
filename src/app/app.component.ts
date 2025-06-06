@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { Platform } from '@ionic/angular';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { EdgeToEdge } from '@capawesome/capacitor-android-edge-to-edge-support';
+import { Capacitor } from '@capacitor/core';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
@@ -13,20 +15,25 @@ export class AppComponent {
   constructor(
     private router: Router,
     private platform: Platform
-  ) {}
-  ngOnInit(): void {
-    StatusBar.setOverlaysWebView({ overlay: false });
+  ) { }
+  async ngOnInit(): Promise<void> {
+
 
     SplashScreen.show();
-    this.platform.ready().then(() => {
-    StatusBar.hide();
-      }).catch((error) => {
-          console.error('Error when platform is ready:', error);
-        });
-        setTimeout(() => {
-          SplashScreen.hide();
-        }, 2000);
-        this.checkAuthStatus();
+    this.platform.ready().then(async () => {
+      if (Capacitor.getPlatform() === 'android') {
+        await EdgeToEdge.enable();
+        await StatusBar.setStyle({ style: Style.Light });
+        await StatusBar.setOverlaysWebView({ overlay: false });
+        // StatusBar.hide();
+      }
+    }).catch((error) => {
+      console.error('Error when platform is ready:', error);
+    });
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 2000);
+    this.checkAuthStatus();
   }
   checkAuthStatus(): void {
     const authToken = localStorage.getItem('authToken');

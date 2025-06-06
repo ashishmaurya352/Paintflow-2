@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
-
+import { Capacitor } from '@capacitor/core';
 @Component({
   selector: 'app-qa-dashboard',
   templateUrl: './qa-dashboard.page.html',
@@ -44,7 +44,9 @@ export class QaDashboardPage implements OnInit {
   logout() {
     localStorage.clear();
       this.router.navigate(['/login']).then(() => {
-        window.location.reload()
+        if (Capacitor.getPlatform() === 'android') {
+              window.location.reload();
+            }
       });
   }
 

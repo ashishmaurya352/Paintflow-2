@@ -57,7 +57,7 @@
     </div>
 
     <ion-grid>
-      <ion-row>
+      <ion-row *ngIf="paintDesc">
         <ion-col *ngFor="let key of objectKeys(paintData)">
           <ion-card class="requisition-card">
             <ion-card-content class="overview">
@@ -125,7 +125,7 @@
       </ion-col>
     </ion-row> -->
     <!-- First Row (6 items only) -->
-    <ion-row>
+    <ion-row *ngIf="paintDesc">
       <ion-col size-xl="2" size="4" *ngFor="let key of getFirstSixKeys(paintDesc)">
         <ion-card class="requisition-card">
           <ion-card-content class="overview">
@@ -139,7 +139,7 @@
     </ion-row>
 
     <!-- Following rows -->
-    <ion-row>
+    <ion-row *ngIf="paintDesc">
       <ion-col size="6" size-md="4" *ngFor="let key of getRemainingKeys(paintDesc)">
         <ion-card class="requisition-card">
           <ion-card-content class="overview">
@@ -174,6 +174,7 @@
           <ion-card-content>
             <h2 class="requisition-number">{{ item.count }}</h2>
             <p class="requisition-title">{{ item.name }}</p>
+            <a class="view-all" *ngIf="item.name != 'All'" (click)="viewAll(item)">View all &gt;</a>
           </ion-card-content>
         </ion-card>
       </ion-col>

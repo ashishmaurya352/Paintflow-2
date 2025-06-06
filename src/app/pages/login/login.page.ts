@@ -70,6 +70,8 @@ export class LoginPage implements OnInit {
       .subscribe(
         (res: any) => {
           this.controller.hideloader()
+          this.email = '';
+          // this.password = '';
           this.controller.showToast('Logged In Successfully')
           localStorage.setItem('authToken', res.token)
           localStorage.setItem('role', res.role)

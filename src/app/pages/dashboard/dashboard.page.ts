@@ -3,11 +3,9 @@ import { HttpParams } from '@angular/common/http';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { IonHeader, IonToolbar } from "@ionic/angular/standalone";
-import { addIcons } from 'ionicons';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
-
+import { Capacitor } from '@capacitor/core';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -83,7 +81,9 @@ export class DashboardPage implements OnInit {
     localStorage.clear();
     this.router.navigate(['/login']).then(() => {
       // Once navigation is done, force a page reload to simulate app restart
+      if (Capacitor.getPlatform() === 'android') {
       window.location.reload();
+    }
     });
   }
   getActiveRequisitionCount(){
@@ -175,8 +175,7 @@ export class DashboardPage implements OnInit {
 
     this.httpService.getRequisitionFetch().subscribe((res:any)=>{
       this.controller.hideloader()
-      this.controller.showToast('100 records synced successfully')
-      console.log('res', res);
+      this.controller.showToast(res.message)
     },(error) => {
       this.controller.hideloader()
       this.controller.showToast('Error fetching requisition')
@@ -259,7 +258,7 @@ getFirstSixKeys(obj: any): string[] {
 }
 
 getRemainingKeys(obj: any): string[] {
-  return Object.keys(obj)
+  return Object.keys(obj).slice(6);
 }
 
   selectedPeriod: string = '1M';
