@@ -67,6 +67,11 @@
   --height: 100%;
   --width: 100%;
 }
+.changePasswordModal{
+  --height: auto;
+  // --width: auto;
+  --border-radius: 16px;
+}
 ion-footer{
   padding-bottom: 50px
 }
@@ -82,3 +87,4 @@ ion-footer{
         --width: 80%;
     }
 }
+

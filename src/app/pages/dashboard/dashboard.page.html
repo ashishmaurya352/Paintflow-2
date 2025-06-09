@@ -31,6 +31,7 @@
   <div class="content">
     <div class="header-title">
       <div class="sub-title">
+        
         <div>
           <strong class="active">Cost</strong> Overview
         </div>
@@ -41,20 +42,91 @@
             <ion-select-option value="Ongoing">Ongoing</ion-select-option>
           </ion-select>
         </div>
+         <div class="dropdown">
+            <ion-select class="custom-select" [value]="'External'" interface="popover" label-placement="floating"
+              shape="round" fill="outline" (ionChange)="onCostAnalysisStatusChange($event)">
+              <ion-select-option value="External">External</ion-select-option>
+              <ion-select-option value="Internal">Internal</ion-select-option>
+            </ion-select>
+          </div>
       </div>
+
       <div class="time-period">
-        <ion-button *ngFor="let period of timePeriods" fill="clear" size="small" [attr.aria-label]="period.label"
-          [ngClass]="{'active': selectedPeriod === period.label}" (click)="setActive(period.label)">
-          {{ period.label }}
-        </ion-button>
-        <ion-button fill="clear" size="small" aria-label="Select Custom Date"
-          [ngClass]="{'active': selectedPeriod === 'Custom Date'}" (click)="setActive('Custom Date')">
-          <ion-icon name="calendar-outline"></ion-icon>
-        </ion-button>
+        <div>
+          <ion-button *ngFor="let period of timePeriods" fill="clear" size="small" [attr.aria-label]="period.label"
+            [ngClass]="{'active': selectedPeriod === period.label}" (click)="setActive(period.label)">
+            {{ period.label }}
+          </ion-button>
+          <ion-button *ngIf="selectedPeriod !== 'Custom Date'" fill="clear" size="small" aria-label="Select Custom Date"
+            [ngClass]="{'active': selectedPeriod === 'Custom Date'}" (click)="setActive('Custom Date')">
+            <ion-icon name="calendar-outline"></ion-icon>
+          </ion-button>
+          </div>
+
+          <div *ngIf="selectedPeriod === 'Custom Date'" class="custom-date">
+            <div class="date">
+              <!-- <ion-label>Start Date</ion-label> -->
+              <ion-button [ngClass]="{'active': selectedPeriod === 'Custom Date'}" id="startDate-trigger" shape="round" label="Start Date"
+                [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
+                <ion-icon  name="calendar"></ion-icon>
+                {{startDate | date:'mediumDate'}}
+              </ion-button>
+            </div>
+          <div>
+            <!-- <ion-label>End Date</ion-label> -->
+            <ion-button [ngClass]="{'active': selectedPeriod === 'Custom Date'}" shape="round" id="endDate-trigger" [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
+              <ion-icon  name="calendar"></ion-icon>
+              {{endDate | date:'mediumDate'}}
+            </ion-button>
+          </div>
+
+          <ion-popover mode="md" trigger="startDate-trigger">
+            <ng-template>
+              <ion-datetime [value]="startDate" (ionChange)="onStartDateChange($event)" [showDefaultButtons]="true"
+                presentation="date"></ion-datetime>
+            </ng-template>
+          </ion-popover>
+          <ion-popover mode="md" trigger="endDate-trigger">
+            <ng-template>
+              <ion-datetime [min]="startDate" [value]="endDate" (ionChange)="onEndDateChange($event)"
+                [showDefaultButtons]="true" presentation="date"></ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </div>
+        
       </div>
 
 
+      <!-- <div>
+        <div class="sub-title">
+          <div>
+            <strong class="active">Paint Desc Wise</strong> Cost Analysis
+          </div>
+          <div class="dropdown">
+            <ion-select class="custom-select" [value]="'External'" interface="popover" label-placement="floating"
+              shape="round" fill="outline" (ionChange)="onCostAnalysisStatusChange($event)">
+              <ion-select-option value="External">External</ion-select-option>
+              <ion-select-option value="Internal">Internal</ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+      </div> -->
     </div>
+     <!-- <div class="header-title">
+        <div class="sub-title">
+          <div>
+            <strong class="active">Paint Desc Wise</strong> Cost Analysis
+          </div>
+          <div class="dropdown">
+            <ion-select class="custom-select" [value]="'External'" interface="popover" label-placement="floating"
+              shape="round" fill="outline" (ionChange)="onCostAnalysisStatusChange($event)">
+              <ion-select-option value="External">External</ion-select-option>
+              <ion-select-option value="Internal">Internal</ion-select-option>
+            </ion-select>
+          </div>
+        </div>
+      </div> -->
+
 
     <ion-grid>
       <ion-row *ngIf="paintDesc">
@@ -73,18 +145,18 @@
 
 
     <div class="header-title">
-      <div class="sub-title">
-        <div>
-          <strong class="active">Paint Desc Wise</strong> Cost Analysis
+        <div class="sub-title">
+          <div>
+            <strong class="active">Paint Desc Wise</strong> Cost Analysis
+          </div>
+          <!-- <div class="dropdown">
+            <ion-select class="custom-select" [value]="'External'" interface="popover" label-placement="floating"
+              shape="round" fill="outline" (ionChange)="onCostAnalysisStatusChange($event)">
+              <ion-select-option value="External">External</ion-select-option>
+              <ion-select-option value="Internal">Internal</ion-select-option>
+            </ion-select>
+          </div> -->
         </div>
-        <div class="dropdown">
-          <ion-select class="custom-select" [value]="'External'" interface="popover" label-placement="floating"
-            shape="round" fill="outline" (ionChange)="onCostAnalysisStatusChange($event)">
-            <ion-select-option value="External">External</ion-select-option>
-            <ion-select-option value="Internal">Internal</ion-select-option>
-          </ion-select>
-        </div>
-      </div>
       <!-- <div class="time-period">
         <ion-button fill="clear" size="small">
           1D
@@ -208,6 +280,9 @@
       </ion-fab-button>
       <ion-fab-button data-desc="Refresh App Data" aria-label="Update Rate Data" (click)="getRequisitionFetch()">
         <ion-icon name="repeat-outline"></ion-icon>
+      </ion-fab-button>
+      <ion-fab-button data-desc="Change Password" aria-label="Change Password" (click)="changePassword()">
+        <ion-icon name="lock-closed-outline"></ion-icon>
       </ion-fab-button>
       <!-- <ion-fab-button data-desc="Download Master File" (click)="downloadFile()">
       <ion-icon name="cloud-download-outline"></ion-icon>

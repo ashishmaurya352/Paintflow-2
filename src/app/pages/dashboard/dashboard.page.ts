@@ -2,10 +2,11 @@ import { CommonModule } from '@angular/common';
 import { HttpParams } from '@angular/common/http';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonicModule } from '@ionic/angular';
+import { IonicModule, ModalController } from '@ionic/angular';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
 import { Capacitor } from '@capacitor/core';
+import { ChangePasswordModalComponent } from 'src/app/shares/components/change-password-modal/change-password-modal.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -14,17 +15,17 @@ import { Capacitor } from '@capacitor/core';
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class DashboardPage implements OnInit {
-  @ViewChild('fileInput') fileInput:any;
-  selectedOption ='WPP'
-  paintData:any
-  paintDesc:any
+  @ViewChild('fileInput') fileInput: any;
+  selectedOption = 'WPP'
+  paintData: any
+  paintDesc: any
   allItem = 0
 
   filter: any = {
     ReqFrom: 'WPP',
     Status: 'Completed',
-    StartDate:this.getStartOfLastMonth().toISOString(),
-    EndDate:new Date().toISOString(),
+    StartDate: this.getStartOfLastMonth().toISOString(),
+    EndDate: new Date().toISOString(),
   }
   dateRange = { start: new Date(), end: new Date() };
 
@@ -37,16 +38,21 @@ export class DashboardPage implements OnInit {
     { label: '1Y' }
   ];
   costAnalysisType = 'External'
-  
+
+  sortByName: any
+  priorityName: any
+  startDate: any = null
+  endDate: any = null
+  range: number = 0;
+  userList: any = []
   constructor(
-    
-        private router: Router,
-        private httpService: HttpService,
-         private controller: ControllerService,
-        
+    private router: Router,
+    private httpService: HttpService,
+    private controller: ControllerService,
+    private modalController: ModalController
+
   ) {
-    // addIcons({exit,addOutline,repeatOutline,cloudUploadOutline,cloudDownloadOutline,bicycleOutline,boatOutline,documentTextOutline});
-   }
+  }
 
   ngOnInit() {
     this.getActiveRequisitionCount()
@@ -54,7 +60,7 @@ export class DashboardPage implements OnInit {
     this.getCostOverview()
     this.addcss()
   }
-  requisitions:any = [
+  requisitions: any = [
     // { count: 0, title: 'Shot Blasting Team' },
     // { count: 0, title: 'PT/PH Team' },
     // { count: 0, title: 'Paint Team' },
@@ -74,24 +80,24 @@ export class DashboardPage implements OnInit {
   viewAll(item: any) {
     // console.log('Viewing all for:', item.title);
     const team = item.name;
-    this.router.navigate(['/order'],{ queryParams: { team: team }});
+    this.router.navigate(['/order'], { queryParams: { team: team } });
     // Add navigation logic here
   }
-  logout(){
+  logout() {
     localStorage.clear();
     this.router.navigate(['/login']).then(() => {
       // Once navigation is done, force a page reload to simulate app restart
       if (Capacitor.getPlatform() === 'android') {
-      window.location.reload();
-    }
+        window.location.reload();
+      }
     });
   }
-  getActiveRequisitionCount(){
-    const  parm = new HttpParams().set('ReqFrom', '');
+  getActiveRequisitionCount() {
+    const parm = new HttpParams().set('ReqFrom', '');
     this.httpService.getActiveRequisitionCount(parm).subscribe(
       (apidata: any) => {
         this.requisitions = apidata
-        const allItem  = this.requisitions.find((item:any) => item.name === "All");
+        const allItem = this.requisitions.find((item: any) => item.name === "All");
         this.allItem = allItem ? allItem.count : 0;
         // Define a mapping between the requisition titles and the corresponding apidata fields
         // const dataMapping: { [key: string]: string }  = {
@@ -103,7 +109,7 @@ export class DashboardPage implements OnInit {
         //   'QA Team': 'qaCount',
         //   'All Teams': 'all'
         // };
-  
+
         // Update the requisitions based on the mapping
         // this.requisitions.forEach(req => {
         //   const countKey = dataMapping[req.title]; // Get the property name from the mapping
@@ -117,7 +123,7 @@ export class DashboardPage implements OnInit {
       }
     );
   }
-  getCostOverview(){
+  getCostOverview() {
     let parm = new HttpParams()
     Object.keys(this.filter).forEach(key => {
       if (this.filter[key] !== null) {
@@ -125,7 +131,7 @@ export class DashboardPage implements OnInit {
       }
       parm = parm.set('Type', this.costAnalysisType);
     });
-    this.httpService.getCostOverview(parm).subscribe((res:any)=>{
+    this.httpService.getCostOverview(parm).subscribe((res: any) => {
       this.paintData = res
       // this.paintData = [
       //   { title: 'Shot Blasting ', value: res.shortBlasting.amount, qty: res.shortBlasting.quantity, unit: 'kg', rate: res.shortBlasting.rate },
@@ -146,41 +152,42 @@ export class DashboardPage implements OnInit {
       const file = input.files[0];
 
       const formData = new FormData();
-    formData.append('file', file);
+      formData.append('file', file);
 
-    // Show loading spinner while uploading
-    this.controller.showloader()
+      // Show loading spinner while uploading
+      this.controller.showloader()
       this.httpService.documentsUploadExcel(formData)
-      .subscribe(async (res:any)=>{
-        console.log('File uploaded successfully:', res);
-        this.controller.hideloader()
-        this.controller.showToast('File uploaded successfully')
+        .subscribe(async (res: any) => {
+          console.log('File uploaded successfully:', res);
+          this.controller.hideloader()
+          this.controller.showToast('File uploaded successfully')
 
 
-        // Handle the response from the server if needed
-      },(error) => {
-        console.error('Error uploading file:', error);
-      this.controller.hideloader()
-      this.controller.showToast('Error uploading file')
+          // Handle the response from the server if needed
+        }, (error) => {
+          console.error('Error uploading file:', error);
+          this.controller.hideloader()
+          this.controller.showToast('Error uploading file')
 
 
-      })
+        })
       console.log('Selected file:', file);
 
       // Handle the file upload logic here
-    } 
+    }
   }
-  getRequisitionFetch()  {
+  getRequisitionFetch() {
     this.controller.showloader()
 
-    this.httpService.getRequisitionFetch().subscribe((res:any)=>{
+    this.httpService.getRequisitionFetch().subscribe((res: any) => {
       this.controller.hideloader()
       this.controller.showToast(res.message)
-    },(error) => {
+    }, (error) => {
       this.controller.hideloader()
       this.controller.showToast('Error fetching requisition')
 
-      console.error('Error fetching requisition:', error);})
+      console.error('Error fetching requisition:', error);
+    })
   }
   downloadFile() {
     // The URL of the Excel file
@@ -232,10 +239,10 @@ export class DashboardPage implements OnInit {
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
-  getPaintDescWiseCostOverview(filter:any = false){
+  getPaintDescWiseCostOverview(filter: any = false) {
     let parm = new HttpParams()
-    
-    if(filter){
+
+    if (filter) {
       this.filter.StartDate = this.dateRange.start.toISOString()
       this.filter.EndDate = this.dateRange.end.toISOString()
     }
@@ -244,40 +251,54 @@ export class DashboardPage implements OnInit {
         parm = parm.set(key, this.filter[key]);
       }
     });
-    this.httpService.getPaintDescWiseCostOverview(parm).subscribe(async (res:any)=>{
+    console.log('parm', parm.toString())
+    this.httpService.getPaintDescWiseCostOverview(parm).subscribe(async (res: any) => {
       this.paintDesc = res
     })
   }
   // objectKeys(obj: any): string[] {
   //   return obj ? Object.keys(obj) : [];
   // }
-  objectKeys = Object.keys;
+  objectKeys = (obj: any) => Object.keys(obj ?? {});
 
-getFirstSixKeys(obj: any): string[] {
-  return Object.keys(obj).slice(0, 6);
-}
 
-getRemainingKeys(obj: any): string[] {
-  return Object.keys(obj).slice(6);
-}
+  getFirstSixKeys(obj: any): string[] {
+    return Object.keys(obj).slice(0, 6);
+  }
+
+  getRemainingKeys(obj: any): string[] {
+    return Object.keys(obj).slice(6);
+  }
 
   selectedPeriod: string = '1M';
 
   // Function to set the active period
   async setActive(period: any) {
     this.selectedPeriod = period;
-    await this.calculateDateRange(period);
-    this.getActiveRequisitionCount()
-    this.getPaintDescWiseCostOverview(true)
-    this.getCostOverview()
 
-    console.log('this.selectedPeriod',this.selectedPeriod)
-    console.log('this.dateRange',this.dateRange)
+    if (period === 'Custom Date') {
+      setTimeout(() => {
+        const triggerEl = document.getElementById('startDate-trigger');
+        if (triggerEl) {
+          triggerEl.click();
+        } else {
+          console.warn('Popover trigger not found.');
+        }
+      }, 100);
+      return
+    }
+    await this.calculateDateRange(period);
+    this.getActiveRequisitionCount();
+    this.getPaintDescWiseCostOverview(true);
+    this.getCostOverview();
+
+    console.log('this.selectedPeriod', this.selectedPeriod)
+    console.log('this.dateRange', this.dateRange)
   }
 
   async calculateDateRange(period: string): Promise<{ start: Date; end: Date }> {
     const currentDate = new Date();
-  
+
     switch (period) {
       case '1D':
         this.dateRange.start = await this.getStartOfDay(currentDate);
@@ -312,11 +333,11 @@ getRemainingKeys(obj: any): string[] {
         this.dateRange.end = currentDate;
         break;
     }
-  
+
     // Return the date range at the end
     return this.dateRange;
   }
-  
+
 
   // Helper function to set the time to the start of the day (midnight)
   getStartOfDay(date: Date): Date {
@@ -347,14 +368,14 @@ getRemainingKeys(obj: any): string[] {
   getStartOfLastMonth(): Date {
     const currentDate = new Date();
     const lastMonth = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
-    
+
     // Set time to 00:00:00 for consistency
     lastMonth.setHours(0, 0, 0, 0);
 
     return lastMonth;
   }
-  segment(event: any){
-    this.filter.ReqFrom =  event.target.value;
+  segment(event: any) {
+    this.filter.ReqFrom = event.target.value;
     this.getActiveRequisitionCount()
     this.getPaintDescWiseCostOverview()
     this.getCostOverview()
@@ -362,14 +383,51 @@ getRemainingKeys(obj: any): string[] {
   onCostAnalysisStatusChange(event: any) {
     this.costAnalysisType = event.target.value;
     // this.filter.Status = Status
-    // this.getPaintDescWiseCostOverview()
-    // this.getActiveRequisitionCount()
+    this.getPaintDescWiseCostOverview()
+    this.getActiveRequisitionCount()
     this.getCostOverview()
   }
-  changearePage(){
+  changearePage() {
     this.router.navigate(['/change-rate']);
   }
-  
- 
 
+  onStartDateChange(event: any) {
+    const selectedDate = event.detail.value;
+    this.startDate = selectedDate
+    console.log('selectedDate', selectedDate)
+    if( this.startDate && this.endDate) {
+      this.dateRange.start = new Date(this.startDate);
+      this.dateRange.end = new Date(this.endDate);
+      this.getPaintDescWiseCostOverview(true);
+      this.getActiveRequisitionCount();
+      this.getCostOverview();
+    }
+  }
+  onEndDateChange(event: any) {
+    const selectedDate = event.detail.value;
+    this.endDate = selectedDate
+    console.log('selectedDate', selectedDate)
+    if( this.startDate && this.endDate) {
+      this.dateRange.start = new Date(this.startDate);
+      this.dateRange.end = new Date(this.endDate);
+      this.getPaintDescWiseCostOverview(true);
+      this.getActiveRequisitionCount();
+      this.getCostOverview();
+    }
+  }
+  async changePassword(){
+    this.controller.showloader()
+    this.httpService.getUsers().subscribe(async (res: any) => {
+      this.controller.hideloader()
+      this.userList = res
+      const modal = await this.modalController.create({
+              component: ChangePasswordModalComponent,
+              componentProps: {
+                userList : this.userList,
+              },
+              cssClass: 'changePasswordModal',
+            });
+             await modal.present();
+    });
+  }
 }

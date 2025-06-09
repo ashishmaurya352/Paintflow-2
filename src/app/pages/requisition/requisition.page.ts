@@ -115,12 +115,13 @@ export class RequisitionPage implements OnInit {
     } else {
       totalQuantity = item.curretProcess.quantity;
     }
+    const partDescription = item.partNumber + ' (' + item.color + ')';
     const modal = await this.modalController.create({
       component: ReceivedModalComponent,
       componentProps: {
         'totalQuantity': totalQuantity,
         'getquantity': this.UpdatedItemLists[i].quantity,
-        'itemName': item.partDesciption,
+        'itemName': partDescription,
         'teams2': this.teams,
         'PaintDescription': this.PaintDescription,
         isInwardManager : this.usereRole === 'Inward Manager' ? true : false,

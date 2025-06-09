@@ -373,6 +373,10 @@
       <ion-card *ngFor="let item of ItemList">
         <ion-card-content>
           <div class="up-card">
+            <div class="thumbnail-image">
+              <ion-thumbnail class="admin-thumbnail" (click)="openImgModal(item,i)">
+                <img alt="item Image" [src]="getImageSrc(item)" />
+              </ion-thumbnail>
             <div class="list-name">
               <div class="badge">
                 <div class="color-dropdown">
@@ -389,6 +393,7 @@
                       item.priority }}</ion-badge> -->
               </div>
               <h5>{{item.partDesciption | uppercase}}</h5>
+            </div>
             </div>
             <div style="display: flex; align-items: center;">
               <ion-button fill="clear" class="pending-btn">

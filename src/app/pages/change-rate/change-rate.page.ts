@@ -37,23 +37,52 @@ export class ChangeRatePage implements OnInit {
   backToDashboardPage() {
     window.history.back();
   }
-  getPaintDescriptionGet(){
-    this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
-      console.log('getPaintDescriptionGet', res);
-      const paintList = res.item1; 
-      const groupedByTeam = paintList.reduce((groups: any, item: any) => {
-        if (!groups[item.team]) {
-          groups[item.team] = [];
-        }
-        groups[item.team].push(item);
-        return groups;
-      }, {} as { [key: string]: any[] });
-      this.teamData = groupedByTeam; // Assign the grouped data to teamData
-      console.log('Grouped Data:', groupedByTeam);
-      this.teamData = Object.entries(groupedByTeam);
-      this.originalData = JSON.parse(JSON.stringify(this.teamData));
-    })
-  }
+
+  getPaintDescriptionGet() {
+  this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
+    console.log('getPaintDescriptionGet', res);
+
+    const paintList = res?.item1;
+
+    if (!Array.isArray(paintList)) {
+      console.error('paintList is not an array:', paintList);
+      this.teamData = [];
+      this.originalData = [];
+      return;
+    }
+
+    const groupedByTeam = paintList.reduce((groups: any, item: any) => {
+      if (!groups[item.team]) {
+        groups[item.team] = [];
+      }
+      groups[item.team].push(item);
+      return groups;
+    }, {} as { [key: string]: any[] });
+
+    console.log('Grouped Data:', groupedByTeam);
+
+    this.teamData = Object.entries(groupedByTeam); // [[team1, [...] ], [team2, [...]]]
+    this.originalData = JSON.parse(JSON.stringify(this.teamData)); // Deep clone
+  });
+}
+
+  // getPaintDescriptionGet(){
+  //   this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
+  //     console.log('getPaintDescriptionGet', res);
+  //     const paintList = res?.item1; 
+  //     const groupedByTeam = paintList.reduce((groups: any, item: any) => {
+  //       if (!groups[item.team]) {
+  //         groups[item.team] = [];
+  //       }
+  //       groups[item.team].push(item);
+  //       return groups;
+  //     }, {} as { [key: string]: any[] });
+  //     this.teamData = groupedByTeam; // Assign the grouped data to teamData
+  //     console.log('Grouped Data:', groupedByTeam);
+  //     this.teamData = Object.entries(groupedByTeam);
+  //     this.originalData = JSON.parse(JSON.stringify(this.teamData));
+  //   })
+  // }
   // getGroupedItems(): [string, any[]][] {
   //   return Object.entries(this.teamData);
   // }

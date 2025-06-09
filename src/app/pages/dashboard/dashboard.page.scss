@@ -23,7 +23,7 @@
   justify-content: space-between;
 
   .time-period {
-    display: flex;
+    // display: flex;
 
     ion-button {
       --background: transparent;
@@ -142,7 +142,7 @@ ion-fab {
 
 .dropdown {
   margin-left: auto;
-  width: 200px;
+  width: 160px;
   height: 32px;
   margin-top: 7px;
   color: #A52B54;
@@ -165,4 +165,26 @@ ion-fab {
 ion-button.active {
   --background: transparent;
   --color: var(--theme-color-primary);
+}
+.custom-date{
+  display: flex;
+  ion-button {
+    --border-color: #767676;
+  }
+  // align-items: center;
+  // justify-content: center;
+  // width: 100%;
+  // height: 40px;
+  // border-radius: 20px;
+  // background-color: #f0f0f0;
+  // padding: 0 10px;
+
+  // ion-datetime {
+  //   width: 100%;
+  //   --background: transparent;
+  //   --color: #333333;
+  //   --placeholder-color: #767676;
+  //   font-size: 14px;
+  //   font-weight: bold;
+  // }
 }
