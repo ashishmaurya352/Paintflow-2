@@ -84,13 +84,13 @@ export class DashboardPage implements OnInit {
     // Add navigation logic here
   }
   logout() {
-    localStorage.clear();
-    this.router.navigate(['/login']).then(() => {
-      // Once navigation is done, force a page reload to simulate app restart
-      if (Capacitor.getPlatform() === 'android') {
-        window.location.reload();
-      }
-    });
+   localStorage.clear();
+      this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
+        // Only reload if necessary
+        if (Capacitor.getPlatform() === 'android') {
+          setTimeout(() => window.location.reload(), 100); // small delay improves stability
+        }
+      });
   }
   getActiveRequisitionCount() {
     const parm = new HttpParams().set('ReqFrom', '');

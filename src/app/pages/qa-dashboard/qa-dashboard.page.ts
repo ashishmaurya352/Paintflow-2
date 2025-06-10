@@ -43,10 +43,11 @@ export class QaDashboardPage implements OnInit {
   }
   logout() {
     localStorage.clear();
-      this.router.navigate(['/login']).then(() => {
+      this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
+        // Only reload if necessary
         if (Capacitor.getPlatform() === 'android') {
-              window.location.reload();
-            }
+          setTimeout(() => window.location.reload(), 100); // small delay improves stability
+        }
       });
   }
 

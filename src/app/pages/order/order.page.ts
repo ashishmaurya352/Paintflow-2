@@ -11,6 +11,8 @@ import { ChartComponent } from 'src/app/shares/components/chart/chart.component'
 import { FilterModalComponent } from 'src/app/shares/components/filter-modal/filter-modal.component';
 import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
 import { Capacitor } from '@capacitor/core';
+
+
 @Component({
   selector: 'app-order',
   templateUrl: './order.page.html',
@@ -507,11 +509,21 @@ export class OrderPage implements OnInit {
       this.router.navigate(['/qa-dashboard']);
     }
     else {
+      // localStorage.clear();
+      // this.router.navigate(['/login']).then(() => {
+      //   if (Capacitor.getPlatform() === 'android') {
+      //         window.location.reload();
+      //       }
+      // });
+  // Clear Capacitor Storage
+
+      // Clear localStorage if you're using it
       localStorage.clear();
-      this.router.navigate(['/login']).then(() => {
+      this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
+        // Only reload if necessary
         if (Capacitor.getPlatform() === 'android') {
-              window.location.reload();
-            }
+          setTimeout(() => window.location.reload(), 100); // small delay improves stability
+        }
       });
     }
   }

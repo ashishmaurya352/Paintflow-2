@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { IonicModule, ModalController } from '@ionic/angular';
 
 import { FormsModule } from '@angular/forms';
+import { Colors } from 'chart.js';
 // import { ReceivedModalComponent } from './received-modal.component';
 // ``````typescript
 @Component({
@@ -38,7 +39,8 @@ export class ReceivedModalComponent implements OnInit {
   selectedTeam: string | null = null
   loginTeam: any
   PaintDescriptionlist: any[][] = [];
-
+  paintDescriptionColors: any[][] = [];
+color:any
   constructor(
     private modalCtrl: ModalController,
   ) { }
@@ -66,19 +68,22 @@ export class ReceivedModalComponent implements OnInit {
       if(this.isInwardManager){
       this.itemPaintDescriptions = [];
 
-      for (let i = 0; i < Math.min(this.selectList.length, this.selectList2.length); i++) {
+      for (let i = 0; i < Math.min(this.selectList.length, this.selectList2.length, this.selectList3.length); i++) {
         const team = this.selectList[i].selectedOptionLabel;
         const paintDescriptionId = this.selectList2[i].id || 0;
+        this.color = this.selectList3[i].selectedColor || '';
 
         this.itemPaintDescriptions.push({
           team: team || '',
-          paintDescriptionId: typeof paintDescriptionId === 'number' ? paintDescriptionId : 0
+          paintDescriptionId: typeof paintDescriptionId === 'number' ? paintDescriptionId : 0,
         });
+        console.log('this.itemPaintDescriptions', this.itemPaintDescriptions);
       }
 
       console.log(this.itemPaintDescriptions);
       const data = {
         quantity: this.quantity,
+        color: this.color,
         // team:this.selectedTeam,
         itemPaintDescriptions: this.itemPaintDescriptions,
       }
@@ -117,9 +122,8 @@ export class ReceivedModalComponent implements OnInit {
   selectList = [
     { selectedOptionLabel: '', isPopoverOpen: false, popoverEvent: null }
   ];
-  selectList2: any = [
-
-  ];
+  selectList2: any = [];
+  selectList3: any = [];
 
   openPopover(ev: any, i: number) {
     this.selectList[i].popoverEvent = ev;
@@ -131,7 +135,11 @@ export class ReceivedModalComponent implements OnInit {
     this.selectList[i].isPopoverOpen = false;
 
     this.PaintDescriptionlist[i] = this.PaintDescription[option] || [];
-
+    console.log('this.PaintDescriptionlist', this.PaintDescriptionlist);  
+    console.log('this.this.selectList[i].selectedOptionLabel', this.selectList[i].selectedOptionLabel);  
+    console.log('option', option);  
+    console.log('this.selectList', this.selectList);  
+    
     // Assign second list data conditionally
     if (!this.selectList2[i]) {
       this.selectList2[i] = { selectedOptionLabel: '', id: '', isPopoverOpen: false, popoverEvent: null };
@@ -150,7 +158,32 @@ export class ReceivedModalComponent implements OnInit {
     this.selectList2[i].selectedOptionLabel = option.name;
     this.selectList2[i].id = option.id;
     this.selectList2[i].isPopoverOpen = false;
+
+    if (!this.selectList3[i]) {
+      this.selectList3[i] = { selectedColor: '', isPopoverOpen: false, popoverEvent: null };
+    }
+
+    if (option.paintDescriptionColors.length > 0) {
+      this.selectList3[i].isPopoverOpen = true;
+    } else {
+      this.selectList3[i].isPopoverOpen = false;
+    }
+    this.paintDescriptionColors[i] = option.paintDescriptionColors || [];
   }
+
+  openThirdPopover(ev: any, i: number) {
+    if (!this.selectList3[i]) {
+      this.selectList3[i] = { selectedColor: '', isPopoverOpen: false, popoverEvent: null };
+    }
+    this.selectList3[i].popoverEvent = ev;
+    this.selectList3[i].isPopoverOpen = true;
+  }
+
+  selectSecondThirdOption(option: any, i: number) {
+    this.selectList3[i].selectedColor = option;
+    this.selectList3[i].isPopoverOpen = false;
+  }
+
   openSecondPopover(ev: any, i: number) {
     if (!this.selectList2[i]) {
       this.selectList2[i] = { selectedOptionLabel: '', id: '', isPopoverOpen: false, popoverEvent: null };

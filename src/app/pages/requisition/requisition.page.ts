@@ -52,6 +52,7 @@ export class RequisitionPage implements OnInit {
   selectedPriority:any = 'Low';
   priority = ['High', 'Medium', 'Low'];
   inwardManagerData:any
+  isSingle = true
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -132,6 +133,7 @@ export class RequisitionPage implements OnInit {
       console.log('Modal data:', dataReturned);
       if (dataReturned.data !== undefined) {
         this.UpdatedItemLists[i].quantity = dataReturned.data.quantity;
+        this.UpdatedItemLists[i].color = dataReturned.data.color;
         if (this.usereRole === 'Inward Manager') {
           this.UpdatedItemLists[i].itemPaintDescriptions = dataReturned.data.itemPaintDescriptions;
         }
@@ -495,11 +497,9 @@ export class RequisitionPage implements OnInit {
   getPaintDescriptionGet() {
     this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
       console.log('getPaintDescriptionGet', res);
-      const paintList = res.item1; // Assuming 'data' is the key that contains the list
-      // const uniqueTeams = [...new Set(paintList.map((item: any) => item.team))];
+      const paintList = res; 
 
-      // Step 2: Group by team
-      const groupedByTeam = paintList.reduce((groups: any, item: any) => {
+      const groupedByTeam = paintList?.reduce((groups: any, item: any) => {
         if (!groups[item.team]) {
           groups[item.team] = [];
         }
@@ -508,8 +508,8 @@ export class RequisitionPage implements OnInit {
       }, {} as { [key: string]: any[] });
 
       // Example: How to access
-      // console.log('Grouped Data:', groupedByTeam);
       this.PaintDescription = groupedByTeam;
+      console.log('Grouped Paint Description:', this.PaintDescription);
 
     })
   }

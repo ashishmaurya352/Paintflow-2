@@ -98,6 +98,34 @@
                 </ion-list>
               </ng-template>
             </ion-popover>
+
+             <!-- Conditionally render third Dropdown -->
+            <ion-item *ngIf="this.paintDescriptionColors[i]?.length" (click)="openThirdPopover($event, i)" lines="none" button>
+              <ion-label>
+                {{ selectList3[i]?.selectedColor || 'Select color' }}
+              </ion-label>
+              <ion-icon name="chevron-down" slot="end"></ion-icon>
+            </ion-item>
+          
+            <!-- third Popover -->
+            <ion-popover 
+              *ngIf="this.paintDescriptionColors[i]?.length"
+              [isOpen]="selectList3[i]?.isPopoverOpen"
+              [event]="selectList3[i]?.popoverEvent"
+              (didDismiss)="selectList3[i].isPopoverOpen = false"
+              showBackdrop="true"
+            >
+              <ng-template>
+                <ion-list>
+                  <ion-item 
+                    button 
+                    *ngFor="let desc of this.paintDescriptionColors[i]" 
+                    (click)="selectSecondThirdOption(desc, i)">
+                    {{ desc }}
+                  </ion-item>
+                </ion-list>
+              </ng-template>
+            </ion-popover>
           
           </div>
         </div>
