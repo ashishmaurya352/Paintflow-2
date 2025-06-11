@@ -49,10 +49,13 @@ export class RequisitionPage implements OnInit {
   selectedItemImage: any = []
   teams: any[] = []
   PaintDescription: any = []
-  selectedPriority:any = 'Low';
+  selectedPriority: any = 'Low';
   priority = ['High', 'Medium', 'Low'];
-  inwardManagerData:any
+  inwardManagerData: any 
   isSingle = true
+  multSelectIndexList: any[] = [];
+  isMultSubmit = false; 
+  color: any = null; // Initialize color variable
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -109,7 +112,23 @@ export class RequisitionPage implements OnInit {
   //  [index]="index" [itemName]="partDesciption"
   //   [getquantity]="quantity" (dismiss)="isModalOpen = false" (quantitySubmitted)="handleQuantitySubmitted($event)">
   async openModal(i: number, item: any) {
-    // this.index = i;
+    if (!this.isSingle && !this.isMultSubmit) {
+      const exists = this.multSelectIndexList.some(
+        (selectedItem: any) => selectedItem.id === item.id
+      );
+
+      if (exists) {
+        this.multSelectIndexList = this.multSelectIndexList.filter(
+          (selectedItem: any) => selectedItem.id !== item.id
+        );
+        this.UpdatedItemLists[i].quantity = 0;
+      } else {
+        this.multSelectIndexList.push({ index: i, item });
+        this.UpdatedItemLists[i].quantity = item.quantity
+      }
+      return;
+    }
+
     let totalQuantity
     if (this.usereRole === 'Inward Manager') {
       totalQuantity = item.quantity;
@@ -125,19 +144,34 @@ export class RequisitionPage implements OnInit {
         'itemName': partDescription,
         'teams2': this.teams,
         'PaintDescription': this.PaintDescription,
-        isInwardManager : this.usereRole === 'Inward Manager' ? true : false,
+        'isSingle': this.isSingle,
+        isInwardManager: this.usereRole === 'Inward Manager' ? true : false,
       },
       cssClass: 'quantity-modal',
     });
     modal.onDidDismiss().then((dataReturned: any) => {
       console.log('Modal data:', dataReturned);
       if (dataReturned.data !== undefined) {
+
+        if (!this.isSingle) {
+          this.multSelectIndexList.forEach((data) => {
+            const i = data.index;
+            // this.UpdatedItemLists[i].quantity = dataReturned.data.quantity;
+            this.UpdatedItemLists[i].itemPaintDescriptions = dataReturned.data.itemPaintDescriptions;
+            this.color = dataReturned.data.color;
+            this.selectedPriority = dataReturned.data.selectedPriority;
+            this.isSingle =!this.isSingle
+          })
+          this.submit()
+        }else{
         this.UpdatedItemLists[i].quantity = dataReturned.data.quantity;
-        this.UpdatedItemLists[i].color = dataReturned.data.color;
+        // this.UpdatedItemLists[i].color = dataReturned.data.color;
         if (this.usereRole === 'Inward Manager') {
           this.UpdatedItemLists[i].itemPaintDescriptions = dataReturned.data.itemPaintDescriptions;
         }
         this.itemChecked[i] = dataReturned.data.quantity > 0;
+        }
+
       }
       else {
         console.log('No data returned from modal');
@@ -229,6 +263,18 @@ export class RequisitionPage implements OnInit {
   }
 
   acceptItems() {
+
+   if (!this.isSingle) {
+      console.log('multSelectIndexList', this.multSelectIndexList)
+      // this.multSelectIndexList.push(i)
+      if (this.multSelectIndexList.length > 0) {
+        this.isMultSubmit = true
+        console.log('multSelectIndexList', this.multSelectIndexList[0].item)
+        this.openModal(1, this.multSelectIndexList[0].item)
+      }
+      return;
+    }
+
     const items = this.UpdatedItemLists.filter((item, i) => this.itemChecked[i]);
 
     if (this.usereRole === 'Executive') {
@@ -249,12 +295,13 @@ export class RequisitionPage implements OnInit {
         this.controller.hideloader()
       });
     } else if (this.usereRole === 'Inward Manager') {
-       this.isModalOpen = true
+      this.isModalOpen = true
       this.inwardManagerData = {
         "requisitionId": this.requisitionId,
         "priority": this.selectedPriority,
         "items": items
-    }
+      }
+       
       // this.router.navigate(['/assign-team'], { queryParams: { items: JSON.stringify(items), id: this.requisitionId } });
     }
   }
@@ -497,7 +544,7 @@ export class RequisitionPage implements OnInit {
   getPaintDescriptionGet() {
     this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
       console.log('getPaintDescriptionGet', res);
-      const paintList = res; 
+      const paintList = res;
 
       const groupedByTeam = paintList?.reduce((groups: any, item: any) => {
         if (!groups[item.team]) {
@@ -530,29 +577,36 @@ export class RequisitionPage implements OnInit {
     this.selectedPriority = team
   }
 
-  submit(){
+  submit() {
     this.isModalOpen = false
 
-  this.inwardManagerData.priority = this.selectedPriority
+    // this.inwardManagerData.priority = this.selectedPriority
+    const items = this.UpdatedItemLists.filter((item, i) => this.itemChecked[i]);
+    this.inwardManagerData = {
+        "requisitionId": this.requisitionId,
+        "priority": this.selectedPriority,
+        "items": items
+      }
+    console.log('inwardManagerData', this.inwardManagerData);
     this.httpService.assignItemProcess(this.inwardManagerData)
-    .subscribe((res:any)=>{
-      if(res.success){
-        this.isModalOpen = false
-        this.controller.hideloader()
-        console.log(res);
-        console.log('res');
-        const segmentValue = 'Assigned'
-        // const segmentValue = 'Active';
-        this.router.navigate(['/order'], { queryParams: { segmentValue } });
-      }
-      else {
-        this.controller.hideloader()
-        this.controller.showToast(res.message);
+      .subscribe((res: any) => {
+        if (res.success) {
+          this.isModalOpen = false
+          this.controller.hideloader()
+          console.log(res);
+          console.log('res');
+          const segmentValue = 'Assigned'
+          // const segmentValue = 'Active';
+          this.router.navigate(['/order'], { queryParams: { segmentValue } });
+        }
+        else {
+          this.controller.hideloader()
+          this.controller.showToast(res.message);
 
-      }
-    },(error) => {
-      this.controller.hideloader()
-    });
+        }
+      }, (error) => {
+        this.controller.hideloader()
+      });
   }
 
 }

@@ -12,7 +12,7 @@
     <div class="modal-body">
       <div class="modal-container">
 
-        <div class="modal-queantity">
+        <div class="modal-queantity" *ngIf="isSingle">
 
           <h3>Enter Quantity Received</h3>
 
@@ -34,6 +34,16 @@
         </div>
 
         <div *ngIf="isInwardManager">
+          <div class="modal-select" *ngIf="!isSingle">
+            <h3>Select Priority </h3>
+              <ion-select class="custom-select" [value]="selectedPriority" interface="popover" label-placement="floating"
+            shape="round" fill="outline" (ionChange)="selectpriority($event)">
+            <ion-select-option *ngFor="let priority of prioritys" [value]="priority">{{ priority }}</ion-select-option>
+
+          </ion-select>
+                  
+          </div>
+
           <div class="modal-select">
             <h3>Select Teams</h3>
             <ion-button fill="clear" color="primary" (click)="addSelect()">

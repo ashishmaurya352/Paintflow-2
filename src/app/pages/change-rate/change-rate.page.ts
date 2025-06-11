@@ -39,10 +39,10 @@ export class ChangeRatePage implements OnInit {
   }
 
   getPaintDescriptionGet() {
-  this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
+  this.httpService.getPaintDescriptionGet2().subscribe((res: any) => {
     console.log('getPaintDescriptionGet', res);
 
-    const paintList = res?.item1;
+    const paintList = res;
 
     if (!Array.isArray(paintList)) {
       console.error('paintList is not an array:', paintList);

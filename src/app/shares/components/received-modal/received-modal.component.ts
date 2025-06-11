@@ -31,7 +31,7 @@ export class ReceivedModalComponent implements OnInit {
   @Input() isCompleted: any
   @Input() PaintDescription = []
   @Input() isInwardManager = false
-
+  @Input() isSingle = true
 
 
   @Output() dismiss = new EventEmitter<void>(); // Close event
@@ -40,7 +40,9 @@ export class ReceivedModalComponent implements OnInit {
   loginTeam: any
   PaintDescriptionlist: any[][] = [];
   paintDescriptionColors: any[][] = [];
-color:any
+  color:any
+  selectedPriority: any = 'Low'; // Default priority
+  prioritys = ['High', 'Medium', 'Low'];
   constructor(
     private modalCtrl: ModalController,
   ) { }
@@ -68,22 +70,34 @@ color:any
       if(this.isInwardManager){
       this.itemPaintDescriptions = [];
 
-      for (let i = 0; i < Math.min(this.selectList.length, this.selectList2.length, this.selectList3.length); i++) {
-        const team = this.selectList[i].selectedOptionLabel;
-        const paintDescriptionId = this.selectList2[i].id || 0;
-        this.color = this.selectList3[i].selectedColor || '';
+     const length = Math.max(this.selectList?.length || 0, this.selectList2?.length || 0, this.selectList3?.length || 0);
+
+      for (let i = 0; i < length; i++) {
+        const team = this.selectList?.[i]?.selectedOptionLabel || '';
+        const paintDescriptionId = this.selectList2?.[i]?.id ?? 0;
+        const color = this.selectList3?.[i]?.selectedColor || '';
+
+        this.color = color;
+
+        console.log('team', team, 'paintDescriptionId', paintDescriptionId, 'color', color);
 
         this.itemPaintDescriptions.push({
-          team: team || '',
+          team,
           paintDescriptionId: typeof paintDescriptionId === 'number' ? paintDescriptionId : 0,
         });
+
         console.log('this.itemPaintDescriptions', this.itemPaintDescriptions);
       }
 
+
       console.log(this.itemPaintDescriptions);
+      if(!this.isSingle){
+        this.quantity = this.totalQuantity
+      }
       const data = {
         quantity: this.quantity,
         color: this.color,
+        selectedPriority: this.selectedPriority,
         // team:this.selectedTeam,
         itemPaintDescriptions: this.itemPaintDescriptions,
       }
@@ -135,10 +149,6 @@ color:any
     this.selectList[i].isPopoverOpen = false;
 
     this.PaintDescriptionlist[i] = this.PaintDescription[option] || [];
-    console.log('this.PaintDescriptionlist', this.PaintDescriptionlist);  
-    console.log('this.this.selectList[i].selectedOptionLabel', this.selectList[i].selectedOptionLabel);  
-    console.log('option', option);  
-    console.log('this.selectList', this.selectList);  
     
     // Assign second list data conditionally
     if (!this.selectList2[i]) {
@@ -150,6 +160,7 @@ color:any
     } else {
       this.selectList2[i].isPopoverOpen = false;
     }
+    console.log('this.selectList', this.selectList);
   }
 
 
@@ -196,6 +207,7 @@ color:any
   removeSelect(i: number) {
     this.selectList.splice(i, 1);
     this.selectList2.splice(i, 1);
+    this.selectList3.splice(i, 1);
     this.PaintDescriptionlist.splice(i, 1);
   }
   onQuantityChange() {
@@ -203,5 +215,9 @@ color:any
       this.quantity = this.totalQuantity;
     }
   }
+  selectpriority(priority: any) {
+  this.selectedPriority = priority.detail?.value || priority;
+}
+
 }
 

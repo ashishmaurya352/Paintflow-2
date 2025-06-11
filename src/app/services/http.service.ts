@@ -42,6 +42,7 @@ export class HttpService {
   readonly ItemUpdateColor = `/Item/UpdateColor`;
   readonly ItemGetColors = `/Item/GetColors`;
   readonly PaintDescWiseCostOverview = `/Dashboard/PaintDescWiseCostOverview`;
+  readonly PaintDescriptionGet2 = `/PaintDescription/GetForRate`;
   readonly PaintDescriptionGet = `/PaintDescription/Get`;
   readonly PaintDescriptionUpdateRate = `/PaintDescription/UpdateRate`;
   readonly GetUsers = `/User/GetUsers`;
@@ -183,6 +184,11 @@ export class HttpService {
     let url = `${this.apiUrl + this.PaintDescriptionGet}`;
     return this.httpClient.get(url);
   }
+  getPaintDescriptionGet2(): Observable<any> {
+    let url = `${this.apiUrl + this.PaintDescriptionGet2}`;
+    return this.httpClient.get(url);
+  }
+  
   paintDescriptionUpdateRate(data: any): Observable<any> {
     let params = new HttpParams();
     for (const key in data) {
