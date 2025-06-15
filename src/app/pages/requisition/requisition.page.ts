@@ -21,6 +21,7 @@ import { SwiperComponent } from 'src/app/shares/components/swiper/swiper.compone
 export class RequisitionPage implements OnInit {
 
   defaultImageUrl = 'assets/img/mountain.png';
+  reworkImageUrl = 'assets/img/letter-r.png';
 
   filter: any = {
     PageNumber: 1,

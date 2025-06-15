@@ -77,6 +77,9 @@
           </div>
           <!-- Hidden file input element -->
           <!-- <input #fileInput type="file" accept="image/*" multiple style="display:none" (change)="onImageSelected($event, i)"> -->
+           <div class="rework" *ngIf="usereRole === 'Inward Manager' && item.isRejectedByFirstProcess">
+            <img [src]="reworkImageUrl" alt="rework" />
+           </div>
           <div class="dropdown" *ngIf="usereRole === 'Inward Manager'">
             <ion-select [disabled]="!itemChecked[i]" class="custom-select" [value]="UpdatedItemLists[i].priority"
               interface="popover" label-placement="floating" shape="round" fill="outline"

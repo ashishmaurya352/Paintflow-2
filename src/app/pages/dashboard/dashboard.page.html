@@ -13,14 +13,36 @@
 
       <h3 class="ion-text-center">Admin Dashboard</h3>
 
-      <ion-segment slot="end" [value]="filter.ReqFrom" mode="md" class="custom-toggle" (ionChange)="segment($event)">
+      <!-- <ion-segment slot="end" [value]="filter.ReqFrom" mode="md" class="custom-toggle" (ionChange)="segment($event)">
         <ion-segment-button value="WPP">
           <ion-label>WPP</ion-label>
         </ion-segment-button>
         <ion-segment-button value="WPR">
           <ion-label>WPR</ion-label>
         </ion-segment-button>
-      </ion-segment>
+        <ion-segment-button value="CPWPP">
+          <ion-label>CPWPP</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="CPWPR">
+          <ion-label>CPWPR</ion-label>
+        </ion-segment-button>
+      </ion-segment> -->
+<div class="custom-toggle">
+   <ion-select
+    slot="end"
+    interface="popover"
+    placeholder="Select"
+    [value]="filter.ReqFrom"
+    (ionChange)="segment($event)"
+    class="custom-toggle"
+  >
+    <ion-select-option value="WPP">WPP</ion-select-option>
+    <ion-select-option value="WPR">WPR</ion-select-option>
+    <ion-select-option value="CPWPP">CPWPP</ion-select-option>
+    <ion-select-option value="CPWPR">CPWPR</ion-select-option>
+  </ion-select>
+</div>
+      
     </ion-item>
 
   </div>
