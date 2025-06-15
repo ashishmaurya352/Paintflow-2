@@ -51,7 +51,7 @@ export class ActivityListPage implements OnInit {
   InQueueList: any = []
   RejectedList: any = []
   ApprovedList: any = []
-  pageTitles = 'Challan No.'
+  pageTitles = "Ch No. "
   teams: any = []
   teamsData: any
   selectedTeam: any

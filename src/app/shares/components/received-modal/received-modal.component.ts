@@ -5,6 +5,7 @@ import { IonicModule, ModalController } from '@ionic/angular';
 
 import { FormsModule } from '@angular/forms';
 import { Colors } from 'chart.js';
+import { ControllerService } from 'src/app/services/controller.service';
 // import { ReceivedModalComponent } from './received-modal.component';
 // ``````typescript
 @Component({
@@ -40,15 +41,17 @@ export class ReceivedModalComponent implements OnInit {
   loginTeam: any
   PaintDescriptionlist: any[][] = [];
   paintDescriptionColors: any[][] = [];
-  color:any
+  color: any
   selectedPriority: any = 'Low'; // Default priority
   prioritys = ['High', 'Medium', 'Low'];
   constructor(
     private modalCtrl: ModalController,
+        private controller: ControllerService
+
   ) { }
   ngOnInit() {
-    console.log('this.teams', this.teams2)
-    console.log('this.PaintDescription', this.PaintDescription)
+    // console.log('this.teams', this.teams2)
+    // console.log('this.PaintDescription', this.PaintDescription)
     this.loginTeam = localStorage.getItem('team')
 
     this.quantity = this.getquantity == 0 ? this.totalQuantity : this.getquantity;  // Update the quantity based on new input value
@@ -67,45 +70,49 @@ export class ReceivedModalComponent implements OnInit {
     console.log('this.quantity', this.quantity)
     if (this.quantity >= 0) {
       console.error('Quantity must be greater than 0');
-      if(this.isInwardManager){
-      this.itemPaintDescriptions = [];
+      if (this.isInwardManager) {
+        if (this.selectList[0].selectedOptionLabel === '') {
+          this.controller.showToast('Please Select Team');
+          return
+        }
+        this.itemPaintDescriptions = [];
 
-     const length = Math.max(this.selectList?.length || 0, this.selectList2?.length || 0, this.selectList3?.length || 0);
+        const length = Math.max(this.selectList?.length || 0, this.selectList2?.length || 0, this.selectList3?.length || 0);
 
-      for (let i = 0; i < length; i++) {
-        const team = this.selectList?.[i]?.selectedOptionLabel || '';
-        const paintDescriptionId = this.selectList2?.[i]?.id ?? 0;
-        const color = this.selectList3?.[i]?.selectedColor || '';
+        for (let i = 0; i < length; i++) {
+          const team = this.selectList?.[i]?.selectedOptionLabel || '';
+          const paintDescriptionId = this.selectList2?.[i]?.id ?? 0;
+          const color = this.selectList3?.[i]?.selectedColor || '';
 
-        this.color = color;
+          this.color = color;
 
-        console.log('team', team, 'paintDescriptionId', paintDescriptionId, 'color', color);
+          console.log('team', team, 'paintDescriptionId', paintDescriptionId, 'color', color);
 
-        this.itemPaintDescriptions.push({
-          team,
-          paintDescriptionId: typeof paintDescriptionId === 'number' ? paintDescriptionId : 0,
-        });
+          this.itemPaintDescriptions.push({
+            team,
+            paintDescriptionId: typeof paintDescriptionId === 'number' ? paintDescriptionId : 0,
+          });
 
-        console.log('this.itemPaintDescriptions', this.itemPaintDescriptions);
+          console.log('this.itemPaintDescriptions', this.itemPaintDescriptions);
+        }
+
+
+        console.log(this.itemPaintDescriptions);
+        if (!this.isSingle) {
+          this.quantity = this.totalQuantity
+        }
+        const data = {
+          quantity: this.quantity,
+          color: this.color,
+          selectedPriority: this.selectedPriority,
+          // team:this.selectedTeam,
+          itemPaintDescriptions: this.itemPaintDescriptions,
+        }
+        this.modalCtrl.dismiss(data);
       }
-
-
-      console.log(this.itemPaintDescriptions);
-      if(!this.isSingle){
-        this.quantity = this.totalQuantity
+      else {
+        this.modalCtrl.dismiss({ quantity: this.quantity });
       }
-      const data = {
-        quantity: this.quantity,
-        color: this.color,
-        selectedPriority: this.selectedPriority,
-        // team:this.selectedTeam,
-        itemPaintDescriptions: this.itemPaintDescriptions,
-      }
-      this.modalCtrl.dismiss(data);
-    }
-    else{
-      this.modalCtrl.dismiss( {quantity:this.quantity} );
-    }
     }
 
 
@@ -149,7 +156,7 @@ export class ReceivedModalComponent implements OnInit {
     this.selectList[i].isPopoverOpen = false;
 
     this.PaintDescriptionlist[i] = this.PaintDescription[option] || [];
-    
+
     // Assign second list data conditionally
     if (!this.selectList2[i]) {
       this.selectList2[i] = { selectedOptionLabel: '', id: '', isPopoverOpen: false, popoverEvent: null };
@@ -216,8 +223,8 @@ export class ReceivedModalComponent implements OnInit {
     }
   }
   selectpriority(priority: any) {
-  this.selectedPriority = priority.detail?.value || priority;
-}
+    this.selectedPriority = priority.detail?.value || priority;
+  }
 
 }
 
