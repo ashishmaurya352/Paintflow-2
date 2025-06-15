@@ -57,6 +57,10 @@ export class RequisitionPage implements OnInit {
   isMultSubmit = false;
   isSelectAll = false; // Flag to track if all items are selected
   color: any = null; // Initialize color variable
+  isRejected: boolean = false; // Flag to track if the requisition is rejected
+  rejectedItem: any = [];
+  rejectPopver = false
+  decText!: string
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -75,6 +79,7 @@ export class RequisitionPage implements OnInit {
       console.log('params', params)
       this.requisitionId = params['id'];
       this.slipNumber = params['slipNumber'];
+      this.isRejected = params['isReject'] || false; // Convert string to boolean
     });
 
     this.usereRole = localStorage.getItem('role');
@@ -109,6 +114,7 @@ export class RequisitionPage implements OnInit {
         (entry: any) => entry.index === i
       );
 
+
       if (existingIndex !== -1) {
         // If index exists, remove it
         this.multSelectIndexList.splice(existingIndex, 1);
@@ -118,10 +124,15 @@ export class RequisitionPage implements OnInit {
         // Else add it
         this.multSelectIndexList.push({ index: i, item });
         this.UpdatedItemLists[i].quantity = item.quantity
-
       }
       return;
     }
+    if (this.isRejected) {
+      // this.controller.showToast('This Requisition is Rejected');
+      return;
+    }
+
+
 
     let totalQuantity
     if (this.usereRole === 'Inward Manager') {
@@ -223,17 +234,37 @@ export class RequisitionPage implements OnInit {
         this.itemChecked = [...this.itemChecked, ...res.map(() => false)];
         // Handle user roles and map the updated item list accordingly
         if (this.usereRole === 'Executive') {
+          // if( this.isRejected) {
+
+          // }else{}
           if (this.filter.PageNumber === 1) {
-            this.UpdatedItemLists = res.map((item: any) => ({
-              itemProcessId: item.currentProcess_Id,
-              quantity: 0,
-            }));
+            if (this.isRejected) {
+              this.UpdatedItemLists = res.map((item: any) => ({
+                id: item.id,
+                quantity: 0,
+              }));
+            } else {
+              this.UpdatedItemLists = res.map((item: any) => ({
+                itemProcessId: item.currentProcess_Id,
+                quantity: 0,
+              }));
+            }
+
           } else {
-            this.UpdatedItemLists = [...this.UpdatedItemLists, ...res.map((item: any) => ({
-              itemProcessId: item.currentProcess_Id,
-              quantity: 0,
-              itemPaintDescriptions: []
-            }))];
+            if (this.isRejected) {
+              this.UpdatedItemLists = [...this.UpdatedItemLists, ...res.map((item: any) => ({
+                id: item.id,
+                quantity: 0,
+                itemPaintDescriptions: []
+              }))];
+            } else {
+              this.UpdatedItemLists = [...this.UpdatedItemLists, ...res.map((item: any) => ({
+                itemProcessId: item.currentProcess_Id,
+                quantity: 0,
+                itemPaintDescriptions: []
+              }))];
+            }
+
           }
         } else if (this.usereRole === 'Inward Manager') {
           if (this.filter.PageNumber === 1) {
@@ -278,25 +309,45 @@ export class RequisitionPage implements OnInit {
     }
 
     const items = this.UpdatedItemLists.filter((item, i) => this.itemChecked[i]);
-
+    console.log('this.UpdatedItemLists', this.UpdatedItemLists);
     if (this.usereRole === 'Executive') {
       const data = {
         requisitionId: this.requisitionId,
         items: items
       };
-      this.controller.showloader()
       console.log('data', data);
       // const segmentValue = 'Active';
       // this.router.navigate(['/order'], { queryParams: { segmentValue } });
 
-      this.httpService.acceptItemForProcess(data).subscribe(() => {
-        this.controller.hideloader()
-        const segmentValue = 'Active'
-        // const segmentValue = 'Active';
-        this.router.navigate(['/order'], { queryParams: { segmentValue } });
-      }, (error) => {
-        this.controller.hideloader()
-      });
+      if (this.isRejected) {
+        this.rejectedItem = items.map((item: any) => ({
+          id: item.id
+        }));
+
+        this.rejectPopver = true
+
+
+        //   this.httpService.itemReject(data).subscribe(() => {
+        //   this.controller.hideloader()
+        //   const segmentValue = 'Active'
+        //   // const segmentValue = 'Active';
+        //   this.router.navigate(['/order'], { queryParams: { segmentValue } });
+        // }, (error) => {
+        //   this.controller.hideloader()
+        // });
+      } else {
+        this.controller.showloader()
+
+        this.httpService.acceptItemForProcess(data).subscribe(() => {
+          this.controller.hideloader()
+          const segmentValue = 'Active'
+          // const segmentValue = 'Active';
+          this.router.navigate(['/order'], { queryParams: { segmentValue } });
+        }, (error) => {
+          this.controller.hideloader()
+        });
+      }
+
 
     } else if (this.usereRole === 'Inward Manager') {
       this.isModalOpen = true
@@ -615,6 +666,44 @@ export class RequisitionPage implements OnInit {
       });
     }
     console.log('All items selected:', this.UpdatedItemLists);
+  }
+  submitReject() {
+    console.log('this.rejectedItem', this.rejectedItem);
+    const data = {
+      id: this.rejectedItem,
+      reason: this.decText,
+    }
+
+    // Convert to URL parameters
+    const params = new URLSearchParams();
+
+    // Add all `ids`
+    data.id.forEach((item:any) => {
+      params.append('ids', item.id.toString());
+    });
+
+    // Add `reason`
+    params.append('reason', data.reason);
+
+    // Final URL query string
+    const queryString = params.toString();
+
+    this.controller.showloader()
+
+    this.httpService.itemReject(queryString).subscribe(() => {
+      this.controller.hideloader()
+       this.rejectPopver = false
+      const segmentValue = 'Active'
+      // const segmentValue = 'Active';
+      this.router.navigate(['/order'], { queryParams: { segmentValue } });
+    }, (error) => {
+       this.rejectPopver = false
+
+      this.controller.hideloader()
+    });
+       this.rejectPopver = false
+
+    console.log('data', data);
   }
 
 }

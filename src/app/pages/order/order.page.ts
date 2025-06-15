@@ -644,5 +644,8 @@ export class OrderPage implements OnInit {
       Status: null,
     }
   }
+  rejectOrder(id: any, slipNumber: any) {
+    this.router.navigate(['/requisition'], { queryParams: { id: id, slipNumber: slipNumber,isReject: true } });
+  }
 
 }

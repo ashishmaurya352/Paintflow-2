@@ -8,8 +8,8 @@ import { HttpParams } from '@angular/common/http';
 })
 export class HttpService {
 // 
-  // private apiUrl = 'https://paintflow.runasp.net/api';
-  private apiUrl = 'https://paintflowtest.runasp.net/api';
+  private apiUrl = 'https://paintflow.runasp.net/api';
+  // private apiUrl = 'https://paintflowtest.runasp.net/api';
   
 
 
@@ -47,7 +47,7 @@ export class HttpService {
   readonly PaintDescriptionUpdateRate = `/PaintDescription/UpdateRate`;
   readonly GetUsers = `/User/GetUsers`;
   readonly UpdatePassword = `/User/UpdatePassword`;
-
+  readonly ItemReject = `/Item/Reject`;
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -206,5 +206,9 @@ export class HttpService {
   updatePassword(data: any): Observable<any> {
     let url = `${this.apiUrl + this.UpdatePassword}`;
     return this.httpClient.post(url, data);
+  }
+  itemReject(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ItemReject}?${data}`;
+    return this.httpClient.put(url, '');
   }
 }

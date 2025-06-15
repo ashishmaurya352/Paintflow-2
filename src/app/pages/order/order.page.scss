@@ -94,6 +94,7 @@ ion-card {
 
                     width: 48px !important;
                     height: 48px !important;
+                    margin: auto;
                     // app-pie-chart {
                     //     // display: inline-block;
                     // }
@@ -192,4 +193,10 @@ ion-badge {
   
   .custom-select::part(container) {
     margin-top: 7px;
+  }
+
+  .reject-btn{
+    --color: #EC4949;
+    --border-color: #EC4949;
+    margin-right: 15px;
   }

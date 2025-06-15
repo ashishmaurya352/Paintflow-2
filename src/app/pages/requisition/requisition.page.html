@@ -65,11 +65,14 @@
                   item.priority }}</ion-badge>
               </div>
               <h6>{{ item.partDesciption | uppercase }}</h6>
-              <h6 *ngIf="usereRole === 'Inward Manager'">
-                Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
-              <h6 *ngIf="usereRole !== 'Inward Manager'">
-                Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.curretProcess.quantity }}
-                pcs</h6>
+              <div *ngIf="!this.isRejected">
+
+                <h6 *ngIf="usereRole === 'Inward Manager'">
+                  Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
+                <h6 *ngIf="usereRole !== 'Inward Manager'">
+                  Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.curretProcess.quantity }}
+                  pcs</h6>
+              </div>
             </div>
           </div>
           <!-- Hidden file input element -->
@@ -131,6 +134,46 @@
   </app-received-modal> -->
 </ion-content>
 
+
+<ion-popover
+  [isOpen]="rejectPopver"
+  (didDismiss)="rejectPopver = false"
+  showBackdrop="true"
+>
+  <ng-template>
+    <ion-content class="ion-padding">
+
+      <ion-text color="medium">
+        <h3 class="ion-no-margin" style="color: black ;">Rejection Remarks</h3>
+        <p>Please provide your reason for rejection below:</p>
+      </ion-text>
+
+      <ion-item lines="none">
+        <ion-textarea
+        class="reject-textarea"
+          [(ngModel)]="decText"
+          rows="5"
+          autoGrow="true"
+          mode="md"
+          label="Remarks"
+          label-placement="stacked"
+          fill="outline"
+          placeholder="Enter remarks..."
+        ></ion-textarea>
+      </ion-item>
+
+      <div class="ion-text-right" style="margin-top: 1rem;">
+        <ion-button color="danger" size="small" (click)="submitReject()">
+          <!-- <ion-icon name="send" slot="start"></ion-icon> -->
+          Submit
+        </ion-button>
+      </div>
+
+    </ion-content>
+  </ng-template>
+</ion-popover>
+
+
 <ion-modal mode="ios" class="priority-modal" [isOpen]="isModalOpen" (didDismiss)="isModalOpen = false">
   <ng-template>
     
@@ -164,8 +207,10 @@
   <div class="accept-btn">
     <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Executive'" shape="round" size="large"
       expand="block" slot="start" aria-label="accept" (click)="acceptItems()">
-      Accept Items
+      <span *ngIf="isRejected">Reject Items</span>
+      <span *ngIf="!isRejected">Accept Items</span>
     </ion-button>
+    
     <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Inward Manager'" shape="round" size="large"
       expand="block" slot="start" aria-label="accept" (click)="acceptItems()">
       Select Priority and Accept Items

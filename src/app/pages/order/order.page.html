@@ -103,6 +103,10 @@
                     <!-- <p class="margin-side">|</p> <p>Approved: </p> <h6>{{'20'}}</h6>
                     <p class="margin-side">|</p> <p>Rejected: </p> <h6 class="rejeced-item">{{'50'}}</h6> -->
                   </div>
+                  <div class="accept">
+                    <p>Requested on</p>
+                    <h6>{{item.reqDate | date:'mediumDate'}}</h6>
+                  </div>
                 </div>
                 <div class="card-end">
                   <div class="chart">
@@ -165,6 +169,10 @@
                   <div class="accept">
                     <p>Accepted on </p>
                     <h6>{{item.acceptedDate | date:'mediumDate'}}</h6>
+                  </div>
+                  <div class="accept">
+                    <p>Requested on</p>
+                    <h6>{{item.reqDate | date:'mediumDate'}}</h6>
                   </div>
                 </div>
                 <div class="card-end">
@@ -235,10 +243,15 @@
                   </div>
                 </div>
                 <div class="card-end">
+                   <ion-button *ngIf="usereRole !== 'Admin'" class="reject-btn"
+                    (click)="rejectOrder(item.requisitionId, item?.slipNumber)" fill="outline" shape="round"
+                    slot="end" aria-label="Show/hide">
+                    Reject
+                  </ion-button>
                   <ion-button *ngIf="usereRole !== 'Admin'" class="accept-btn"
                     (click)="requisitionListPage(item.requisitionId, item?.slipNumber)" fill="outline" shape="round"
                     slot="end" aria-label="Show/hide">
-                    Accpet Order
+                    Accept
                   </ion-button>
                   <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
                     aria-label="Show/hide">
@@ -404,6 +417,10 @@
                   <p>Accepted on </p>
                   <h6>{{item.assignedDate | date:'mediumDate'}}</h6>
                 </div>
+                <div class="accept">
+                    <p>Requested on</p>
+                    <h6>{{item.reqDate | date:'mediumDate'}}</h6>
+                  </div>
               </div>
               <div class="card-end">
                 <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
@@ -455,8 +472,12 @@
                 </div>
                 <div class="accept">
                   <p>Accepted on </p>
-                  <h6>{{item.reqAcceptedDate | date:'mediumDate'}}</h6>
+                  <h6>{{item.assignedDate | date:'mediumDate'}}</h6>
                 </div>
+                <div class="accept">
+                    <p>Requested on</p>
+                    <h6>{{item.reqDate | date:'mediumDate'}}</h6>
+                  </div>
               </div>
               <div class="card-end">
                 <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
@@ -509,6 +530,7 @@
                   <p>Accepted on </p>
                   <h6>{{item.assignedDate | date:'mediumDate'}}</h6>
                 </div>
+                
               </div>
               <div class="card-end">
                 <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
