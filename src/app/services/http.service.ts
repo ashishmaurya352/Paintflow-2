@@ -8,8 +8,8 @@ import { HttpParams } from '@angular/common/http';
 })
 export class HttpService {
 // 
-  private apiUrl = 'https://paintflow.runasp.net/api';
-  // private apiUrl = 'https://paintflowtest.runasp.net/api';
+  // private apiUrl = 'https://paintflow.runasp.net/api';
+  private apiUrl = 'https://paintflowtest.runasp.net/api';
   
 
 

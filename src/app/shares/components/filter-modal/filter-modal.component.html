@@ -19,14 +19,14 @@
         <ion-button id="startDate-trigger" shape="round" label="Start Date"
           [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
           <ion-icon slot="start" name="calendar"></ion-icon>
-          {{startDate | date:'mediumDate'}}
+          {{startDate | date:'mediumDate':'IST'}}
         </ion-button>
       </div>
       <div>
         <ion-label>End Date</ion-label>
         <ion-button shape="round" id="endDate-trigger" [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
           <ion-icon slot="start" name="calendar"></ion-icon>
-          {{endDate | date:'mediumDate'}}
+          {{endDate | date:'mediumDate':'IST'}}
         </ion-button>
       </div>
 
