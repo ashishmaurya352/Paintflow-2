@@ -19,8 +19,8 @@ import { HttpService } from 'src/app/services/http.service';
 export class LoginPage implements OnInit {
 
   
-  email: string = '';
-  password: string = '';
+  email: string = 'Customer1';
+  password: string = 'Test@123';
   showPassword: boolean = false;
   rememberPassword: boolean = false;
 
@@ -81,6 +81,8 @@ export class LoginPage implements OnInit {
             this.router.navigate(['/dashboard']);
           }else if (res.role === 'QA') {
             this.router.navigate(['/qa-dashboard']);
+          }else if (res.role === 'Customer') {
+            this.router.navigate(['/customer-dashboard']);
           }
           else{
             this.router.navigate(['/order']);

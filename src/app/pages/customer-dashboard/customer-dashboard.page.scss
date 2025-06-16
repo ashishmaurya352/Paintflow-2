@@ -1,0 +1,36 @@
+.hader {
+    h3 {
+        font-size: 32px;
+        margin: auto;
+        color: #333333;
+        margin-top: 16px !important;
+        margin-bottom: 16px !important;
+        font-weight: bold;
+    }
+
+    ion-icon {
+        font-size: 32px
+    }
+}
+.content{
+    background: var(--theme-color-gray-3);
+
+ion-button{
+
+        --background: #A52B54;  /* Apply color to button background */
+        --color: white;         /* Apply text color inside the button */
+    }
+     .chart {
+
+                    width: 48px !important;
+                    height: 48px !important;
+                    margin-bottom: 10px;
+                    // app-pie-chart {
+                    //     // display: inline-block;
+                    // }
+                }
+                .item-title{
+    margin-top: auto;
+    margin-bottom: auto;
+                }
+}

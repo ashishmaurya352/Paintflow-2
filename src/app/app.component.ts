@@ -42,6 +42,9 @@ export class AppComponent {
     if (authToken) {
       if (userRole === 'Admin') {
         this.router.navigate(['/dashboard']);
+      }
+      else if (userRole === 'Customer') {
+        this.router.navigate(['/customer-dashboard']);
       } else {
         this.router.navigate(['/order']);
       }

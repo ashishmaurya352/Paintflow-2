@@ -39,6 +39,10 @@ const routes: Routes = [
     path: 'change-rate',
     loadChildren: () => import('./pages/change-rate/change-rate.module').then( m => m.ChangeRatePageModule)
   },
+  {
+    path: 'customer-dashboard',
+    loadChildren: () => import('./pages/customer-dashboard/customer-dashboard.module').then( m => m.CustomerDashboardPageModule)
+  },
 ];
 
 @NgModule({
