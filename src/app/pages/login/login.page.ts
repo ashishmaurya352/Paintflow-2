@@ -19,8 +19,8 @@ import { HttpService } from 'src/app/services/http.service';
 export class LoginPage implements OnInit {
 
   
-  email: string = 'Customer1';
-  password: string = 'Test@123';
+  email: string = '';
+  password: string = '';
   showPassword: boolean = false;
   rememberPassword: boolean = false;
 
@@ -71,7 +71,7 @@ export class LoginPage implements OnInit {
         (res: any) => {
           this.controller.hideloader()
           this.email = '';
-          // this.password = '';
+          this.password = '';
           this.controller.showToast('Logged In Successfully')
           localStorage.setItem('authToken', res.token)
           localStorage.setItem('role', res.role)

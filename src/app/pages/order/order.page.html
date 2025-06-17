@@ -243,7 +243,7 @@
                   </div>
                 </div>
                 <div class="card-end">
-                   <ion-button *ngIf="usereRole !== 'Admin'" class="reject-btn"
+                   <ion-button *ngIf="pageTitles === 'Shot Blasting Team' || pageTitles === 'PT-PH Team'" class="reject-btn"
                     (click)="rejectOrder(item.requisitionId, item?.slipNumber)" fill="outline" shape="round"
                     slot="end" aria-label="Show/hide">
                     Reject

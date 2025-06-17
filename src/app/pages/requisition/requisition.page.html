@@ -9,14 +9,16 @@
       <h3 *ngIf="isSearchbarVisible">Search</h3>
       <h3 *ngIf="!isSearchbarVisible">{{pageTitles}} {{slipNumber}}</h3>
 
-      <ion-button *ngIf="!isSingle" class="toggle-isSingle" fill="clear" slot="end" aria-label="Show/hide" (click)="allSelect()">
-         <ion-icon *ngIf="!isSelectAll" name="stop-outline"></ion-icon>
-         <ion-icon *ngIf="isSelectAll" name="checkbox-outline"></ion-icon>
+      <ion-button *ngIf="!isSingle" class="toggle-isSingle" fill="clear" slot="end" aria-label="Show/hide"
+        (click)="allSelect()">
+        <ion-icon *ngIf="!isSelectAll" name="stop-outline"></ion-icon>
+        <ion-icon *ngIf="isSelectAll" name="checkbox-outline"></ion-icon>
       </ion-button>
 
-       <ion-button  class="toggle-isSingle" fill="outline" slot="end" aria-label="Show/hide" (click)="isSingle = !isSingle">
-         <p *ngIf="isSingle">S</p>
-         <p *ngIf="!isSingle">M</p>
+      <ion-button class="toggle-isSingle" fill="outline" slot="end" aria-label="Show/hide"
+        (click)="isSingle = !isSingle">
+        <p *ngIf="isSingle">S</p>
+        <p *ngIf="!isSingle">M</p>
       </ion-button>
 
 
@@ -70,16 +72,27 @@
                 <h6 *ngIf="usereRole === 'Inward Manager'">
                   Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.quantity }} pcs</h6>
                 <h6 *ngIf="usereRole !== 'Inward Manager'">
-                  Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.curretProcess.quantity }}
+                  Qty:{{UpdatedItemLists[i]?.quantity?UpdatedItemLists[i]?.quantity:0 }}/{{ item.curretProcess.quantity
+                  }}
                   pcs</h6>
               </div>
             </div>
           </div>
           <!-- Hidden file input element -->
           <!-- <input #fileInput type="file" accept="image/*" multiple style="display:none" (change)="onImageSelected($event, i)"> -->
-           <div class="rework" *ngIf="usereRole === 'Inward Manager' && item.isRejectedByFirstProcess">
+          <div class="rework" *ngIf="usereRole === 'Inward Manager' && item.isRejectedByFirstProcess" (click)="rejectPopverRemark = true">
             <img [src]="reworkImageUrl" alt="rework" />
-           </div>
+          </div>
+          <ion-popover [isOpen]="rejectPopverRemark" (didDismiss)="rejectPopverRemark = false">
+            <ng-template>
+              <ion-content class="ion-padding">
+
+                <ion-text color="medium">
+                  <p>{{item?.rejectedReasonByFirstProcess}}</p>
+                </ion-text>
+              </ion-content>
+            </ng-template>
+          </ion-popover>
           <div class="dropdown" *ngIf="usereRole === 'Inward Manager'">
             <ion-select [disabled]="!itemChecked[i]" class="custom-select" [value]="UpdatedItemLists[i].priority"
               interface="popover" label-placement="floating" shape="round" fill="outline"
@@ -138,11 +151,7 @@
 </ion-content>
 
 
-<ion-popover
-  [isOpen]="rejectPopver"
-  (didDismiss)="rejectPopver = false"
-  showBackdrop="true"
->
+<ion-popover [isOpen]="rejectPopver" (didDismiss)="rejectPopver = false" showBackdrop="true">
   <ng-template>
     <ion-content class="ion-padding">
 
@@ -152,17 +161,8 @@
       </ion-text>
 
       <ion-item lines="none">
-        <ion-textarea
-        class="reject-textarea"
-          [(ngModel)]="decText"
-          rows="5"
-          autoGrow="true"
-          mode="md"
-          label="Remarks"
-          label-placement="stacked"
-          fill="outline"
-          placeholder="Enter remarks..."
-        ></ion-textarea>
+        <ion-textarea class="reject-textarea" [(ngModel)]="decText" rows="5" autoGrow="true" mode="md" label="Remarks"
+          label-placement="stacked" fill="outline" placeholder="Enter remarks..."></ion-textarea>
       </ion-item>
 
       <div class="ion-text-right" style="margin-top: 1rem;">
@@ -179,7 +179,7 @@
 
 <ion-modal mode="ios" class="priority-modal" [isOpen]="isModalOpen" (didDismiss)="isModalOpen = false">
   <ng-template>
-    
+
 
     <ion-footer style="padding: 0;">
       <ion-item lines="none">
@@ -193,10 +193,12 @@
         </ion-button>
       </ion-item>
       <div class="accept-btn" style="display: flex; width: 100%;">
-        <ion-button style="width:100%" shape="round" size="large" expand="block" slot="start" aria-label="accept" (click)="isModalOpen = false">
+        <ion-button style="width:100%" shape="round" size="large" expand="block" slot="start" aria-label="accept"
+          (click)="isModalOpen = false">
           Cancle
         </ion-button>
-        <ion-button style="width:100%" shape="round" size="large" expand="block" slot="start" aria-label="accept" (click)="submit()">
+        <ion-button style="width:100%" shape="round" size="large" expand="block" slot="start" aria-label="accept"
+          (click)="submit()">
           Submit
         </ion-button>
       </div>
@@ -213,7 +215,7 @@
       <span *ngIf="isRejected">Reject Items</span>
       <span *ngIf="!isRejected">Accept Items</span>
     </ion-button>
-    
+
     <ion-button [disabled]="disabledAcceptItems()" *ngIf="usereRole == 'Inward Manager'" shape="round" size="large"
       expand="block" slot="start" aria-label="accept" (click)="acceptItems()">
       Select Priority and Accept Items

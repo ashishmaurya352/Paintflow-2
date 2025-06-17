@@ -62,6 +62,7 @@ export class RequisitionPage implements OnInit {
   rejectedItem: any = [];
   rejectPopver = false
   decText!: string
+  rejectPopverRemark: boolean = false; // Flag to track if the reject popover is open
   constructor(
     private router: Router,
     private route: ActivatedRoute,
