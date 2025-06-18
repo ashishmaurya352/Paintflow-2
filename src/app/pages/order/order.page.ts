@@ -648,4 +648,10 @@ export class OrderPage implements OnInit {
     this.router.navigate(['/requisition'], { queryParams: { id: id, slipNumber: slipNumber,isReject: true } });
   }
 
+  addISTOffset(dateStr: string): Date {
+  const originalDate = new Date(dateStr);
+  const istOffsetMs = 5.5 * 60 * 60 * 1000; // 5 hours 30 mins in ms
+  return new Date(originalDate.getTime() + istOffsetMs);
+}
+
 }

@@ -17,7 +17,7 @@
   }
   ion-segment-button {
     --color-checked:var(--theme-color-primary);
-    --color: var(--theme-color-dark)
+    --color:var(--theme-color-dark)
     ion-label{
         font-size: 14px;
         font-weight: bold;
@@ -48,13 +48,13 @@
   }
     h6 {
       font-size: 16px;
-      color: var(--theme-color-dark);
+      color:var(--theme-color-dark);
       font-weight: bold;
     }
   
     h5 {
       font-size: 14px;
-      color: var(--theme-color-dark);
+      color:var(--theme-color-dark);
   
     }
   
@@ -74,7 +74,7 @@
   
     h6 {
       font-size: 14px;
-      color: var(--theme-color-dark);
+      color:var(--theme-color-dark);
     }
   }
   
@@ -110,7 +110,7 @@
   }
   
   .disabled-btn {
-    --color: Var(--theme-color-gray-1);
+    --color:var(--theme-color-gray-1);
     --background:  Var(--theme-color-gray-2) !important;
   }
   
@@ -126,7 +126,7 @@
     width: 18px;
   }
   .handoverCompleted-btn{
-    --color: Var(--theme-color-green);
+    --color:var(--theme-color-green);
     text-transform: none;
     font-weight: bold;
   }
@@ -144,8 +144,8 @@
     width: 18px;
   }
   .QARemarks-btn{
-    --color: Var(--theme-color-primary);
-    --border-color: Var(--theme-color-primary);
+    --color:var(--theme-color-primary);
+    --border-color:var(--theme-color-primary);
   }
   
   .startTask-btn {
@@ -301,7 +301,7 @@
         padding: 7px 20px;
   
         h3 {
-          color: var(--theme-color-dark);
+          color:var(--theme-color-dark);
           font-weight: 600;
         }
       }
@@ -415,7 +415,7 @@
       padding: 7px 20px;
   
       h3 {
-        color: var(--theme-color-dark);
+        color:var(--theme-color-dark);
         font-weight: 600;
       }
     }
@@ -427,14 +427,14 @@
       h6 {
         margin: 0;
         font-size: 16px;
-        color: var(--theme-color-dark);
+        color:var(--theme-color-dark);
         font-weight: bold;
       }
     
       h5 {
         margin: 0;
         font-size: 14px;
-        color: var(--theme-color-dark);
+        color:var(--theme-color-dark);
     
       }
       .status{
