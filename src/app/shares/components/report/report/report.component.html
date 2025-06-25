@@ -1,0 +1,124 @@
+<!-- <div>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Change Password</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+  <div  class="custom-date">
+            <div class="date">
+              <ion-button  id="startDate-trigger" shape="round" label="Start Date"
+                [fill]="'outline'">
+                <ion-icon  name="calendar"></ion-icon>
+                {{startDate | date:'mediumDate':'IST'}}
+              </ion-button>
+            </div>
+          <div>
+            <ion-button shape="round" id="endDate-trigger" [fill]="'outline'">
+              <ion-icon  name="calendar"></ion-icon>
+              {{endDate | date:'mediumDate':'IST'}}
+            </ion-button>
+          </div>
+
+          <ion-popover mode="md" trigger="startDate-trigger">
+            <ng-template>
+              <ion-datetime [value]="startDate" (ionChange)="onStartDateChange($event)" [showDefaultButtons]="true"
+                presentation="date"></ion-datetime>
+            </ng-template>
+          </ion-popover>
+          <ion-popover mode="md" trigger="endDate-trigger">
+            <ng-template>
+              <ion-datetime [min]="startDate" [value]="endDate" (ionChange)="onEndDateChange($event)"
+                [showDefaultButtons]="true" presentation="date"></ion-datetime>
+            </ng-template>
+          </ion-popover>
+        </div>
+        
+</div> -->
+
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Item Report</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="dismiss()">
+        <ion-icon name="close" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<div class="ion-padding">
+  <!-- <ion-card class="ion-margin-top">
+    <ion-card-content> -->
+      <ion-grid>
+        <ion-row class="ion-justify-content-between ion-align-items-center">
+          <ion-col size="12" size-md="6">
+            <ion-label class="ion-text-wrap"><strong>Start Date</strong></ion-label>
+            <ion-button
+              id="startDate-trigger"
+              expand="block"
+              shape="round"
+              fill="outline"
+              color="primary"
+            >
+              <ion-icon name="calendar" slot="start"></ion-icon>
+              {{ startDate | date:'mediumDate':'IST' }}
+            </ion-button>
+          </ion-col>
+
+          <ion-col size="12" size-md="6">
+            <ion-label class="ion-text-wrap"><strong>End Date</strong></ion-label>
+            <ion-button
+              id="endDate-trigger"
+              expand="block"
+              shape="round"
+              fill="outline"
+              color="primary"
+            >
+              <ion-icon name="calendar" slot="start"></ion-icon>
+              {{ endDate | date:'mediumDate':'IST' }}
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+      <ion-row class="ion-justify-content-center ion-margin-top">
+        <ion-col class="changePassword">
+          <ion-button expand="full" type="submit" size="large" expand="block" shape="round"(click)="submitDates()">
+            <!-- <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon> -->
+            Get Report
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    <!-- </ion-card-content>
+  </ion-card> -->
+
+  <!-- Popovers for Date Pickers -->
+  <ion-popover trigger="startDate-trigger" mode="md">
+    <ng-template>
+      <ion-datetime
+        [value]="startDate"
+        (ionChange)="onStartDateChange($event)"
+        [showDefaultButtons]="true"
+        presentation="date"
+      ></ion-datetime>
+    </ng-template>
+  </ion-popover>
+
+  <ion-popover trigger="endDate-trigger" mode="md">
+    <ng-template>
+      <ion-datetime
+        [min]="startDate"
+        [value]="endDate"
+        (ionChange)="onEndDateChange($event)"
+        [showDefaultButtons]="true"
+        presentation="date"
+      ></ion-datetime>
+    </ng-template>
+  </ion-popover>
+</div>

@@ -50,7 +50,7 @@ export class HttpService {
   readonly ItemReject = `/Item/Reject`;
   readonly ItemGetBySlipNumber = `/Item/GetBySlipNumber`;
   readonly ItemGetSummary = `/Item/GetSummary`;
-
+  readonly ReportGetItems = `/Report/GetItems`;
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -221,6 +221,10 @@ export class HttpService {
 
   itemGetSummary(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ItemGetSummary}?${data}`;
+    return this.httpClient.get(url);
+  }
+  reportGetItems(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ReportGetItems}?${data}`;
     return this.httpClient.get(url);
   }
 }

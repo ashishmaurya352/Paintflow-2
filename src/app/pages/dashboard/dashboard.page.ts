@@ -7,6 +7,7 @@ import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
 import { Capacitor } from '@capacitor/core';
 import { ChangePasswordModalComponent } from 'src/app/shares/components/change-password-modal/change-password-modal.component';
+import { ReportComponent } from 'src/app/shares/components/report/report/report.component';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -84,13 +85,13 @@ export class DashboardPage implements OnInit {
     // Add navigation logic here
   }
   logout() {
-   localStorage.clear();
-      this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
-        // Only reload if necessary
-        if (Capacitor.getPlatform() === 'android') {
-          setTimeout(() => window.location.reload(), 100); // small delay improves stability
-        }
-      });
+    localStorage.clear();
+    this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
+      // Only reload if necessary
+      if (Capacitor.getPlatform() === 'android') {
+        setTimeout(() => window.location.reload(), 100); // small delay improves stability
+      }
+    });
   }
   getActiveRequisitionCount() {
     const parm = new HttpParams().set('ReqFrom', '');
@@ -395,7 +396,7 @@ export class DashboardPage implements OnInit {
     const selectedDate = event.detail.value;
     this.startDate = selectedDate
     console.log('selectedDate', selectedDate)
-    if( this.startDate && this.endDate) {
+    if (this.startDate && this.endDate) {
       this.dateRange.start = new Date(this.startDate);
       this.dateRange.end = new Date(this.endDate);
       this.getPaintDescWiseCostOverview(true);
@@ -407,7 +408,7 @@ export class DashboardPage implements OnInit {
     const selectedDate = event.detail.value;
     this.endDate = selectedDate
     console.log('selectedDate', selectedDate)
-    if( this.startDate && this.endDate) {
+    if (this.startDate && this.endDate) {
       this.dateRange.start = new Date(this.startDate);
       this.dateRange.end = new Date(this.endDate);
       this.getPaintDescWiseCostOverview(true);
@@ -415,19 +416,36 @@ export class DashboardPage implements OnInit {
       this.getCostOverview();
     }
   }
-  async changePassword(){
+  async changePassword() {
     this.controller.showloader()
     this.httpService.getUsers().subscribe(async (res: any) => {
       this.controller.hideloader()
       this.userList = res
       const modal = await this.modalController.create({
-              component: ChangePasswordModalComponent,
-              componentProps: {
-                userList : this.userList,
-              },
-              cssClass: 'changePasswordModal',
-            });
-             await modal.present();
+        component: ChangePasswordModalComponent,
+        componentProps: {
+          userList: this.userList,
+        },
+        cssClass: 'changePasswordModal',
+      });
+      await modal.present();
     });
+  }
+
+  openPdfInNewTab() {
+    const fileUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
+    window.location.href = fileUrl;
+  }
+
+  
+  async showReport(){
+     const modal = await this.modalController.create({
+        component: ReportComponent,
+        componentProps: {
+          userList: this.userList,
+        },
+        cssClass: 'changePasswordModal',
+      });
+      await modal.present();
   }
 }
