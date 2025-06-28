@@ -360,21 +360,41 @@ qaAcceptedList = [
   handleQARequisitionItem(res: any) {
     switch (this.segmentValue) {
       case 'InQueue':
-        this.InQueueList = res;
+        if(this.filter.PageNumber > 1) {
+          this.InQueueList = [...this.InQueueList, ...res];
+        } else {
+          this.InQueueList = res;
+        }
         break;
       case 'Rejected':
-        this.RejectedList = res;
+        if(this.filter.PageNumber > 1) {
+          this.RejectedList = [...this.RejectedList, ...res];
+        } else {
+          this.RejectedList = res;
+        }
         break;
       default:
-        this.ApprovedList = res;
+        if(this.filter.PageNumber > 1) {
+          this.ApprovedList = [...this.ApprovedList, ...res];
+        } else {
+          this.ApprovedList = res;
+        }
     }
   }
 
   handleOtherRequisitionItem(res: any) {
     if (this.segmentValue === 'handover') {
-      this.handoverItemList = res;
+      if(this.filter.PageNumber > 1) {
+        this.handoverItemList = [...this.handoverItemList, ...res];
+      } else {
+        this.handoverItemList = res;
+      }
     } else {
-      this.ItemList = res;
+      if(this.filter.PageNumber > 1) {
+        this.ItemList = [...this.ItemList, ...res];
+      } else {
+        this.ItemList = res;
+      }
     }
   }
 
@@ -705,7 +725,7 @@ qaAcceptedList = [
     this.getRequisitionItem(this.requisitionId)
     setTimeout(() => {
       event.target.complete();
-    }, 500);
+    }, 1000);
   }
 
   async openImgModal(item: any, index: number) {

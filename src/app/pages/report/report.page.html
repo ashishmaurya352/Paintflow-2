@@ -1,0 +1,252 @@
+<ion-header [translucent]="true">
+  <div class="hader">
+    <ion-item>
+      <ion-button (click)="backToDashboardPage()" fill="clear" slot="start" aria-label="Show/hide">
+        <ion-icon color="dark" slot="icon-only" name="arrow-back" aria-hidden="true"></ion-icon>
+      </ion-button>
+      <h3>{{pageTitles}}</h3>
+    </ion-item>
+  </div>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-card class="report-card">
+    <ion-card-header>
+      <ion-card-title>Items Report</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="6">
+            <ion-label class="label">Start Date</ion-label>
+            <ion-button size="large" expand="block" id="startDate-trigger"
+              [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
+              <ion-icon slot="start" name="calendar"></ion-icon>
+              {{ filter.StartDate | date: 'mediumDate':'IST' }}
+            </ion-button>
+            <ion-popover #startDatePopover trigger="startDate-trigger">
+              <ng-template>
+                <ion-datetime [value]="filter.StartDate" (ionChange)="onStartDateChange($event)" presentation="date">
+                </ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+          <ion-col size="12" size-md="6">
+            <ion-label class="label">End Date</ion-label>
+            <ion-button size="large" expand="block" id="endDate-trigger"
+              [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
+              <ion-icon slot="start" name="calendar"></ion-icon>
+              {{ filter.EndDate | date: 'mediumDate':'IST' }}
+            </ion-button>
+            <ion-popover #endDatePopover trigger="endDate-trigger">
+              <ng-template>
+                <ion-datetime [min]="filter.StartDate" [value]="filter.EndDate" (ionChange)="onEndDateChange($event)"
+                  presentation="date">
+                </ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+          <!-- <ion-col size="12" size-md="6">
+            <ion-label class="label">Select Type</ion-label>
+
+            <ion-item (click)="openPopover($event, 'Type')" lines="none" button>
+              <ion-label>
+                {{ filter.Type || 'Select Type' }}
+              </ion-label>
+              <ion-icon name="chevron-down" slot="end"></ion-icon>
+            </ion-item>
+
+            <ion-popover [isOpen]="popoverState.Type.isOpen" [event]="popoverState.Type.event"
+              (didDismiss)="popoverState.Type.isOpen = false" showBackdrop="true">
+              <ng-template>
+                <ion-list>
+                  <ion-item button (click)="selectOption('Type', 'Delay')">Delay</ion-item>
+                  <ion-item button (click)="selectOption('Type', 'Rework')">Rework</ion-item>
+                </ion-list>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+          <ion-col size="12" size-md="6">
+            <ion-label class="label">Select Team</ion-label>
+
+            <ion-item (click)="openPopover($event, 'Team')" lines="none" button>
+              <ion-label>
+                {{ filter.Team || 'Select Team' }}
+              </ion-label>
+              <ion-icon name="chevron-down" slot="end"></ion-icon>
+            </ion-item>
+
+            <ion-popover [isOpen]="popoverState.Team.isOpen" [event]="popoverState.Team.event"
+              (didDismiss)="popoverState.Team.isOpen = false" showBackdrop="true">
+              <ng-template>
+                <ion-list>
+                  <ion-item button *ngFor="let team of teams" (click)="selectOption('Team', team)">
+                    {{ team }}
+                  </ion-item>
+                </ion-list>
+              </ng-template>
+            </ion-popover>
+          </ion-col> -->
+
+
+          <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" shape="round" (click)="getReport('Items Report')">
+              <ion-icon slot="start" name="document-text-outline"></ion-icon>
+              Items Report
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+   <!-- <ion-card class="report-card">
+    <ion-card-header>
+      <ion-card-title>Team Wise Delay</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="6">
+            <ion-label class="label">Start Date</ion-label>
+            <ion-button size="large" expand="block" id="startDate-trigger"
+              [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
+              <ion-icon slot="start" name="calendar"></ion-icon>
+              {{ filter.StartDate | date: 'mediumDate':'IST' }}
+            </ion-button>
+            <ion-popover #startDatePopover trigger="startDate-trigger">
+              <ng-template>
+                <ion-datetime [value]="filter.StartDate" (ionChange)="onStartDateChange($event)" presentation="date">
+                </ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+          <ion-col size="12" size-md="6">
+            <ion-label class="label">End Date</ion-label>
+            <ion-button size="large" expand="block" id="endDate-trigger"
+              [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
+              <ion-icon slot="start" name="calendar"></ion-icon>
+              {{ filter.EndDate | date: 'mediumDate':'IST' }}
+            </ion-button>
+            <ion-popover #endDatePopover trigger="endDate-trigger">
+              <ng-template>
+                <ion-datetime [min]="filter.StartDate" [value]="filter.EndDate" (ionChange)="onEndDateChange($event)"
+                  presentation="date">
+                </ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+          <ion-col size="12" >
+            <ion-label class="label">Select Team</ion-label>
+
+            <ion-item (click)="openPopover($event, 'Team')" lines="none" button>
+              <ion-label>
+                {{ filter.Team || 'Select Team' }}
+              </ion-label>
+              <ion-icon name="chevron-down" slot="end"></ion-icon>
+            </ion-item>
+
+            <ion-popover [isOpen]="popoverState.Team.isOpen" [event]="popoverState.Team.event"
+              (didDismiss)="popoverState.Team.isOpen = false" showBackdrop="true">
+              <ng-template>
+                <ion-list>
+                  <ion-item button *ngFor="let team of teams" (click)="selectOption('Team', team)">
+                    {{ team }}
+                  </ion-item>
+                </ion-list>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+
+          <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" shape="round" (click)="getReport('Team Wise Delay')">
+              <ion-icon slot="start" name="document-text-outline"></ion-icon>
+              Delay Report
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card>
+
+   <ion-card class="report-card">
+    <ion-card-header>
+      <ion-card-title>Team Wise Rework</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="12" size-md="6">
+            <ion-label class="label">Start Date</ion-label>
+            <ion-button size="large" expand="block" id="startDate-trigger"
+              [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
+              <ion-icon slot="start" name="calendar"></ion-icon>
+              {{ filter.StartDate | date: 'mediumDate':'IST' }}
+            </ion-button>
+            <ion-popover #startDatePopover trigger="startDate-trigger">
+              <ng-template>
+                <ion-datetime [value]="filter.StartDate" (ionChange)="onStartDateChange($event)" presentation="date">
+                </ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+          <ion-col size="12" size-md="6">
+            <ion-label class="label">End Date</ion-label>
+            <ion-button size="large" expand="block" id="endDate-trigger"
+              [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
+              <ion-icon slot="start" name="calendar"></ion-icon>
+              {{ filter.EndDate | date: 'mediumDate':'IST' }}
+            </ion-button>
+            <ion-popover #endDatePopover trigger="endDate-trigger">
+              <ng-template>
+                <ion-datetime [min]="filter.StartDate" [value]="filter.EndDate" (ionChange)="onEndDateChange($event)"
+                  presentation="date">
+                </ion-datetime>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+          <ion-col size="12" >
+            <ion-label class="label">Select Team</ion-label>
+
+            <ion-item (click)="openPopover($event, 'Team')" lines="none" button>
+              <ion-label>
+                {{ filter.Team || 'Select Team' }}
+              </ion-label>
+              <ion-icon name="chevron-down" slot="end"></ion-icon>
+            </ion-item>
+
+            <ion-popover [isOpen]="popoverState.Team.isOpen" [event]="popoverState.Team.event"
+              (didDismiss)="popoverState.Team.isOpen = false" showBackdrop="true">
+              <ng-template>
+                <ion-list>
+                  <ion-item button *ngFor="let team of teams" (click)="selectOption('Team', team)">
+                    {{ team }}
+                  </ion-item>
+                </ion-list>
+              </ng-template>
+            </ion-popover>
+          </ion-col>
+
+
+          <ion-col size="12" class="ion-text-center">
+            <ion-button expand="block" size="large" shape="round" (click)="getReport('Team Wise Rework')">
+              <ion-icon slot="start" name="document-text-outline"></ion-icon>
+              Rework Report
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card-content>
+  </ion-card> -->
+</ion-content>

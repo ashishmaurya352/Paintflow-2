@@ -37,38 +37,15 @@ dismiss(){
     const selectedDate = event.detail.value;
     this.startDate = selectedDate
     console.log('selectedDate', selectedDate);
-    // if (this.startDate && this.endDate) {
-    //   const data = {
-    //     startDate: this.startDate,
-    //     endDate: this.endDate
-    //   };
-    //   console.log('Report Data:', data);
-    //   this.reportGetItems(data);
-    // }
 }
 
 onEndDateChange(event: any) {
     const selectedDate = event.detail.value;
     this.endDate = selectedDate
     console.log('selectedDate', selectedDate);
-    // if (this.startDate && this.endDate) {
-    //   const data = {
-    //     startDate: this.startDate,
-    //     endDate: this.endDate
-    //   };
-    //   console.log('Report Data:', data);
-    //   this.reportGetItems(data);
-    // }
 }
 
 reportGetItems(data: any) {
-  // let parm = new HttpParams()
-  //   .set('StartDate', data.startDate)
-  //   .set('EndDate', data.endDate);
-  //   this.httpService.reportGetItems(parm).subscribe((res: any) => {
-  //   this.controller.hideloader();
-  //     console.log('Report Get Items:', res);
-  //   });
   this.controller.showloader();
   this.httpClient.get('https://paintflow.runasp.net/api/Report/GetItems', {
   params: {

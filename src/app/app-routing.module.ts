@@ -43,6 +43,10 @@ const routes: Routes = [
     path: 'customer-dashboard',
     loadChildren: () => import('./pages/customer-dashboard/customer-dashboard.module').then( m => m.CustomerDashboardPageModule)
   },
+  {
+    path: 'report',
+    loadChildren: () => import('./pages/report/report.module').then( m => m.ReportPageModule)
+  },
 ];
 
 @NgModule({

@@ -51,6 +51,9 @@ export class HttpService {
   readonly ItemGetBySlipNumber = `/Item/GetBySlipNumber`;
   readonly ItemGetSummary = `/Item/GetSummary`;
   readonly ReportGetItems = `/Report/GetItems`;
+  readonly ReportGetTeamWiseDelay = `/Report/GetTeamWiseDelay`;
+  readonly ReportGetTeamWiseRework = `/Report/GetTeamWiseRework`;
+  
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -225,6 +228,14 @@ export class HttpService {
   }
   reportGetItems(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ReportGetItems}?${data}`;
+    return this.httpClient.get(url,{responseType: 'text'});
+  }
+  reportGetTeamWiseDelay(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ReportGetTeamWiseDelay}?${data}`;
+    return this.httpClient.get(url);
+  }
+  reportGetTeamWiseRework(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ReportGetTeamWiseRework}?${data}`;
     return this.httpClient.get(url);
   }
 }

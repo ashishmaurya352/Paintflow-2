@@ -46,6 +46,8 @@ export class DashboardPage implements OnInit {
   endDate: any = null
   range: number = 0;
   userList: any = []
+  delayList: any = []
+  reworkList: any = []
   constructor(
     private router: Router,
     private httpService: HttpService,
@@ -59,6 +61,8 @@ export class DashboardPage implements OnInit {
     this.getActiveRequisitionCount()
     this.getPaintDescWiseCostOverview()
     this.getCostOverview()
+    this.reworkReport()
+    this.delayReport()
     this.addcss()
   }
   requisitions: any = [
@@ -212,7 +216,6 @@ export class DashboardPage implements OnInit {
     this.getActiveRequisitionCount()
     this.getCostOverview()
 
-
   }
   addcss() {
     const observer = new MutationObserver(() => {
@@ -292,7 +295,8 @@ export class DashboardPage implements OnInit {
     this.getActiveRequisitionCount();
     this.getPaintDescWiseCostOverview(true);
     this.getCostOverview();
-
+    this.reworkReport()
+    this.delayReport()
     console.log('this.selectedPeriod', this.selectedPeriod)
     console.log('this.dateRange', this.dateRange)
   }
@@ -402,6 +406,8 @@ export class DashboardPage implements OnInit {
       this.getPaintDescWiseCostOverview(true);
       this.getActiveRequisitionCount();
       this.getCostOverview();
+      this.reworkReport()
+      this.delayReport()
     }
   }
   onEndDateChange(event: any) {
@@ -414,6 +420,8 @@ export class DashboardPage implements OnInit {
       this.getPaintDescWiseCostOverview(true);
       this.getActiveRequisitionCount();
       this.getCostOverview();
+      this.reworkReport()
+      this.delayReport()
     }
   }
   async changePassword() {
@@ -437,15 +445,68 @@ export class DashboardPage implements OnInit {
     window.location.href = fileUrl;
   }
 
-  
-  async showReport(){
-     const modal = await this.modalController.create({
-        component: ReportComponent,
-        componentProps: {
-          userList: this.userList,
-        },
-        cssClass: 'changePasswordModal',
-      });
-      await modal.present();
+
+  async showReport() {
+    this.router.navigate(['/report']);
+  }
+  //    const modal = await this.modalController.create({
+  //       component: ReportComponent,
+  //       componentProps: {
+  //         userList: this.userList,
+  //       },
+  //       cssClass: 'changePasswordModal',
+  //     });
+  //     await modal.present();
+  // }
+
+  delayReport() {
+    let params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate)
+
+    this.httpService.reportGetTeamWiseDelay(params).subscribe({
+      next: (res: any) => {
+        this.delayList = res
+        console.log('Report URL:', res);
+      },
+      error: (err) => {
+        this.controller.showToast('Error fetching report');
+        console.error('Download error:', err);
+      }
+    });
+  }
+  reworkReport() {
+    let params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate)
+
+    this.httpService.reportGetTeamWiseRework(params).subscribe({
+      next: (res: any) => {
+        this.reworkList = res
+        console.log('Report URL:', res);
+      },
+      error: (err) => {
+        this.controller.showToast('Error fetching report');
+        console.error('Download error:', err);
+      }
+    });
+  }
+  downloadReport(reportType: string) {
+    let params
+    if (reportType === 'Delay') {
+      params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', 'Delay');
+    } else if (reportType === 'Rework') {
+      params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', 'Rework');
+    }
+    this.controller.showloader();
+
+    this.httpService.reportGetItems(params).subscribe({
+      next: (res: any) => {
+        this.controller.hideloader();
+        console.log('Report URL:', res);
+        window.open(res, '_blank');
+      },
+        error: (err) => {
+          this.controller.hideloader()
+          this.controller.showToast('Error fetching report');
+          console.error('Download error:', err);
+        }
+    });
   }
 }
