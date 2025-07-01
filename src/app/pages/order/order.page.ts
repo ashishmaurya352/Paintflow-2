@@ -530,7 +530,11 @@ export class OrderPage implements OnInit {
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {
     this.filter.PageNumber += 1;
-    this.getItem();
+    if (this.usereRole == 'Executive' || this.usereRole == 'QA' || this.usereRole == 'Admin') {
+      this.getRequisitionDetail()
+    } else {
+      this.getItem()
+    }
     setTimeout(() => {
       event.target.complete();
     }, 500);

@@ -110,6 +110,7 @@ selectOption(key: 'Type' | 'Team', value: string) {
       next: (res: any) => {
         this.controller.hideloader();
         console.log('Report URL:', res);
+        window.open(res, '_blank');
       },
         error: (err) => {
           this.controller.hideloader()
@@ -126,6 +127,7 @@ selectOption(key: 'Type' | 'Team', value: string) {
         next: (res: any) => {
           this.controller.hideloader();
           console.log('Report URL:', res);
+        window.open(res, '_blank');
         },
         error: (err) => {
           this.controller.hideloader()
@@ -142,6 +144,7 @@ selectOption(key: 'Type' | 'Team', value: string) {
         next: (res: any) => {
           this.controller.hideloader();
           console.log('Report URL:', res);
+        window.open(res, '_blank');
         },
         error: (err) => {
           this.controller.hideloader()
