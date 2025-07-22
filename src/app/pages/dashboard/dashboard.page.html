@@ -184,7 +184,9 @@
           <ion-card-content class="overview">
             <h3>{{ team.team }}</h3>
             <h2>{{ team.delayedItemCount | number }}</h2>
-            <p>Delay in days: <b>{{ team.delayInDays | number }}</b></p>
+            <p>Average delay in days: <b>{{ (team.delayInDays ?? 0) | number }}</b></p>
+            <p>Top delay in days: <b>{{ (team.topDelayInDays ?? 0) | number }}</b></p>
+            <p>Bottom delay in days: <b>{{ (team.bottomDelayInDays ?? 0) | number }}</b></p>
           </ion-card-content>
         </ion-card>
       </ion-col>

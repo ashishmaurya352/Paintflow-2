@@ -299,6 +299,10 @@
                   </div>
                   <div class="accept">
                     <p>Created on </p>
+                    <h6>{{ addISTOffset(item.createdDate) | date:'mediumDate'}}</h6>
+                  </div>
+                  <div class="accept">
+                    <p>Req on </p>
                     <h6>{{ addISTOffset(item.reqDate) | date:'mediumDate'}}</h6>
                   </div>
                 </div>
