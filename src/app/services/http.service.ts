@@ -8,10 +8,9 @@ import { HttpParams } from '@angular/common/http';
 })
 export class HttpService {
 // 
-  private apiUrl = 'https://paintflow.runasp.net/api';
+  // private apiUrl = 'https://paintflow.runasp.net/api';
   // private apiUrl = 'https://paintflowtest.runasp.net/api';
-  
-
+  private apiUrl = 'https://srv01108.wipropari.com:5246/api';
 
   readonly login = `/User/login`;
   readonly register = `/User/register`;

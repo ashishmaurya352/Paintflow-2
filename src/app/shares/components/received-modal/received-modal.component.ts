@@ -33,6 +33,7 @@ export class ReceivedModalComponent implements OnInit {
   @Input() PaintDescription = []
   @Input() isInwardManager = false
   @Input() isSingle = true
+  @Input() isChallan = false
 
 
   @Output() dismiss = new EventEmitter<void>(); // Close event
@@ -41,9 +42,10 @@ export class ReceivedModalComponent implements OnInit {
   loginTeam: any
   PaintDescriptionlist: any[][] = [];
   paintDescriptionColors: any[][] = [];
-  color: any
+  color: any = ''
   selectedPriority: any = 'Low'; // Default priority
   prioritys = ['High', 'Medium', 'Low'];
+  selectedChallanPriority: any = 'Low'; // Default priority for challan
   constructor(
     private modalCtrl: ModalController,
         private controller: ControllerService
@@ -68,7 +70,7 @@ export class ReceivedModalComponent implements OnInit {
   itemPaintDescriptions: { team: string; paintDescriptionId: number }[] = [];
   submitQuantity() {
     console.log('this.quantity', this.quantity)
-    if (this.quantity >= 0) {
+    if (this.quantity >= 0 ) {
       console.error('Quantity must be greater than 0');
       if (this.isInwardManager) {
         if (this.selectList[0].selectedOptionLabel === '') {
@@ -84,7 +86,9 @@ export class ReceivedModalComponent implements OnInit {
           const paintDescriptionId = this.selectList2?.[i]?.id ?? 0;
           const color = this.selectList3?.[i]?.selectedColor || '';
 
-          this.color = color;
+          if(color !== '' && color !== undefined){
+            this.color = color;
+          }
 
           console.log('team', team, 'paintDescriptionId', paintDescriptionId, 'color', color);
 
@@ -101,12 +105,24 @@ export class ReceivedModalComponent implements OnInit {
         if (!this.isSingle) {
           this.quantity = this.totalQuantity
         }
-        const data = {
-          quantity: this.quantity,
-          color: this.color,
-          selectedPriority: this.selectedPriority,
-          // team:this.selectedTeam,
-          itemPaintDescriptions: this.itemPaintDescriptions,
+        let data: any;
+        if(this.isChallan){
+            data = {
+            quantity: this.quantity,
+            color: this.color,
+            selectedPriority: this.selectedPriority,
+            selectedChallanPriority: this.selectedChallanPriority,
+            // team:this.selectedTeam,
+            itemPaintDescriptions: this.itemPaintDescriptions,
+          }
+        } else{
+          data = {
+            quantity: this.quantity,
+            color: this.color,
+            selectedPriority: this.selectedPriority,
+            // team:this.selectedTeam,
+            itemPaintDescriptions: this.itemPaintDescriptions,
+          }
         }
         this.modalCtrl.dismiss(data);
       }
@@ -224,6 +240,10 @@ export class ReceivedModalComponent implements OnInit {
   }
   selectpriority(priority: any) {
     this.selectedPriority = priority.detail?.value || priority;
+  }
+
+  selectChallanPriority(priority: any) {
+    this.selectedChallanPriority = priority.detail?.value || priority;
   }
 
 }

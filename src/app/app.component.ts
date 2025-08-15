@@ -23,7 +23,7 @@ export class AppComponent {
     this.platform.ready().then(async () => {
       if (Capacitor.getPlatform() === 'android') {
         await EdgeToEdge.enable();
-        await StatusBar.setStyle({ style: Style.Light });
+        await StatusBar.setStyle({ style: Style.Dark });
         await StatusBar.setOverlaysWebView({ overlay: false });
         // StatusBar.hide();
       }

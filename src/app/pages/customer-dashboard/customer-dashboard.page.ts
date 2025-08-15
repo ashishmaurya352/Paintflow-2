@@ -8,6 +8,7 @@ import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
 import { HttpParams } from '@angular/common/http';
 import { ChartComponent } from 'src/app/shares/components/chart/chart.component';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-customer-dashboard',
@@ -53,19 +54,58 @@ filterItems() {
       .map(item => ({ ...item, expanded: false }));
   }
 
-  getChallan() {
-    const data = {
-      keyword: this.challanNO.trim()
-    };
-    let parm = new HttpParams().set('keyword', this.challanNO.trim());
+  // getChallan() {
+  //   const data = {
+  //     keyword: this.challanNO.trim()
+  //   };
+  //   let parm = new HttpParams().set('keyword', this.challanNO.trim());
     
-    this.httpService.itemGetBySlipNumber(parm).subscribe(response => {
-      this.itemList = response;
-      this.filteredItems = [...this.itemList];
+  //   this.httpService.itemGetBySlipNumber(parm).subscribe(response => {
+  //     this.itemList = response;
+  //     this.filteredItems = [...this.itemList];
 
-      console.log('Item details:', response);
-    });
+  //     console.log('Item details:', response);
+  //   });
+  // }
+  getChallan(): void {
+  const challan = this.challanNO?.trim();
+
+  if (!challan) {
+    console.warn('Challan number is empty.');
+    return;
   }
+
+  const params = new HttpParams().set('keyword', challan);
+
+      this.controller.showloader();
+
+
+  this.httpService.itemGetBySlipNumber(params)
+    .pipe(finalize(() => this.controller.hideloader()))
+    .subscribe({
+      next: (response) => {
+        this.itemList = response;
+        this.filteredItems = [...this.itemList];
+
+        console.log('Item details:', response);
+      },
+      error: async (error) => {
+        if (error.status === 404) {
+          console.warn('Challan not found.');
+          this.itemList = [];
+          this.filteredItems = [];
+
+          // Optional: show a toast/snackbar/dialog
+          await this.controller.showToast('No items found for this Challan number.', 'bottom', 3000);
+        } else {
+          console.error('API error:', error);
+          await this.controller.showToast('An unexpected error occurred.', 'bottom', 3000);
+        }
+      }
+    });
+}
+
+
 details:any
 
   itemGetSummary(id:any) {

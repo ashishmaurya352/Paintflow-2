@@ -33,6 +33,10 @@
       <ion-input placeholder="Search items" [(ngModel)]="searchTerm" (ionInput)="filterItems()"></ion-input>
     </ion-item>
 
+    <div style="text-align: center;" *ngIf="filteredItems.length === 0">
+        <p style="padding-bottom: 10px;">No Data Found</p>
+      </div>
+
     <ion-card *ngFor="let item of filteredItems; let i = index">
       <ion-item button (click)="toggleItem(i)">
           <div slot="start" class="item-title">

@@ -307,9 +307,13 @@
                   </div>
                 </div>
                 <div class="card-end">
+                  <ion-button class="accept-btn" (click)="showReceivedModal(item.requisitionId)"
+                    fill="outline" shape="round" slot="end" aria-label="Show/hide" style="margin-right: 20px;">
+                    Accept All
+                  </ion-button>
                   <ion-button class="accept-btn" (click)="requisitionListPage(item.requisitionId ,item.slipNumber)"
                     fill="outline" shape="round" slot="end" aria-label="Show/hide">
-                    Accpet Order
+                    Accept Order
                   </ion-button>
                   <ion-button *ngIf="isItemExpanded(i)" (click)="toggleItemView($event, i)" fill="clear" slot="end"
                     aria-label="Show/hide">

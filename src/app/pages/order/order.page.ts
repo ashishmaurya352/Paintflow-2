@@ -11,6 +11,7 @@ import { ChartComponent } from 'src/app/shares/components/chart/chart.component'
 import { FilterModalComponent } from 'src/app/shares/components/filter-modal/filter-modal.component';
 import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
 import { Capacitor } from '@capacitor/core';
+import { ReceivedModalComponent } from 'src/app/shares/components/received-modal/received-modal.component';
 
 
 @Component({
@@ -63,7 +64,8 @@ export class OrderPage implements OnInit {
   approvedListItems: any[] = []
   approvedExpandedItems: Set<number> = new Set<number>();
   teamsOrders: any
-
+  teams: any[] = [];
+  PaintDescription: any[] = [];
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -109,6 +111,8 @@ export class OrderPage implements OnInit {
         }
         this.pageTitles = "Recently Created Requisitions"
         this.getItem()
+        this.getTeams()
+        this.getPaintDescriptionGet()
       }
       else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
         if (!this.segmentValue) {
@@ -658,4 +662,90 @@ export class OrderPage implements OnInit {
   return new Date(originalDate.getTime() + istOffsetMs);
 }
 
+async showReceivedModal(id: any) {
+  const modal = await this.modalController.create({
+        component: ReceivedModalComponent,
+        componentProps: {
+          // 'totalQuantity': totalQuantity,
+          // 'getquantity': this.UpdatedItemLists[i].quantity || 0,
+          // 'itemName': partDescription,
+          'teams2': this.teams,
+          'PaintDescription': this.PaintDescription,
+          'isSingle': false,
+          isInwardManager: this.usereRole === 'Inward Manager' ? true : false,
+          isChallan: true,
+        },
+        cssClass: 'quantity-modal',
+      });
+      modal.onDidDismiss().then((dataReturned: any) => {
+        console.log('Modal data:', dataReturned);
+        if (dataReturned.data !== undefined) {
+          this.controller.showloader()
+          const data = {
+            "requisitionId": id,
+            "priority": dataReturned.data.selectedChallanPriority,
+            "items": [
+              {
+                "itemId": 0,
+                "priority": dataReturned.data.selectedPriority,
+                "quantity": 0,
+                "color": dataReturned.data.color,
+                "itemPaintDescriptions": dataReturned.data.itemPaintDescriptions,
+                "images": []
+              }
+            ]
+          }
+          console.log('data', data);
+          this.httpService.assignItemProcess(data)
+            .subscribe((res: any) => {
+              if (res.success) {
+                this.controller.hideloader()
+                this.getItem()
+              }
+              else {
+                this.controller.hideloader()
+                this.controller.showToast(res.message);
+
+              }
+            }, (error) => {
+              this.controller.hideloader()
+            });
+        }
+
+      });
+      await modal.present();
+    }
+
+    getTeams() {
+    // this.controller.showloader()
+    this.httpService.getTeams()
+      .subscribe(
+        (res: any) => {
+          // this.controller.hideloader()
+          this.teams = res;
+          console.log(res);
+        }, (error) => {
+          // this.controller.hideloader()
+        });
+  }
+
+  getPaintDescriptionGet() {
+    this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
+      // console.log('getPaintDescriptionGet', res);
+      const paintList = res;
+
+      const groupedByTeam = paintList?.reduce((groups: any, item: any) => {
+        if (!groups[item.team]) {
+          groups[item.team] = [];
+        }
+        groups[item.team].push(item);
+        return groups;
+      }, {} as { [key: string]: any[] });
+
+      // Example: How to access
+      this.PaintDescription = groupedByTeam;
+      // console.log('Grouped Paint Description:', this.PaintDescription);
+
+    })
+  }
 }
