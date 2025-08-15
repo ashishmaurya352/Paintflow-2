@@ -69,7 +69,7 @@ export class ActivityListPage implements OnInit {
   isModalOpen2 = false;
   formData: FormData = new FormData();
   isRemarksModalOpen = false;
-  decText: string = ''
+  decText: string = 'Accepted'
   uploadImage: any
   acceptStatus = 'Accepted'
   acceptQuantity = 0
@@ -104,6 +104,7 @@ export class ActivityListPage implements OnInit {
 qaAcceptedList = [
   'Accepted']
   loginTeam:any
+  currentReasonList: string[] = [];
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -115,6 +116,8 @@ qaAcceptedList = [
   }
 
   async ngOnInit() {
+    this.acceptTemplate = this.qaAcceptedList[0]
+    this.currentReasonList = this.qaAcceptedList
     this.usereRole = await this.getUserRoleFromLocalStorage();
     this.loginTeam = localStorage.getItem('team')
     this.getTeams()
@@ -683,11 +686,32 @@ qaAcceptedList = [
     }
     console.log('decText', this.decText);
   }
+  // acceptStatusChange(event: any) {
+  //   this.acceptStatus = event.target.value;
+  //   this.decText = ''
+  //   console.log('acceptStatus', this.acceptStatus);
+  //   if( this.acceptStatus === 'Accepted') {
+
+  //     this.acceptTemplate = this.qaAcceptedList[0]
+  //     console.log('acceptTemplate', this.acceptTemplate);
+  //   }
+  // }
+
   acceptStatusChange(event: any) {
-    this.acceptStatus = event.target.value;
-    this.decText = ''
-    console.log('acceptStatus', this.acceptStatus);
+  this.acceptStatus = event.target.value;
+  this.decText = '';
+  console.log('acceptStatus', this.acceptStatus);
+
+  if (this.acceptStatus === 'Accepted') {
+    this.currentReasonList = this.qaAcceptedList;
+    this.acceptTemplate = this.qaAcceptedList[0]; // Default
+  } else if (this.acceptStatus === 'Rejected') {
+    this.currentReasonList = this.qaRejectedList;
+    this.acceptTemplate = this.qaRejectedList[0]; // Optional: default for rejection
   }
+
+  console.log('acceptTemplate', this.acceptTemplate);
+}
 
   getItemProcessDetailed(item: any, type = 'QARemarks') {
     // const parm = new HttpParams().set('id', item.currentProcess_Id);
@@ -905,6 +929,12 @@ qaAcceptedList = [
       Keyword: null,
       Status: null,
     }
+  }
+  revertChanges(id:number){
+    let params = new HttpParams().set('id', id);
+    this.httpService.itemRevertChanges(params).subscribe((res:any)=>{
+      this.getRequisitionItem(this.requisitionId)
+    })
   }
 
   

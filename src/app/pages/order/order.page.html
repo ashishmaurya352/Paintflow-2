@@ -9,6 +9,10 @@
       </ion-button>
       <h3>{{pageTitles}}</h3>
 
+      <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="ngOnInit()">
+        <ion-icon color="dark" slot="icon-only" name="reload-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
+
       <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="openSearch()">
         <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
       </ion-button>

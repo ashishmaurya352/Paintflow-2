@@ -66,6 +66,7 @@ export class OrderPage implements OnInit {
   teamsOrders: any
   teams: any[] = [];
   PaintDescription: any[] = [];
+  routerCount: number = 0;
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -91,9 +92,9 @@ export class OrderPage implements OnInit {
     //   this.pageTitles = "QA Testing"
 
     // }
-
     this.route.queryParams.subscribe(params => {
-
+      if(this.routerCount == 0) {
+      this.routerCount++;
       if (params['team']) {
         this.teamsOrders = params['team']
         this.pageTitles = this.teamsOrders + " Orders"
@@ -127,7 +128,11 @@ export class OrderPage implements OnInit {
         this.pageTitles = "QA Testing"
         this.getRequisitionDetail()
       }
+      setTimeout(() => {
+        this.routerCount = 0; // Reset the counter after processing
+      }, 1000);
       console.log('this.segmentValue', this.segmentValue);
+    }
     });
 
   }
@@ -533,6 +538,7 @@ export class OrderPage implements OnInit {
   }
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {
+    console.log('onIonInfinite')
     this.filter.PageNumber += 1;
     if (this.usereRole == 'Executive' || this.usereRole == 'QA' || this.usereRole == 'Admin') {
       this.getRequisitionDetail()
@@ -541,6 +547,7 @@ export class OrderPage implements OnInit {
     }
     setTimeout(() => {
       event.target.complete();
+      console.log('Infinite scroll completed');
     }, 500);
   }
 

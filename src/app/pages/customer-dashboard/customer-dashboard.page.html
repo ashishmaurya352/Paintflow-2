@@ -41,8 +41,14 @@
       <ion-item button (click)="toggleItem(i)">
           <div slot="start" class="item-title">
             {{ item.partNumber }}
-
           </div>
+          <ion-button class="btn-pending" slot="end" shape="round" *ngIf="!item.isWorkCompleted" style="--background: #E8B500;">
+            Pending
+          </ion-button>
+          <ion-button class="btn-completed" slot="end" shape="round" *ngIf="item.isWorkCompleted" style="--background: #4CAF50;">
+            Completed
+          </ion-button>
+
           <div slot="end" class="chart">
             <app-chart [chartData]="[item.completedPercent,100-item.completedPercent]"
               [canvasId]="'Customer'+i"></app-chart>

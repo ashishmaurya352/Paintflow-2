@@ -6,6 +6,10 @@
       </ion-button>
       <h3>{{pageTitles}} {{slipNumber}}</h3>
 
+      <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="ngOnInit()">
+        <ion-icon color="dark" slot="icon-only" name="reload-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
+
       <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="openSearch()">
         <ion-icon color="dark" slot="icon-only" name="search" aria-hidden="true"></ion-icon>
       </ion-button>
@@ -371,58 +375,67 @@
         <p>No Data Found</p>
       </div>
       <ion-card *ngFor="let item of ItemList">
-        <ion-card-content>
-          <div class="up-card">
-            <div class="thumbnail-image">
-              <ion-thumbnail class="admin-thumbnail" (click)="openImgModal(item,i)">
-                <img alt="item Image" [src]="getImageSrc(item)" />
-              </ion-thumbnail>
-            <div class="list-name">
-              <div class="badge">
-                <div class="color-dropdown">
-                  <h6>{{item.partNumber | uppercase}} ({{item.color}}) </h6>
-                  <div class="dropdown2">
-                    <ion-select class="custom-select" [value]="item.color" interface="popover"
+        <ion-item-sliding>
+          <ion-item lines="none">
+            <ion-card-content>
+              <div class="up-card">
+                <div class="thumbnail-image">
+                  <ion-thumbnail class="admin-thumbnail" (click)="openImgModal(item,i)">
+                    <img alt="item Image" [src]="getImageSrc(item)" />
+                  </ion-thumbnail>
+                  <div class="list-name">
+                    <div class="badge">
+                      <div class="color-dropdown">
+                        <h6>{{item.partNumber | uppercase}} ({{item.color}}) </h6>
+                        <div class="dropdown2">
+                          <ion-select class="custom-select" [value]="item.color" interface="popover"
+                            label-placement="floating" shape="round" fill="outline"
+                            (ionChange)="onColorChange($event,item.id)">
+                            <ion-select-option *ngFor="let color of colors">{{color}}</ion-select-option>
+                          </ion-select>
+                        </div>
+                      </div>
+                      <!-- <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
+                      item.priority }}</ion-badge> -->
+                    </div>
+                    <h5>{{item.partDesciption | uppercase}}</h5>
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                  <ion-button fill="clear" class="pending-btn">
+                    Work in Progress
+                    <ion-icon slot="start" name="alarm-outline"></ion-icon>
+                  </ion-button>
+                  <div class="dropdown">
+                    <ion-select class="custom-select" [value]="item.priority" interface="popover"
                       label-placement="floating" shape="round" fill="outline"
-                      (ionChange)="onColorChange($event,item.id)">
-                      <ion-select-option *ngFor="let color of colors">{{color}}</ion-select-option>
+                      (ionChange)="onStatusChange($event,item.id)">
+                      <ion-select-option value="High">High</ion-select-option>
+                      <ion-select-option value="Medium">Medium</ion-select-option>
+                      <ion-select-option value="Low">Low</ion-select-option>
                     </ion-select>
                   </div>
                 </div>
-                <!-- <ion-badge class="badge-text" [ngStyle]="{'background-color': getBadgeColor(item.priority)}">{{
-                      item.priority }}</ion-badge> -->
               </div>
-              <h5>{{item.partDesciption | uppercase}}</h5>
-            </div>
-            </div>
-            <div style="display: flex; align-items: center;">
-              <ion-button fill="clear" class="pending-btn">
-                Work in Progress
-                <ion-icon slot="start" name="alarm-outline"></ion-icon>
-              </ion-button>
-              <div class="dropdown">
-                <ion-select class="custom-select" [value]="item.priority" interface="popover" label-placement="floating"
-                  shape="round" fill="outline" (ionChange)="onStatusChange($event,item.id)">
-                  <ion-select-option value="High">High</ion-select-option>
-                  <ion-select-option value="Medium">Medium</ion-select-option>
-                  <ion-select-option value="Low">Low</ion-select-option>
-                </ion-select>
+
+              <div class="lower-card">
+                <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
+                  <b>Accepted:</b> {{item.qcApprovedQuantity}} | <b>Rejected:</b> {{item.qcRejectedCount}}
+                </h6>
+                <div>
+
+                  <ion-button fill="clear" class="accepted-btn" disabled=true>
+                    <!-- <b>Accepted:</b> 20 -->
+                  </ion-button>
+                </div>
               </div>
-            </div>
-          </div>
+            </ion-card-content>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="revertChanges(item.id)">Revert</ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
 
-          <div class="lower-card">
-            <h6><b>Total Quantity:</b> {{item.quantity}} | <b>Received:</b> {{item.receivedQuantity}} |
-              <b>Accepted:</b> {{item.qcApprovedQuantity}} | <b>Rejected:</b> {{item.qcRejectedCount}}
-            </h6>
-            <div>
-
-              <ion-button fill="clear" class="accepted-btn" disabled=true>
-                <!-- <b>Accepted:</b> 20 -->
-              </ion-button>
-            </div>
-          </div>
-        </ion-card-content>
       </ion-card>
     </ion-list>
   </div>
@@ -543,15 +556,30 @@
           <div>
 
             <div>
-              <ion-select mode="md" [(ngModel)]="acceptTemplate" interface="popover" label="Select Reason"
+              <!-- <ion-select mode="md" [(ngModel)]="acceptTemplate" interface="popover" label="Select Reason"
                 label-placement="floating" fill="outline" (ionChange)="onSelectReason($event)" name="acceptTemplate">
                 <div *ngIf="acceptStatus === 'Accepted'">
-                  <ion-select-option *ngFor="let item of qaAcceptedList">{{item}}</ion-select-option>
+                  <ion-select-option *ngFor="let item of qaAcceptedList" [value]="item">{{item}}</ion-select-option>
                 </div>
                 <div *ngIf="acceptStatus === 'Rejected'">
                   <ion-select-option *ngFor="let item of qaRejectedList">{{item}}</ion-select-option>
                 </div>
+              </ion-select> -->
+              <ion-select
+                mode="md"
+                [value]="acceptTemplate"
+                interface="popover"
+                label="Select Reason"
+                label-placement="floating"
+                fill="outline"
+                (ionChange)="onSelectReason($event)"
+                name="acceptTemplate"
+              >
+                <ion-select-option *ngFor="let item of currentReasonList" [value]="item">
+                  {{ item }}
+                </ion-select-option>
               </ion-select>
+
             </div>
 
           </div>

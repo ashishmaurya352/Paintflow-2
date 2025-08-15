@@ -7,7 +7,11 @@
 
       <h3 class="ion-text-center">Admin Dashboard</h3>
 
-      <div class="custom-toggle">
+      <ion-button fill="clear" slot="end" aria-label="Show/hide" (click)="ngOnInit()">
+        <ion-icon color="dark" slot="icon-only" name="reload-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
+
+      <div class="custom-toggle" slot="end">
         <ion-select slot="end" interface="popover" placeholder="Select" [value]="filter.ReqFrom"
           (ionChange)="segment($event)" class="custom-toggle">
           <ion-select-option value="WPP">WPP</ion-select-option>
@@ -16,6 +20,10 @@
           <ion-select-option value="CPWPR">CPWPR</ion-select-option>
         </ion-select>
       </div>
+
+      <ion-button id="filter" expand="block" fill="clear" slot="end" aria-label="Show/hide" (click)="openFilter()">
+        <ion-icon color="dark" slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
+      </ion-button>
 
     </ion-item>
 
@@ -28,9 +36,9 @@
     <div class="header-title">
       <div class="sub-title">
 
-        <div>
+        <!-- <div>
           <strong class="active">Cost</strong> Overview
-        </div>
+        </div> -->
         <div class="dropdown">
           <ion-select class="custom-select" [value]="filter.Status" interface="popover" label-placement="floating"
             shape="round" fill="outline" (ionChange)="onStatusChange($event)">
@@ -94,15 +102,25 @@
       </div>
 
     </div>
+
+    <div class="header-title">
+    <div>
+      <strong class="active">Cost</strong> Overview
+    </div>
+    <div>
+      <ion-button class="download-report" fill="outline" shape="round" (click)="downloadReport('CostOverview')">
+        Download Report
+      </ion-button>
+    </div>
+  </div>
     <ion-grid>
       <ion-row *ngIf="paintDesc">
         <ion-col *ngFor="let key of objectKeys(paintData)">
           <ion-card class="requisition-card">
             <ion-card-content class="overview">
-              <h3>{{ key }}</h3>
-              <h2>{{ paintData[key].amount | number }}</h2>
-              <p>Qty in {{ paintData[key].unit }}: <b>{{ paintData[key].quantity | number }}</b></p>
-              <p>Rate: <b>{{ paintData[key].rate }}</b></p>
+              <h3>{{ paintData[key].name }}</h3>
+              <p>Surface Area In SqFt <b>{{ paintData[key].surfaceAreaInSqFt }}</b></p>
+              <p>Weight: <b>{{ paintData[key].weight }}</b></p>
             </ion-card-content>
           </ion-card>
         </ion-col>

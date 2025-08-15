@@ -9,8 +9,8 @@ import { HttpParams } from '@angular/common/http';
 export class HttpService {
 // 
   // private apiUrl = 'https://paintflow.runasp.net/api';
-  // private apiUrl = 'https://paintflowtest.runasp.net/api';
-  private apiUrl = 'https://srv01108.wipropari.com:5246/api';
+  private apiUrl = 'https://paintflowtest.runasp.net/api';
+  // private apiUrl = 'https://srv01108.wipropari.com:5246/api';
 
   readonly login = `/User/login`;
   readonly register = `/User/register`;
@@ -52,7 +52,8 @@ export class HttpService {
   readonly ReportGetItems = `/Report/GetItems`;
   readonly ReportGetTeamWiseDelay = `/Report/GetTeamWiseDelay`;
   readonly ReportGetTeamWiseRework = `/Report/GetTeamWiseRework`;
-  
+  readonly ItemRevertChanges = `/Item/Revert`; 
+  readonly ReportGetDayWiseCostOverview = `/Report/GetDayWiseCostOverview`;
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -235,6 +236,14 @@ export class HttpService {
   }
   reportGetTeamWiseRework(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ReportGetTeamWiseRework}?${data}`;
+    return this.httpClient.get(url);
+  }
+  itemRevertChanges(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ItemRevertChanges}?${data}`;
+    return this.httpClient.put(url, '');
+  }
+  reportGetDayWiseCostOverview(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ReportGetDayWiseCostOverview}?${data}`;
     return this.httpClient.get(url);
   }
 }

@@ -34,3 +34,11 @@ ion-button{
     margin-bottom: auto;
                 }
 }
+.btn-pending{
+    --background: #E8B500;
+    --color: white;
+}
+.btn-completed{
+    --background: #4CAF50;
+    --color: white;
+}

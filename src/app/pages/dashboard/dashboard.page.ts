@@ -137,7 +137,7 @@ export class DashboardPage implements OnInit {
       parm = parm.set('Type', this.costAnalysisType);
     });
     this.httpService.getCostOverview(parm).subscribe((res: any) => {
-      this.paintData = res
+      this.paintData = res.data
       // this.paintData = [
       //   { title: 'Shot Blasting ', value: res.shortBlasting.amount, qty: res.shortBlasting.quantity, unit: 'kg', rate: res.shortBlasting.rate },
       //   { title: 'Powder Coating', value: res.powderCoating.amount, qty: res.powderCoating.quantity, unit: 'sq.ft.', rate: res.powderCoating.rate },
@@ -412,11 +412,12 @@ export class DashboardPage implements OnInit {
   }
   onEndDateChange(event: any) {
     const selectedDate = event.detail.value;
-    this.endDate = selectedDate
+    this.endDate = new Date(selectedDate);
+    this.endDate.setHours(23, 59, 59, 999);
     console.log('selectedDate', selectedDate)
     if (this.startDate && this.endDate) {
       this.dateRange.start = new Date(this.startDate);
-      this.dateRange.end = new Date(this.endDate);
+      this.dateRange.end = this.endDate;
       this.getPaintDescWiseCostOverview(true);
       this.getActiveRequisitionCount();
       this.getCostOverview();
@@ -494,6 +495,23 @@ export class DashboardPage implements OnInit {
     } else if (reportType === 'Rework') {
       params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', 'Rework');
     }
+    else if( reportType === 'CostOverview') {
+      params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate);
+      this.controller.showloader();
+      this.httpService.reportGetDayWiseCostOverview(params).subscribe({
+         next: (res: any) => {
+        this.controller.hideloader();
+        console.log('Report URL:', res);
+        window.open(res, '_blank');
+      },
+        error: (err) => {
+          this.controller.hideloader()
+          this.controller.showToast('Error fetching report');
+          console.error('Download error:', err);
+        }
+    });
+      return
+    }
     this.controller.showloader();
 
     this.httpService.reportGetItems(params).subscribe({
@@ -508,5 +526,9 @@ export class DashboardPage implements OnInit {
           console.error('Download error:', err);
         }
     });
+  }
+
+  openFilter(){
+
   }
 }
