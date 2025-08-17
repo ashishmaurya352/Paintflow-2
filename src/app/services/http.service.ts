@@ -54,6 +54,8 @@ export class HttpService {
   readonly ReportGetTeamWiseRework = `/Report/GetTeamWiseRework`;
   readonly ItemRevertChanges = `/Item/Revert`; 
   readonly ReportGetDayWiseCostOverview = `/Report/GetDayWiseCostOverview`;
+  readonly ReportGetPaintingPlan = `/Report/GetPaintingPlan`;
+  readonly RequisitionGetPersons = `/Requisition/GetPersons`;
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -244,6 +246,14 @@ export class HttpService {
   }
   reportGetDayWiseCostOverview(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ReportGetDayWiseCostOverview}?${data}`;
+    return this.httpClient.get(url);
+  }
+  reportGetPaintingPlan(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ReportGetPaintingPlan}?${data}`;
+    return this.httpClient.get(url);
+  }
+  requisitionGetPersons(): Observable<any> {
+    let url = `${this.apiUrl + this.RequisitionGetPersons}`;
     return this.httpClient.get(url);
   }
 }

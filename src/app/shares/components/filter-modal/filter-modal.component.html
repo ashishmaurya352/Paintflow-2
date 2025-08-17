@@ -2,9 +2,10 @@
   <div class="modal-header">
 
     <ion-buttons>
-      <ion-button>Cancel</ion-button>
+      <ion-button (click)="closeModal()">Cancel</ion-button>
     </ion-buttons>
-    <h3>Sort & Filter</h3>
+    <h3 *ngIf="!isreportFilter">Sort & Filter</h3>
+    <h3 *ngIf="isreportFilter">Report Filter</h3>
     <ion-buttons>
       <ion-button (click)="resetFilter()">Reset</ion-button>
     </ion-buttons>
@@ -12,106 +13,151 @@
 
   <div style="margin: 10px 20px;">
 
-    <div class="section">
-      <p class="modal-title">Date</p>
-      <div class="date">
-        <ion-label>Start Date</ion-label>
-        <ion-button id="startDate-trigger" shape="round" label="Start Date"
-          [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
-          <ion-icon slot="start" name="calendar"></ion-icon>
-          {{startDate | date:'mediumDate':'IST'}}
+    <div *ngIf="!isreportFilter">
+
+      <div class="section">
+        <p class="modal-title">Date</p>
+        <div class="date">
+          <ion-label>Start Date</ion-label>
+          <ion-button id="startDate-trigger" shape="round" label="Start Date"
+            [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
+            <ion-icon slot="start" name="calendar"></ion-icon>
+            {{startDate | date:'mediumDate':'IST'}}
+          </ion-button>
+        </div>
+        <div>
+          <ion-label>End Date</ion-label>
+          <ion-button shape="round" id="endDate-trigger" [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
+            <ion-icon slot="start" name="calendar"></ion-icon>
+            {{endDate | date:'mediumDate':'IST'}}
+          </ion-button>
+        </div>
+
+        <ion-popover mode="md" trigger="startDate-trigger">
+          <ng-template>
+            <ion-datetime [value]="startDate" (ionChange)="onStartDateChange($event)" [showDefaultButtons]="true"
+              presentation="date"></ion-datetime>
+          </ng-template>
+        </ion-popover>
+        <ion-popover mode="md" trigger="endDate-trigger">
+          <ng-template>
+            <ion-datetime [min]="startDate" [value]="endDate" (ionChange)="onEndDateChange($event)"
+              [showDefaultButtons]="true" presentation="date"></ion-datetime>
+          </ng-template>
+        </ion-popover>
+      </div>
+
+      <div class="section">
+        <p class="modal-title">Priority</p>
+        <ion-button [class.selected]="priorityName === 'High'" shape="round"
+          [fill]="priorityName === 'High' ? 'solid' : 'outline'" (click)="priority('High')">
+          <ion-icon *ngIf="priorityName === 'High'" slot="start" name="checkmark-outline"></ion-icon>
+          High
+        </ion-button>
+        <ion-button [class.selected]="priorityName === 'Medium'" shape="round"
+          [fill]="priorityName === 'Medium' ? 'solid' : 'outline'" (click)="priority('Medium')">
+          <ion-icon *ngIf="priorityName === 'Medium'" slot="start" name="checkmark-outline"></ion-icon>
+          Medium
+        </ion-button>
+        <ion-button [class.selected]="priorityName === 'Low'" shape="round"
+          [fill]="priorityName === 'Low' ? 'solid' : 'outline'" (click)="priority('Low')">
+          <ion-icon *ngIf="priorityName === 'Low'" slot="start" name="checkmark-outline"></ion-icon>
+          Low
         </ion-button>
       </div>
-      <div>
-        <ion-label>End Date</ion-label>
-        <ion-button shape="round" id="endDate-trigger" [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
-          <ion-icon slot="start" name="calendar"></ion-icon>
-          {{endDate | date:'mediumDate':'IST'}}
+
+      <div class="section">
+        <p class="modal-title">Sort By</p>
+        <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'UnAssigned'"
+          [class.selected]="sortByName === 'CreatedDate'" shape="round"
+          [fill]="sortByName === 'CreatedDate' ? 'solid' : 'outline'" (click)="sortBy('CreatedDate')">
+          <ion-icon *ngIf="sortByName === 'CreatedDate'" slot="start" name="checkmark-outline"></ion-icon>
+          Created Date
+        </ion-button>
+        <ion-button *ngIf="tab == 'Assigned' || tab == 'InQueue'  " [class.selected]="sortByName === 'AssignedDate'"
+          shape="round" [fill]="sortByName === 'AssignedDate' ? 'solid' : 'outline'" (click)="sortBy('AssignedDate')">
+          <ion-icon *ngIf="sortByName === 'AssignedDate'" slot="start" name="checkmark-outline"></ion-icon>
+          Assigned Date
+        </ion-button>
+        <ion-button *ngIf="tab == 'Active' || tab == 'item-list' || tab == 'handover' || tab == 'rejected'  "
+          [class.selected]="sortByName === 'AcceptedDate'" shape="round"
+          [fill]="sortByName === 'AcceptedDate' ? 'solid' : 'outline'" (click)="sortBy('AcceptedDate')">
+          <ion-icon *ngIf="sortByName === 'AcceptedDate'" slot="start" name="checkmark-outline"></ion-icon>
+          Accepted Date
+        </ion-button>
+        <ion-button *ngIf="tab == 'Completed'" [class.selected]="sortByName === 'CompletedDate'" shape="round"
+          [fill]="sortByName === 'CompletedDate' ? 'solid' : 'outline'" (click)="sortBy('CompletedDate')">
+          <ion-icon *ngIf="sortByName === 'CompletedDate'" slot="start" name="checkmark-outline"></ion-icon>
+          Completed Date
+        </ion-button>
+        <!-- <ion-button [class.selected]="sortByName === 'Priority'" shape="round"
+          [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
+          <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
+          Accepted Date
+        </ion-button> -->
+        <ion-button [class.selected]="sortByName === 'Priority'" shape="round"
+          [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
+          <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
+          Priority
+        </ion-button>
+  
+        <div style="margin-left: auto;">
+          <ion-segment slot="end" [value]="isDescending" mode="md" class="custom-toggle" (ionChange)="segment($event)">
+            <ion-segment-button [value]="true">
+              <ion-label>Asc</ion-label>
+            </ion-segment-button>
+            <ion-segment-button [value]="false">
+              <ion-label>Dese</ion-label>
+            </ion-segment-button>
+          </ion-segment>
+        </div>
+      </div>
+    </div>
+
+
+    <div *ngIf="isreportFilter">
+
+
+      <div class="section">
+        <p class="modal-title">Person</p>
+        <ion-select class="custom-select" [value]="filter.Person" interface="popover" label-placement="floating" placeholder="Select Person"
+            shape="round" fill="outline" (ionChange)="Person($event)">
+            <ion-select-option *ngFor="let person of persons" [value]="person">{{ person }}</ion-select-option>
+            </ion-select>
+      </div>
+
+      <div class="section">
+        <p class="modal-title">ReqFrom</p>
+        <ion-button [class.selected]="filter.ReqFrom === 'WPP'" shape="round"
+          [fill]="filter.ReqFrom === 'WPP' ? 'solid' : 'outline'" (click)="ReqFrom('WPP')">
+          <ion-icon *ngIf="filter.ReqFrom === 'WPP'" slot="start" name="checkmark-outline"></ion-icon>
+          WPP
+        </ion-button>
+        <ion-button [class.selected]="filter.ReqFrom === 'WPR'" shape="round"
+          [fill]="filter.ReqFrom === 'WPR' ? 'solid' : 'outline'" (click)="ReqFrom('WPR')">
+          <ion-icon *ngIf="filter.ReqFrom === 'WPR'" slot="start" name="checkmark-outline"></ion-icon>
+          WPR
+        </ion-button>
+        <ion-button [class.selected]="filter.ReqFrom === 'CPWPP'" shape="round"
+          [fill]="filter.ReqFrom === 'CPWPP' ? 'solid' : 'outline'" (click)="ReqFrom('CPWPP')">
+          <ion-icon *ngIf="filter.ReqFrom === 'CPWPP'" slot="start" name="checkmark-outline"></ion-icon>
+          CPWPP
+        </ion-button>
+        <ion-button [class.selected]="filter.ReqFrom === 'CPWPR'" shape="round"
+          [fill]="filter.ReqFrom === 'CPWPR' ? 'solid' : 'outline'" (click)="ReqFrom('CPWPR')">
+          <ion-icon *ngIf="filter.ReqFrom === 'CPWPR'" slot="start" name="checkmark-outline"></ion-icon>
+          CPWPR
         </ion-button>
       </div>
-
-      <ion-popover mode="md" trigger="startDate-trigger">
-        <ng-template>
-          <ion-datetime [value]="startDate" (ionChange)="onStartDateChange($event)" [showDefaultButtons]="true"
-            presentation="date"></ion-datetime>
-        </ng-template>
-      </ion-popover>
-      <ion-popover mode="md" trigger="endDate-trigger">
-        <ng-template>
-          <ion-datetime [min]="startDate" [value]="endDate" (ionChange)="onEndDateChange($event)"
-            [showDefaultButtons]="true" presentation="date"></ion-datetime>
-        </ng-template>
-      </ion-popover>
     </div>
-
-    <div class="section">
-      <p class="modal-title">Priority</p>
-      <ion-button [class.selected]="priorityName === 'High'" shape="round"
-        [fill]="priorityName === 'High' ? 'solid' : 'outline'" (click)="priority('High')">
-        <ion-icon *ngIf="priorityName === 'High'" slot="start" name="checkmark-outline"></ion-icon>
-        High
-      </ion-button>
-      <ion-button [class.selected]="priorityName === 'Medium'" shape="round"
-        [fill]="priorityName === 'Medium' ? 'solid' : 'outline'" (click)="priority('Medium')">
-        <ion-icon *ngIf="priorityName === 'Medium'" slot="start" name="checkmark-outline"></ion-icon>
-        Medium
-      </ion-button>
-      <ion-button [class.selected]="priorityName === 'Low'" shape="round"
-        [fill]="priorityName === 'Low' ? 'solid' : 'outline'" (click)="priority('Low')">
-        <ion-icon *ngIf="priorityName === 'Low'" slot="start" name="checkmark-outline"></ion-icon>
-        Low
-      </ion-button>
-    </div>
-
-    <div class="section">
-      <p class="modal-title">Sort By</p>
-      <ion-button *ngIf="usereRole == 'Inward Manager' && tab == 'UnAssigned'"
-        [class.selected]="sortByName === 'CreatedDate'" shape="round"
-        [fill]="sortByName === 'CreatedDate' ? 'solid' : 'outline'" (click)="sortBy('CreatedDate')">
-        <ion-icon *ngIf="sortByName === 'CreatedDate'" slot="start" name="checkmark-outline"></ion-icon>
-        Created Date
-      </ion-button>
-      <ion-button *ngIf="tab == 'Assigned' || tab == 'InQueue'  "
-        [class.selected]="sortByName === 'AssignedDate'" shape="round"
-        [fill]="sortByName === 'AssignedDate' ? 'solid' : 'outline'" (click)="sortBy('AssignedDate')">
-        <ion-icon *ngIf="sortByName === 'AssignedDate'" slot="start" name="checkmark-outline"></ion-icon>
-        Assigned Date
-      </ion-button>
-      <ion-button *ngIf="tab == 'Active' || tab == 'item-list' || tab == 'handover' || tab == 'rejected'  "  [class.selected]="sortByName === 'AcceptedDate'" shape="round"
-        [fill]="sortByName === 'AcceptedDate' ? 'solid' : 'outline'" (click)="sortBy('AcceptedDate')">
-        <ion-icon *ngIf="sortByName === 'AcceptedDate'" slot="start" name="checkmark-outline"></ion-icon>
-        Accepted Date
-      </ion-button>
-      <ion-button *ngIf="tab == 'Completed'" [class.selected]="sortByName === 'CompletedDate'" shape="round"
-        [fill]="sortByName === 'CompletedDate' ? 'solid' : 'outline'" (click)="sortBy('CompletedDate')">
-        <ion-icon *ngIf="sortByName === 'CompletedDate'" slot="start" name="checkmark-outline"></ion-icon>
-        Completed Date
-      </ion-button>
-      <!-- <ion-button [class.selected]="sortByName === 'Priority'" shape="round"
-        [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
-        <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
-        Accepted Date
-      </ion-button> -->
-      <ion-button 
-        [class.selected]="sortByName === 'Priority'" shape="round"
-        [fill]="sortByName === 'Priority' ? 'solid' : 'outline'" (click)="sortBy('Priority')">
-        <ion-icon *ngIf="sortByName === 'Priority'" slot="start" name="checkmark-outline"></ion-icon>
-        Priority
-      </ion-button>
-
-      <div style="margin-left: auto;">
-        <ion-segment slot="end" [value]="isDescending" mode="md" class="custom-toggle" (ionChange)="segment($event)">
-          <ion-segment-button [value]="true">
-            <ion-label>Asc</ion-label>
-          </ion-segment-button>
-          <ion-segment-button [value]= "false">
-            <ion-label>Dese</ion-label>
-          </ion-segment-button>
-        </ion-segment>
-      </div>
-    </div>
-
     
+      <div class="section">
+        <p class="modal-title">CO Number</p>
+        <div class="co-number">
+          <ion-input [value]="filter.Keyword" (ionChange)="keywordChange($event)" placeholder="Enter CO Number"></ion-input>
+        </div>
+      </div>
+
 
     <!-- <div class="section">
         <p class="modal-title">Status</p>

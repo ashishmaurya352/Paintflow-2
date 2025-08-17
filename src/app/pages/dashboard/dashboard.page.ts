@@ -531,4 +531,8 @@ export class DashboardPage implements OnInit {
   openFilter(){
 
   }
-}
+  openReport() {
+    console.log('openReport called');
+    this.router.navigate(['/report-table']);
+  }
+  }

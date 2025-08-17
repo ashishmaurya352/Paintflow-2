@@ -21,10 +21,6 @@
         </ion-select>
       </div>
 
-      <ion-button id="filter" expand="block" fill="clear" slot="end" aria-label="Show/hide" (click)="openFilter()">
-        <ion-icon color="dark" slot="icon-only" name="filter-outline" aria-hidden="true"></ion-icon>
-      </ion-button>
-
     </ion-item>
 
   </div>
@@ -119,7 +115,7 @@
           <ion-card class="requisition-card">
             <ion-card-content class="overview">
               <h3>{{ paintData[key].name }}</h3>
-              <p>Surface Area In SqFt <b>{{ paintData[key].surfaceAreaInSqFt }}</b></p>
+              <p>Surface Area In sqft:<b>{{ paintData[key].surfaceAreaInSqFt }}</b></p>
               <p>Weight: <b>{{ paintData[key].weight }}</b></p>
             </ion-card-content>
           </ion-card>
@@ -134,6 +130,11 @@
           <strong class="active">Paint Desc Wise</strong> Cost Analysis
         </div>
       </div>
+      <div>
+      <ion-button class="download-report" fill="outline" shape="round" (click)="openReport()">
+        Paint Report
+      </ion-button>
+    </div>
     </div>
 
     <ion-row *ngIf="paintDesc">
