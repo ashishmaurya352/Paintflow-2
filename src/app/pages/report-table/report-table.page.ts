@@ -143,7 +143,7 @@ async openFilter() {
         } else {
           console.warn('Popover trigger not found.');
         }
-      }, 100);
+      }, 500);
       return
     }
     await this.calculateDateRange(period);

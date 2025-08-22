@@ -412,12 +412,13 @@ export class DashboardPage implements OnInit {
   }
   onEndDateChange(event: any) {
     const selectedDate = event.detail.value;
-    this.endDate = new Date(selectedDate);
-    this.endDate.setHours(23, 59, 59, 999);
+    this.endDate = selectedDate;
+    // this.endDate.setHours(23, 59, 59, 999);
     console.log('selectedDate', selectedDate)
     if (this.startDate && this.endDate) {
       this.dateRange.start = new Date(this.startDate);
-      this.dateRange.end = this.endDate;
+      this.dateRange.end = new Date(this.endDate);
+      this.dateRange.end.setHours(23, 59, 59, 999);
       this.getPaintDescWiseCostOverview(true);
       this.getActiveRequisitionCount();
       this.getCostOverview();
@@ -496,7 +497,7 @@ export class DashboardPage implements OnInit {
       params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', 'Rework');
     }
     else if( reportType === 'CostOverview') {
-      params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate);
+      params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', this.costAnalysisType).set('ReqFrom', this.filter.ReqFrom);
       this.controller.showloader();
       this.httpService.reportGetDayWiseCostOverview(params).subscribe({
          next: (res: any) => {
@@ -515,7 +516,7 @@ export class DashboardPage implements OnInit {
     this.controller.showloader();
 
     this.httpService.reportGetItems(params).subscribe({
-      next: (res: any) => {
+         next: (res: any) => {
         this.controller.hideloader();
         console.log('Report URL:', res);
         window.open(res, '_blank');
@@ -535,4 +536,7 @@ export class DashboardPage implements OnInit {
     console.log('openReport called');
     this.router.navigate(['/report-table']);
   }
+  date(date: any) {
+    return new Date(date)
+    }
   }

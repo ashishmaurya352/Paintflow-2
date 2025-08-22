@@ -707,7 +707,9 @@ async showReceivedModal(id: any) {
             .subscribe((res: any) => {
               if (res.success) {
                 this.controller.hideloader()
-                this.getItem()
+                this.ngOnInit()
+                this.collapseAllItems();
+
               }
               else {
                 this.controller.hideloader()
@@ -755,4 +757,33 @@ async showReceivedModal(id: any) {
 
     })
   }
+  collapseAllItems(): void {
+  const roleSegmentMap: any = {
+    'Executive': {
+      'Active': this.activeExpandedItems,
+      'Completed': this.completedExpandedItems,
+      'InQueue': this.inQueueExpandedItems
+    },
+    'Admin': {
+      'Active': this.activeExpandedItems,
+      'Completed': this.completedExpandedItems,
+      'InQueue': this.inQueueExpandedItems
+    },
+    'Inward Manager': {
+      'Assigned': this.expandedItems,
+      'UnAssigned': this.unAssignedExpandedItems
+    },
+    'QA': {
+      'InQueueQA': this.qaCompletedExpandedItems,
+      'Rejected': this.rejectedExpandedItems,
+      'Approved': this.approvedExpandedItems
+    }
+  };
+
+  const roleSegments = roleSegmentMap[this.usereRole];
+  if (roleSegments) {
+    (Object.values(roleSegments) as Set<number>[]).forEach((set) => set.clear());
+  }
+}
+
 }

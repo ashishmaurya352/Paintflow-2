@@ -246,7 +246,7 @@ export class HttpService {
   }
   reportGetDayWiseCostOverview(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ReportGetDayWiseCostOverview}?${data}`;
-    return this.httpClient.get(url);
+    return this.httpClient.get(url,{responseType: 'text'});
   }
   reportGetPaintingPlan(data: any): Observable<any> {
     let url = `${this.apiUrl + this.ReportGetPaintingPlan}?${data}`;
