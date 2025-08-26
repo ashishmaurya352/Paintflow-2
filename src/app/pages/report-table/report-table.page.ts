@@ -59,6 +59,8 @@ export class ReportTablePage implements OnInit {
     Person : '',
     Keyword : ''
   }
+  calStartDate : any
+  calEndDate : any
   selectedPeriod: string = '1D';
   sortByName: any;
   persons:any
@@ -143,7 +145,7 @@ async openFilter() {
         } else {
           console.warn('Popover trigger not found.');
         }
-      }, 500);
+      }, 1000);
       return
     }
     await this.calculateDateRange(period);
@@ -153,6 +155,7 @@ async openFilter() {
   }
   onStartDateChange(event: any) {
     const selectedDate = event.detail.value;
+    this.calStartDate = selectedDate
     this.startDate = selectedDate
     console.log('selectedDate', selectedDate)
     if (this.startDate && this.endDate) {
@@ -162,6 +165,7 @@ async openFilter() {
   }
   onEndDateChange(event: any) {
     const selectedDate = event.detail.value;
+    this.calEndDate = selectedDate
     this.endDate = new Date(selectedDate);
     this.endDate.setHours(23, 59, 59, 999);
     console.log('selectedDate', selectedDate)
@@ -198,5 +202,32 @@ async calculateDateRange(period: string) {
     }
 
     // Return the date range at the end
+  }
+  downloadReport() {
+    let startDate = new Date(this.startDate);
+    startDate.setHours(0, 0, 0, 0);
+    this.startDate = startDate;
+    let endDate = new Date(this.endDate);
+    endDate.setHours(23, 59, 59, 999);
+    const params = new HttpParams()
+      .set('StartDate', startDate.toISOString())
+      .set('EndDate', endDate.toISOString())
+      .set('ReqFrom', this.filter.ReqFrom || '')
+      .set('Person', this.filter.Person || '')
+      .set('Keyword', this.filter.Keyword || '');
+    this.controller.showloader();
+    this.httpService.getReportGetPaintingPlanReport(params).subscribe({
+         next: (res: any) => {
+        this.controller.hideloader();
+        console.log('Report URL:', res);
+        window.open(res, '_blank');
+      },
+        error: (err) => {
+          this.controller.hideloader()
+          this.controller.showToast('Error fetching report');
+          console.error('Download error:', err);
+        }
+    });
+    // Implement your download report logic here
   }
 }

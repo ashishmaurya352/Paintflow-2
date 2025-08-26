@@ -12,6 +12,7 @@ import { FilterModalComponent } from 'src/app/shares/components/filter-modal/fil
 import { SearchModalComponent } from 'src/app/shares/components/search-modal/search-modal.component';
 import { Capacitor } from '@capacitor/core';
 import { ReceivedModalComponent } from 'src/app/shares/components/received-modal/received-modal.component';
+import { forkJoin, Observable } from 'rxjs';
 
 
 @Component({
@@ -67,6 +68,16 @@ export class OrderPage implements OnInit {
   teams: any[] = [];
   PaintDescription: any[] = [];
   routerCount: number = 0;
+
+  activeCount:any
+  completedCount:any
+  inQueueCount:any
+  UnAssignedCount:any
+  AssignedCount:any
+  rejectedCount:any
+  approvedCount:any
+  ionSelectObserver: MutationObserver | null = null;
+
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -77,7 +88,8 @@ export class OrderPage implements OnInit {
   }
 
   async ngOnInit() {
-    this.usereRole = await this.getUserRoleFromLocalStorage();
+    this.usereRole = ''
+    this.usereRole = await this.getUserRoleFromLocalStorage()
     this.pageTitles = localStorage.getItem('team')
 
     // if (this.usereRole == 'Inward Manager') {
@@ -93,6 +105,7 @@ export class OrderPage implements OnInit {
 
     // }
     this.route.queryParams.subscribe(params => {
+      this.addcss()
       if(this.routerCount == 0) {
       this.routerCount++;
       if (params['team']) {
@@ -135,12 +148,15 @@ export class OrderPage implements OnInit {
     }
     });
 
+
+
   }
 
   getUserRoleFromLocalStorage(): Promise<string | null> {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve(localStorage.getItem('role'));
+        console.log("User role retrieved from localStorage:", localStorage.getItem('role'));
       }, 100);
     });
   }
@@ -158,6 +174,13 @@ export class OrderPage implements OnInit {
 
   activityListPage(id: any, slipNumber: any) {
     if (this.usereRole == 'Admin' || this.usereRole == 'QA') {
+      if(this.usereRole == 'QA'){
+        if (this.ionSelectObserver) {
+        this.ionSelectObserver.disconnect();
+        this.ionSelectObserver = null;
+        console.log("🛑 MutationObserver disconnected");
+      }
+      }
       this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber, team: this.teamsOrders } });
     }
     else {
@@ -177,6 +200,7 @@ export class OrderPage implements OnInit {
   }
 
   getRequisitionDetail() {
+    this.getRequisitionGetCountParallel();
     console.log('getRequisitionDetail');
     // Determine the segment value for the QA role
     let segmentValue = (this.segmentValue === 'InQueueQA') ? 'InQueue' : this.segmentValue;
@@ -208,6 +232,8 @@ export class OrderPage implements OnInit {
       }, (error) => {
         this.controller.hideloader()
       });
+
+    
   }
 
   handleRequisitionResponse(res: any) {
@@ -230,7 +256,6 @@ export class OrderPage implements OnInit {
         } else {
           this.activeList = [...this.activeList, ...res];
         }
-        this.addcss()
         console.log('this.activeList', this.activeList);
         break;
       case 'InQueue':
@@ -281,6 +306,7 @@ export class OrderPage implements OnInit {
 
 
   getItem() {
+      this.getAssignmentCountParallel();
     let params = new HttpParams()
       .set('Status', this.segmentValue);
 
@@ -530,9 +556,9 @@ export class OrderPage implements OnInit {
       localStorage.clear();
       this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
         // Only reload if necessary
-        if (Capacitor.getPlatform() === 'android') {
+        // if (Capacitor.getPlatform() === 'android') {
           setTimeout(() => window.location.reload(), 100); // small delay improves stability
-        }
+        // }
       });
     }
   }
@@ -587,31 +613,32 @@ export class OrderPage implements OnInit {
     })
     // console.log('Selected option:', this.selectedOption);
   }
-  addcss() {
-    const observer = new MutationObserver(() => {
-      document.querySelectorAll("ion-select").forEach((ionSelect) => {
-        if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
-          console.log("✅ Styling dynamically added ion-select");
-          const style = document.createElement("style");
-          style.classList.add("custom-style"); // Prevent duplicate styles
-          style.textContent = `
-                .select-outline-container {
-                      height: 32px !important;
-                    left: 20px !important;
-                    width: 80% !important;
-                  }
-                .select-wrapper-inner {
-                  display: block !important;
-              }
-              `;
-          ionSelect.shadowRoot.appendChild(style);
-        }
-      });
-    });
+    addcss() {
+  console.log("Adding custom styles to ion-select");
 
-    // Observe the entire document for new elements
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
+  this.ionSelectObserver = new MutationObserver(() => {
+    document.querySelectorAll("ion-select").forEach((ionSelect) => {
+      if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+        console.log("✅ Styling dynamically added ion-select");
+        const style = document.createElement("style");
+        style.classList.add("custom-style");
+        style.textContent = `
+          .select-outline-container {
+            height: 32px !important;
+            left: 20px !important;
+            width: 80% !important;
+          }
+          .select-wrapper-inner {
+            display: block !important;
+          }
+        `;
+        ionSelect.shadowRoot.appendChild(style);
+      }
+    });
+  });
+
+  this.ionSelectObserver.observe(document.body, { childList: true, subtree: true });
+}
   async openFilter() {
     const modal = await this.modalController.create({
       component: FilterModalComponent,
@@ -786,4 +813,108 @@ async showReceivedModal(id: any) {
   }
 }
 
+// getRequisitionGetCount() {
+//   let params = new HttpParams();
+//   params.set('Status', 'Active');
+//   params.set('Status', 'Completed');
+//   params.set('Status', 'InQueue');
+  
+//   this.httpService.getRequisitionGetCount(params)
+//     .subscribe((res: any) => {
+//       console.log('Requisition Get Count:', res);
+//     });
+// }
+
+  getRequisitionGetCountParallel() {
+  const inQueue$ = this.getCountByStatus('InQueue');
+
+  let requests = [inQueue$];
+  let roles = ['inQueue'];
+
+  if (this.usereRole == 'QA') {
+    const rejected$ = this.getCountByStatus('Rejected');
+    const approved$ = this.getCountByStatus('Approved');
+
+    requests.push(rejected$, approved$);
+    roles.push('rejected', 'approved');
+  } else {
+    const active$ = this.getCountByStatus('Active');
+    const completed$ = this.getCountByStatus('Completed');
+
+    requests.push(active$, completed$);
+    roles.push('active', 'completed');
+  }
+
+  forkJoin(requests).subscribe((results) => {
+    results.forEach((res, index) => {
+      const role = roles[index];
+      switch (role) {
+        case 'active':
+          this.activeCount = res;
+          console.log('Active Count:', res);
+          break;
+        case 'completed':
+          this.completedCount = res;
+          console.log('Completed Count:', res);
+          break;
+        case 'inQueue':
+          this.inQueueCount = res;
+          console.log('InQueue Count:', res);
+          break;
+        case 'rejected':
+          this.rejectedCount = res;
+          console.log('Rejected Count:', res);
+          break;
+        case 'approved':
+          this.approvedCount = res;
+          console.log('Approved Count:', res);
+          break;
+      }
+    });
+  });
+}
+
+
+  getCountByStatus(status: string): Observable<any> {
+    let params = new HttpParams()
+    params = params.set('Team', this.teamsOrders);
+    params = params.set('Status', status);
+    return this.httpService.getRequisitionGetCount(params);
+  }
+
+  getAssignmentCountParallel() {
+    const UnAssigned$ = this.getAssignmenCountByStatus('UnAssigned');
+    const Assigned$ = this.getAssignmenCountByStatus('Assigned');
+
+    forkJoin([UnAssigned$, Assigned$]).subscribe(([UnAssignedRes, AssignedRes]) => {
+      this.UnAssignedCount = UnAssignedRes;
+      this.AssignedCount = AssignedRes;
+      console.log('UnAssigned Count:', UnAssignedRes);
+      console.log('Assigned Count:', AssignedRes);
+    });
+  }
+
+  getAssignmenCountByStatus(status: string): Observable<any> {
+    let params = new HttpParams().set('Status', status);
+    return this.httpService.getRequisitionGetForAssignmentCount(params);
+  }
+  
+ngOnDestroy() {
+  if (this.ionSelectObserver) {
+    this.ionSelectObserver.disconnect();
+    this.ionSelectObserver = null;
+    console.log("🛑 MutationObserver disconnected");
+  }
+
+  // Optional: Remove the injected styles
+  document.querySelectorAll("ion-select").forEach((ionSelect) => {
+    if (ionSelect.shadowRoot) {
+      const style = ionSelect.shadowRoot.querySelector("style.custom-style");
+      if (style) {
+        ionSelect.shadowRoot.removeChild(style);
+        console.log("❌ Custom style removed from ion-select");
+      }
+    }
+  });
+}
 }

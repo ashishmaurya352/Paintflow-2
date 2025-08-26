@@ -48,6 +48,8 @@ export class DashboardPage implements OnInit {
   userList: any = []
   delayList: any = []
   reworkList: any = []
+  private ionSelectObserver: MutationObserver | null = null;
+
   constructor(
     private router: Router,
     private httpService: HttpService,
@@ -92,15 +94,18 @@ export class DashboardPage implements OnInit {
     localStorage.clear();
     this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
       // Only reload if necessary
-      if (Capacitor.getPlatform() === 'android') {
+      // if (Capacitor.getPlatform() === 'android') {
         setTimeout(() => window.location.reload(), 100); // small delay improves stability
-      }
+      // }
     });
+
   }
   getActiveRequisitionCount() {
     const parm = new HttpParams().set('ReqFrom', '');
+      this.controller.showloader()
     this.httpService.getActiveRequisitionCount(parm).subscribe(
       (apidata: any) => {
+        this.controller.hideloader()
         this.requisitions = apidata
         const allItem = this.requisitions.find((item: any) => item.name === "All");
         this.allItem = allItem ? allItem.count : 0;
@@ -125,6 +130,7 @@ export class DashboardPage implements OnInit {
       },
       (error) => {
         console.error('Error fetching active requisition count:', error);
+          this.controller.hideloader()
       }
     );
   }
@@ -218,30 +224,32 @@ export class DashboardPage implements OnInit {
 
   }
   addcss() {
-    const observer = new MutationObserver(() => {
-      document.querySelectorAll("ion-select").forEach((ionSelect) => {
-        if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
-          console.log("✅ Styling dynamically added ion-select");
-          const style = document.createElement("style");
-          style.classList.add("custom-style"); // Prevent duplicate styles
-          style.textContent = `
-            .select-outline-container {
-                  height: 32px !important;
-                left: 20px !important;
-                width: 80% !important;
-              }
-            .select-wrapper-inner {
-              display: block !important;
-          }
-          `;
-          ionSelect.shadowRoot.appendChild(style);
-        }
-      });
-    });
+  console.log("Adding custom styles to ion-select");
 
-    // Observe the entire document for new elements
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
+  this.ionSelectObserver = new MutationObserver(() => {
+    document.querySelectorAll("ion-select").forEach((ionSelect) => {
+      if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+        console.log("✅ Styling dynamically added ion-select");
+        const style = document.createElement("style");
+        style.classList.add("custom-style");
+        style.textContent = `
+          .select-outline-container {
+            height: 32px !important;
+            left: 20px !important;
+            width: 80% !important;
+          }
+          .select-wrapper-inner {
+            display: block !important;
+          }
+        `;
+        ionSelect.shadowRoot.appendChild(style);
+      }
+    });
+  });
+
+  this.ionSelectObserver.observe(document.body, { childList: true, subtree: true });
+}
+
 
   getPaintDescWiseCostOverview(filter: any = false) {
     let parm = new HttpParams()
@@ -274,7 +282,7 @@ export class DashboardPage implements OnInit {
     return Object.keys(obj).slice(6);
   }
 
-  selectedPeriod: string = '1M';
+  selectedPeriod: string = '1D';
 
   // Function to set the active period
   async setActive(period: any) {
@@ -372,12 +380,12 @@ export class DashboardPage implements OnInit {
   }
   getStartOfLastMonth(): Date {
     const currentDate = new Date();
-    const lastMonth = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
+    // const lastMonth = new Date(currentDate.setMonth(currentDate.getMonth() - 1));
 
     // Set time to 00:00:00 for consistency
-    lastMonth.setHours(0, 0, 0, 0);
+    currentDate.setHours(0, 0, 0, 0);
 
-    return lastMonth;
+    return currentDate;
   }
   segment(event: any) {
     this.filter.ReqFrom = event.target.value;
@@ -442,25 +450,10 @@ export class DashboardPage implements OnInit {
     });
   }
 
-  openPdfInNewTab() {
-    const fileUrl = 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf';
-    window.location.href = fileUrl;
-  }
-
 
   async showReport() {
     this.router.navigate(['/report']);
   }
-  //    const modal = await this.modalController.create({
-  //       component: ReportComponent,
-  //       componentProps: {
-  //         userList: this.userList,
-  //       },
-  //       cssClass: 'changePasswordModal',
-  //     });
-  //     await modal.present();
-  // }
-
   delayReport() {
     let params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate)
 
@@ -539,4 +532,24 @@ export class DashboardPage implements OnInit {
   date(date: any) {
     return new Date(date)
     }
+
+    ngOnDestroy() {
+  if (this.ionSelectObserver) {
+    this.ionSelectObserver.disconnect();
+    this.ionSelectObserver = null;
+    console.log("🛑 MutationObserver disconnected");
+  }
+
+  // Optional: Remove the injected styles
+  document.querySelectorAll("ion-select").forEach((ionSelect) => {
+    if (ionSelect.shadowRoot) {
+      const style = ionSelect.shadowRoot.querySelector("style.custom-style");
+      if (style) {
+        ionSelect.shadowRoot.removeChild(style);
+        console.log("❌ Custom style removed from ion-select");
+      }
+    }
+  });
+}
+
   }

@@ -56,6 +56,9 @@ export class HttpService {
   readonly ReportGetDayWiseCostOverview = `/Report/GetDayWiseCostOverview`;
   readonly ReportGetPaintingPlan = `/Report/GetPaintingPlan`;
   readonly RequisitionGetPersons = `/Requisition/GetPersons`;
+  readonly RequisitionGetCount = `/Requisition/GetCount`;
+  readonly RequisitionGetForAssignementCount = `/Requisition/GetForAssignementCount`;
+  readonly ReportGetPaintingPlanReport = `/Report/GetPaintingPlanReport`;
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -256,4 +259,17 @@ export class HttpService {
     let url = `${this.apiUrl + this.RequisitionGetPersons}`;
     return this.httpClient.get(url);
   }
+  getRequisitionGetCount(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.RequisitionGetCount}?${data}`;
+    return this.httpClient.get(url);
+  }
+  getRequisitionGetForAssignmentCount(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.RequisitionGetForAssignementCount}?${data}`;
+    return this.httpClient.get(url);
+  }
+  getReportGetPaintingPlanReport(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.ReportGetPaintingPlanReport}?${data}`;
+    return this.httpClient.get(url,{responseType: 'text'});
+  }
+
 }

@@ -34,9 +34,9 @@ filteredItems = [...this.itemList];
       localStorage.clear();
         this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
           // Only reload if necessary
-          if (Capacitor.getPlatform() === 'android') {
+          // if (Capacitor.getPlatform() === 'android') {
             setTimeout(() => window.location.reload(), 100); // small delay improves stability
-          }
+          // }
         });
     }
 

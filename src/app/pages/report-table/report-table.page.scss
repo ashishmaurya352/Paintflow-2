@@ -68,8 +68,9 @@ td {
   font-size: 14px;
 }
 .time-period {
-    // display: flex;
-
+    display: flex;
+    justify-content: space-between;
+    
     ion-button {
       --background: transparent;
       --color: #767676;
@@ -92,3 +93,7 @@ td {
 .custom-date{
   display: flex;
 }
+.download-report{
+    --border-color: #A52B54;
+    --color: #A52B54 !important;
+  }

@@ -15,6 +15,11 @@
 
 <ion-content class="ion-padding">
   <div class="time-period">
+    <div>
+      <ion-button class="download-report" fill="outline" shape="round" (click)="downloadReport()">
+        Download Report
+      </ion-button>
+    </div>
     <div style="display: flex;justify-content:end">
       <ion-button *ngFor="let period of timePeriods" fill="clear" size="small" [attr.aria-label]="period.label"
         [ngClass]="{'active': selectedPeriod === period.label}" (click)="setActive(period.label)">
@@ -45,13 +50,13 @@
 
         <ion-popover mode="md" trigger="startDate-trigger">
           <ng-template>
-            <ion-datetime [value]="startDate" (ionChange)="onStartDateChange($event)" [showDefaultButtons]="true"
+            <ion-datetime [value]="calStartDate" (ionChange)="onStartDateChange($event)" [showDefaultButtons]="true"
               presentation="date"></ion-datetime>
           </ng-template>
         </ion-popover>
         <ion-popover mode="md" trigger="endDate-trigger">
           <ng-template>
-            <ion-datetime [min]="startDate" [value]="endDate" (ionChange)="onEndDateChange($event)"
+            <ion-datetime [min]="calStartDate" [value]="calEndDate" (ionChange)="onEndDateChange($event)"
               [showDefaultButtons]="true" presentation="date"></ion-datetime>
           </ng-template>
         </ion-popover>

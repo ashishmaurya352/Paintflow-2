@@ -25,28 +25,28 @@
   <div class="content" style="background: white;">
     <ion-segment [value]="segmentValue" (ionChange)="segmentChange($event)">
       <ion-segment-button value="Active" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
-        <ion-label>Active</ion-label>
+        <ion-label>Active ({{activeCount}})</ion-label>
       </ion-segment-button>
       <ion-segment-button value="Completed" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
-        <ion-label>Completed</ion-label>
+        <ion-label>Completed ({{completedCount}})</ion-label>
       </ion-segment-button>
       <ion-segment-button value="InQueue" *ngIf="usereRole == 'Executive' || usereRole == 'Admin'">
-        <ion-label>In Queue</ion-label>
+        <ion-label>In Queue ({{inQueueCount}})</ion-label>
       </ion-segment-button>
       <ion-segment-button value="UnAssigned" *ngIf="usereRole == 'Inward Manager'">
-        <ion-label>Un-Assigned</ion-label>
+        <ion-label>Un-Assigned ({{UnAssignedCount}})</ion-label>
       </ion-segment-button>
       <ion-segment-button value="Assigned" *ngIf="usereRole == 'Inward Manager'">
-        <ion-label>Assigned</ion-label>
+        <ion-label>Assigned ({{AssignedCount}})</ion-label>
       </ion-segment-button>
       <ion-segment-button value="InQueueQA" *ngIf="usereRole == 'QA'">
-        <ion-label>In Queue</ion-label>
+        <ion-label>In Queue ({{inQueueCount}})</ion-label>
       </ion-segment-button>
       <ion-segment-button value="Rejected" *ngIf="usereRole == 'QA'">
-        <ion-label>Rejected</ion-label>
+        <ion-label>Rejected ({{rejectedCount}})</ion-label>
       </ion-segment-button>
       <ion-segment-button value="Approved" *ngIf="usereRole == 'QA'">
-        <ion-label>Approved</ion-label>
+        <ion-label>Approved ({{approvedCount}})</ion-label>
       </ion-segment-button>
 
     </ion-segment>
@@ -540,7 +540,7 @@
                 </div>
                 <div class="accept">
                   <p>Accepted on </p>
-                  <h6>{{addISTOffset(item.reqAcceptedDate) | date:'mediumDate'}}</h6>
+                  <h6>{{addISTOffset(item.acceptedDate) | date:'mediumDate'}}</h6>
                 </div>
                 
               </div>

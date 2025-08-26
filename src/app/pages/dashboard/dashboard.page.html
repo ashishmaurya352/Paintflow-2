@@ -115,7 +115,7 @@
           <ion-card class="requisition-card">
             <ion-card-content class="overview">
               <h3>{{ paintData[key].name }}</h3>
-              <p>Surface Area In sqft:<b>{{ paintData[key].surfaceAreaInSqFt }}</b></p>
+              <p>Surface Area In sqft:<b>{{ paintData[key].surfaceAreaInSqFt| number:'1.3-3'}}</b></p>
               <p>Weight: <b>{{ paintData[key].weight }}</b></p>
             </ion-card-content>
           </ion-card>

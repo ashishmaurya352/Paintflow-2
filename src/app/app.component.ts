@@ -50,6 +50,8 @@ export class AppComponent {
       }
     } else {
       this.router.navigate(['/login']);
+        // setTimeout(() => window.location.reload(), 100); // small delay improves stability
+      
     }
   }
 }

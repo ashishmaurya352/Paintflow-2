@@ -24,7 +24,7 @@ export class ActivityListPage implements OnInit {
   reworkImageUrl = 'assets/img/letter-r.png';
   filter: any = {
     PageNumber: 1,
-    PageSize: 20,
+    PageSize: 150,
     StartDate: null,
     EndDate: null,
     // SortBy
@@ -105,6 +105,7 @@ qaAcceptedList = [
   'Accepted']
   loginTeam:any
   currentReasonList: string[] = [];
+private ionSelectObserver: MutationObserver | null = null;
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -122,6 +123,7 @@ qaAcceptedList = [
     this.loginTeam = localStorage.getItem('team')
     this.getTeams()
     if (this.usereRole == 'QA') {
+      this.removeCss()
       this.segmentValue = 'InQueue'
     }
     else if (this.usereRole == 'Admin') {
@@ -493,31 +495,32 @@ qaAcceptedList = [
       console.log(res)
     })
   }
-  addcss() {
-    const observer = new MutationObserver(() => {
-      document.querySelectorAll("ion-select").forEach((ionSelect) => {
-        if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
-          console.log("✅ Styling dynamically added ion-select");
-          const style = document.createElement("style");
-          style.classList.add("custom-style"); // Prevent duplicate styles
-          style.textContent = `
-            .select-outline-container {
-                  height: 32px !important;
-                left: 20px !important;
-                width: 80% !important;
-              }
-            .select-wrapper-inner {
-              display: block !important;
-          }
-          `;
-          ionSelect.shadowRoot.appendChild(style);
-        }
-      });
-    });
+    addcss() {
+  console.log("Adding custom styles to ion-select");
 
-    // Observe the entire document for new elements
-    observer.observe(document.body, { childList: true, subtree: true });
-  }
+  this.ionSelectObserver = new MutationObserver(() => {
+    document.querySelectorAll("ion-select").forEach((ionSelect) => {
+      if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+        console.log("✅ Styling dynamically added ion-select");
+        const style = document.createElement("style");
+        style.classList.add("custom-style");
+        style.textContent = `
+          .select-outline-container {
+            height: 32px !important;
+            left: 20px !important;
+            width: 80% !important;
+          }
+          .select-wrapper-inner {
+            display: block !important;
+          }
+        `;
+        ionSelect.shadowRoot.appendChild(style);
+      }
+    });
+  });
+
+  this.ionSelectObserver.observe(document.body, { childList: true, subtree: true });
+}
   toggleSearch() {
     this.isSearchbarVisible = !this.isSearchbarVisible;
   }
@@ -923,7 +926,7 @@ qaAcceptedList = [
   resetFilter() {
     this.filter = {
       PageNumber: 1,
-      PageSize: 20,
+      PageSize: 150,
       StartDate: null,
       EndDate: null,
       Keyword: null,
@@ -936,6 +939,38 @@ qaAcceptedList = [
       this.getRequisitionItem(this.requisitionId)
     })
   }
+  removeCss() {
+  console.log("Removing custom styles from ion-select");
+
+  document.querySelectorAll("ion-select").forEach((ionSelect) => {
+    if (ionSelect.shadowRoot) {
+      const existingStyle = ionSelect.shadowRoot.querySelector("style.custom-style");
+      if (existingStyle) {
+        ionSelect.shadowRoot.removeChild(existingStyle);
+        console.log("❌ Custom style removed from ion-select");
+      }
+    }
+  });
+}
+ngOnDestroy() {
+  if (this.ionSelectObserver) {
+    this.ionSelectObserver.disconnect();
+    this.ionSelectObserver = null;
+    console.log("🛑 MutationObserver disconnected");
+  }
+
+  // Optional: Remove the injected styles
+  document.querySelectorAll("ion-select").forEach((ionSelect) => {
+    if (ionSelect.shadowRoot) {
+      const style = ionSelect.shadowRoot.querySelector("style.custom-style");
+      if (style) {
+        ionSelect.shadowRoot.removeChild(style);
+        console.log("❌ Custom style removed from ion-select");
+      }
+    }
+  });
+}
+
 
   
 }
