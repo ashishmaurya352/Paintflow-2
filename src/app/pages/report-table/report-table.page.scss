@@ -1,16 +1,16 @@
 .hader {
-    h3 {
-        font-size: 32px;
-        margin: auto;
-        color: #333333;
-        margin-top: 16px !important;
-        margin-bottom: 16px !important;
-        font-weight: bold;
-    }
+  h3 {
+    font-size: 32px;
+    margin: auto;
+    color: #333333;
+    margin-top: 16px !important;
+    margin-bottom: 16px !important;
+    font-weight: bold;
+  }
 
-    ion-icon {
-        font-size: 32px
-    }
+  ion-icon {
+    font-size: 32px
+  }
 }
 
 
@@ -67,33 +67,97 @@ td {
   white-space: nowrap;
   font-size: 14px;
 }
-.time-period {
-    display: flex;
-    justify-content: space-between;
-    
-    ion-button {
-      --background: transparent;
-      --color: #767676;
-      font-size: 14px;
-      font-weight: bold;
-      margin-left: 5px;
-    }
 
-    ion-button::part(native) {
-      padding: 0 5px;
+// .time-period {
+//     display: flex;
+//     justify-content: space-between;
+
+//     ion-button {
+//       --background: transparent;
+//       --color: #767676;
+//       font-size: 14px;
+//       font-weight: bold;
+//       margin-left: 5px;
+//     }
+
+//     ion-button::part(native) {
+//       padding: 0 5px;
+//     }
+//   }
+//   ion-button.active {
+//   --background: transparent;
+//   --color:var(--theme-color-primary);
+// }
+// .active {
+//   color: #A52B54;
+// }
+// .custom-date{
+//   display: flex;
+// }
+// .download-report{
+//     --border-color: #A52B54;
+//     --color: #A52B54 !important;
+//   }
+
+//   .requisition-card {
+//   border-radius: 10px;
+//   // text-align: center;
+//   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+// }
+// .overview {
+//   h3 {
+//     font-size: 16px;
+//     font-weight: 600;
+//     color: #333333;
+//   }
+
+//   h2 {
+
+//     font-size: 32px;
+//     color: #A52B54;
+//   }
+// }
+.time-period {
+  padding: 10px 0;
+
+  .download-report {
+    --border-color: var(--theme-color-primary);
+    --color: var(--theme-color-primary);
+    margin-right: 10px;
+  }
+
+  .left-section,
+  .right-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .time-buttons ion-button {
+    color: #555;
+    font-weight: 600;
+
+    &.active {
+      color: #A52B54;
     }
   }
-  ion-button.active {
-  --background: transparent;
-  --color:var(--theme-color-primary);
-}
-.active {
-  color: #A52B54;
-}
-.custom-date{
-  display: flex;
-}
-.download-report{
-    --border-color: #A52B54;
-    --color: #A52B54 !important;
+
+  .time-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: end;
   }
+
+  .custom-date {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+    margin-left: auto;
+
+    ion-button {
+      --color: var(--theme-color-primary);
+    }
+  }
+}

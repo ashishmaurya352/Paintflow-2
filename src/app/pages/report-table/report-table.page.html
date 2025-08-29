@@ -14,56 +14,126 @@
 
 
 <ion-content class="ion-padding">
-  <div class="time-period">
-    <div>
+  <ion-grid class="time-period">
+  <ion-row class="ion-align-items-center ion-justify-content-between">
+
+    <!-- Left Section -->
+    <ion-col size="12" size-md="6" class="left-section">
       <ion-button class="download-report" fill="outline" shape="round" (click)="downloadReport()">
+        <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
         Download Report
       </ion-button>
-    </div>
-    <div style="display: flex;justify-content:end">
-      <ion-button *ngFor="let period of timePeriods" fill="clear" size="small" [attr.aria-label]="period.label"
-        [ngClass]="{'active': selectedPeriod === period.label}" (click)="setActive(period.label)">
-        {{ period.label }}
-      </ion-button>
-      <ion-button *ngIf="selectedPeriod !== 'Custom Date'" fill="clear" size="small" aria-label="Select Custom Date"
-        [ngClass]="{'active': selectedPeriod === 'Custom Date'}" (click)="setActive('Custom Date')">
-        <ion-icon name="calendar-outline"></ion-icon>
-      </ion-button>
 
+      <!-- Searchable Dropdown Trigger -->
+      <ion-button fill="outline" shape="round" (click)="openDropdown()">
+        {{ selectedOption || 'Select Slip' }}
+        <ion-icon slot="end" name="chevron-down-outline"></ion-icon>
+      </ion-button>
+    </ion-col>
+
+    <!-- Right Section -->
+    <ion-col size="12" size-md="6" class="right-section">
+      <div class="time-buttons">
+        <ion-button *ngFor="let period of timePeriods"
+                    fill="clear"
+                    size="small"
+                    [ngClass]="{'active': selectedPeriod === period.label}"
+                    (click)="setActive(period.label)">
+          {{ period.label }}
+        </ion-button>
+
+        <ion-button *ngIf="selectedPeriod !== 'Custom Date'"
+                    fill="clear"
+                    size="small"
+                    [ngClass]="{'active': selectedPeriod === 'Custom Date'}"
+                    (click)="setActive('Custom Date')">
+          <ion-icon name="calendar-outline"></ion-icon>
+        </ion-button>
+      </div>
+
+      <!-- Custom Date Picker -->
       <div *ngIf="selectedPeriod === 'Custom Date'" class="custom-date">
-        <div class="date">
-          <!-- <ion-label>Start Date</ion-label> -->
-          <ion-button [ngClass]="{'active': selectedPeriod === 'Custom Date'}" id="startDate-trigger" shape="round"
-            label="Start Date" [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
-            <ion-icon name="calendar"></ion-icon>
-            {{startDate | date:'mediumDate':'IST'}}
-          </ion-button>
-        </div>
-        <div>
-          <!-- <ion-label>End Date</ion-label> -->
-          <ion-button [ngClass]="{'active': selectedPeriod === 'Custom Date'}" shape="round" id="endDate-trigger"
-            [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
-            <ion-icon name="calendar"></ion-icon>
-            {{endDate | date:'mediumDate':'IST'}}
-          </ion-button>
-        </div>
+        <ion-button shape="round" id="startDate-trigger" [fill]="sortByName === 'startDate' ? 'solid' : 'outline'">
+          <ion-icon name="calendar"></ion-icon>
+          {{ startDate | date: 'mediumDate':'IST' }}
+        </ion-button>
 
-        <ion-popover mode="md" trigger="startDate-trigger">
+        <ion-button shape="round" id="endDate-trigger" [fill]="sortByName === 'endDate' ? 'solid' : 'outline'">
+          <ion-icon name="calendar"></ion-icon>
+          {{ endDate | date: 'mediumDate':'IST' }}
+        </ion-button>
+
+        <!-- Date Popovers -->
+        <ion-popover trigger="startDate-trigger">
           <ng-template>
-            <ion-datetime [value]="calStartDate" (ionChange)="onStartDateChange($event)" [showDefaultButtons]="true"
-              presentation="date"></ion-datetime>
+            <ion-datetime presentation="date"
+                          [value]="calStartDate"
+                          (ionChange)="onStartDateChange($event)"
+                          [showDefaultButtons]="true">
+            </ion-datetime>
           </ng-template>
         </ion-popover>
-        <ion-popover mode="md" trigger="endDate-trigger">
+
+        <ion-popover trigger="endDate-trigger">
           <ng-template>
-            <ion-datetime [min]="calStartDate" [value]="calEndDate" (ionChange)="onEndDateChange($event)"
-              [showDefaultButtons]="true" presentation="date"></ion-datetime>
+            <ion-datetime presentation="date"
+                          [value]="calEndDate"
+                          [min]="calStartDate"
+                          (ionChange)="onEndDateChange($event)"
+                          [showDefaultButtons]="true">
+            </ion-datetime>
           </ng-template>
         </ion-popover>
       </div>
-    </div>
+    </ion-col>
 
-  </div>
+  </ion-row>
+</ion-grid>
+
+<!-- Searchable Dropdown Modal -->
+<ion-modal [isOpen]="dropdownOpen" (didDismiss)="closeDropdown()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar color="light">
+        <ion-title>Select Option</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeDropdown()">Close</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content>
+      <ion-searchbar placeholder="Search..." [debounce]="1000" (ionInput)="onSearchInput($event)"></ion-searchbar>
+      <ion-list>
+        <ion-item button *ngFor="let option of filteredOptions" (click)="selectOption(option)">
+          {{ option?.slipNumber }}
+        </ion-item>
+      </ion-list>
+      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMore($event)" *ngIf="hasMoreData">
+        <ion-infinite-scroll-content loadingSpinner="bubbles" loadingText="Loading more..."></ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+  <ion-grid>
+      <ion-row>
+        <ion-col >
+          <ion-card class="requisition-card">
+            <ion-card-content class="overview">
+              <h3>Total Quantity: {{ tableData.totalQuantity | number:'1.3-3' }}</h3>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+         <ion-col >
+          <ion-card class="requisition-card">
+            <ion-card-content class="overview">
+              <h3>Total Pending: {{ tableData.totalPendingSqFt | number:'1.3-3' }}</h3>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
 
   <div class="table-wrapper">
     <table>

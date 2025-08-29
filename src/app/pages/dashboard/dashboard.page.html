@@ -105,6 +105,7 @@
     </div>
     <div>
       <ion-button class="download-report" fill="outline" shape="round" (click)="downloadReport('CostOverview')">
+        <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
         Download Report
       </ion-button>
     </div>
@@ -166,6 +167,7 @@
       </div>
       <div>
       <ion-button class="download-report" fill="outline" shape="round" (click)="openReport()">
+        <ion-icon slot="start" name="file-tray-full-outline"></ion-icon>
         Pending Req
       </ion-button>
     </div>
@@ -192,6 +194,7 @@
     </div>
     <div>
       <ion-button class="download-report" fill="outline" shape="round" (click)="downloadReport('Delay')">
+        <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
         Download Report
       </ion-button>
     </div>
@@ -203,10 +206,8 @@
         <ion-card class="requisition-card">
           <ion-card-content class="overview">
             <h3>{{ team.team }}</h3>
-            <h2>{{ team.delayedItemCount | number }}</h2>
-            <p>Average delay in days: <b>{{ (team.delayInDays ?? 0) | number }}</b></p>
-            <p>Top delay in days: <b>{{ (team.topDelayInDays ?? 0) | number }}</b></p>
-            <p>Bottom delay in days: <b>{{ (team.bottomDelayInDays ?? 0) | number }}</b></p>
+            <h2>{{ team.delayInDays | number }}</h2>
+            <p>Slip Number: <b>{{ (team.slipNumber ?? 0) | number }}</b></p>
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -219,6 +220,7 @@
     </div>
     <div>
       <ion-button class="download-report" fill="outline" shape="round" (click)="downloadReport('Rework')">
+        <ion-icon slot="start" name="cloud-download-outline"></ion-icon>
         Download Report
       </ion-button>
     </div>
@@ -231,8 +233,11 @@
         <ion-card class="requisition-card">
           <ion-card-content class="overview">
             <h3>{{ team.team }}</h3>
-            <h2>{{ team.reworkItemCount | number }}</h2>
-              <p>Qty in {{ team.unit }}: <b>{{ team.reworkSum | number }}</b></p>
+            <p>Rework Count: <b>{{ (team.reworkItemCount ?? 0) | number }}</b></p>
+            <p>Total Weight: <b>{{ (team.totalWeight ?? 0) | number }}</b></p>
+            <p>Total Surface Area: <b>{{ (team.totalSurfaceArea ?? 0) | number }}</b></p>
+            <!-- <h2>{{ team.reworkItemCount | number }}</h2>
+              <p>Qty in {{ team.unit }}: <b>{{ team.reworkSum | number }}</b></p> -->
           </ion-card-content>
         </ion-card>
       </ion-col>

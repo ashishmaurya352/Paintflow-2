@@ -24,7 +24,7 @@ export class ActivityListPage implements OnInit {
   reworkImageUrl = 'assets/img/letter-r.png';
   filter: any = {
     PageNumber: 1,
-    PageSize: 150,
+    PageSize: 200,
     StartDate: null,
     EndDate: null,
     // SortBy
@@ -926,7 +926,7 @@ private ionSelectObserver: MutationObserver | null = null;
   resetFilter() {
     this.filter = {
       PageNumber: 1,
-      PageSize: 150,
+      PageSize: 200,
       StartDate: null,
       EndDate: null,
       Keyword: null,

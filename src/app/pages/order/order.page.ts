@@ -826,7 +826,7 @@ async showReceivedModal(id: any) {
 // }
 
   getRequisitionGetCountParallel() {
-  const inQueue$ = this.getCountByStatus('InQueue');
+  const inQueue$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'Approved' : 'InQueue');
 
   let requests = [inQueue$];
   let roles = ['inQueue'];
@@ -838,8 +838,8 @@ async showReceivedModal(id: any) {
     requests.push(rejected$, approved$);
     roles.push('rejected', 'approved');
   } else {
-    const active$ = this.getCountByStatus('Active');
-    const completed$ = this.getCountByStatus('Completed');
+    const active$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'InQueue' : 'Active');
+    const completed$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'Rejected' : 'Completed');
 
     requests.push(active$, completed$);
     roles.push('active', 'completed');

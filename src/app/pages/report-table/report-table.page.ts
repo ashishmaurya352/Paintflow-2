@@ -82,7 +82,9 @@ export class ReportTablePage implements OnInit {
       .set('EndDate', endDate.toISOString())
       .set('ReqFrom', this.filter.ReqFrom || '')
       .set('Person', this.filter.Person || '')
-      .set('Keyword', this.filter.Keyword || '');
+      .set('Keyword', this.filter.Keyword || '')
+      .set('RequisitionId', this.filter.RequisitionId || 0);
+
     this.controller.showloader();
     this.httpService.reportGetPaintingPlan(params).subscribe(response => {
       console.log('Painting Plan Report:', response);
@@ -214,7 +216,8 @@ async calculateDateRange(period: string) {
       .set('EndDate', endDate.toISOString())
       .set('ReqFrom', this.filter.ReqFrom || '')
       .set('Person', this.filter.Person || '')
-      .set('Keyword', this.filter.Keyword || '');
+      .set('Keyword', this.filter.Keyword || '')
+      .set('RequisitionId', this.filter.RequisitionId || 0);
     this.controller.showloader();
     this.httpService.getReportGetPaintingPlanReport(params).subscribe({
          next: (res: any) => {
@@ -230,4 +233,104 @@ async calculateDateRange(period: string) {
     });
     // Implement your download report logic here
   }
+
+  keyword: string = '';
+  pageSize: number = 50;
+  pageNumber: number = 1;
+
+  options: string[] = [];
+  filteredOptions: any[] = [];
+
+  dropdownOpen = false;
+  hasMoreData = true;
+  isLoading = false;
+  selectedOption: string = '';
+  openDropdown() {
+  this.keyword = '';
+  this.pageNumber = 1;
+  this.hasMoreData = true;
+  this.options = [];
+  this.dropdownOpen = true;
+  this.requisitionGetDDLSlipNumbers(false);
+}
+
+
+  closeDropdown() {
+    this.dropdownOpen = false;
+  }
+
+  filterOptions(event: any) {
+    const search = event.target.value.toLowerCase();
+    this.filteredOptions = this.options.filter(opt =>
+      opt.toLowerCase().includes(search)
+    );
+  }
+
+  onSearchInput(event: any) {
+  this.keyword = event.target.value.toLowerCase();
+  this.pageNumber = 1;
+  this.hasMoreData = true;
+  this.options = [];
+  this.requisitionGetDDLSlipNumbers(false);
+}
+selectOption(option: any) {
+  this.selectedOption = option.slipNumber;
+  this.closeDropdown();
+  this.filter.RequisitionId = option.id;
+  this.reportGetPaintingPlan();
+
+}
+
+
+  requisitionGetDDLSlipNumbers(isLoadMore = false) {
+    debugger
+  if (this.isLoading) return;
+  this.isLoading = true;
+
+  const params = new HttpParams()
+    .set('Keyword', this.keyword || '')
+    .set('PageSize', this.pageSize.toString())
+    .set('PageNumber', this.pageNumber.toString());
+
+  this.httpService.requisitionGetDDLSlipNumbers(params).subscribe({
+    next: (response: any) => {
+      const result = response || [];
+
+      if (isLoadMore) {
+        this.options = [...this.options, ...result];
+      } else {
+        this.options = result;
+      }
+
+      this.filteredOptions = [...this.options];
+
+      if (result.length < this.pageSize) {
+        this.hasMoreData = false;
+      }
+
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Error fetching slip numbers:', err);
+      this.isLoading = false;
+    }
+  });
+}
+
+
+  loadMore(event: any) {
+  this.pageNumber++;
+
+  this.requisitionGetDDLSlipNumbers(true);
+
+  // Wait for data to be appended
+  setTimeout(() => {
+    event.target.complete();
+
+    if (!this.hasMoreData) {
+      event.target.disabled = true;
+    }
+  }, 1000); // optional delay for UX
+}
+
 }
