@@ -490,7 +490,8 @@ export class DashboardPage implements OnInit {
       params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', 'Rework');
     }
     else if( reportType === 'CostOverview') {
-      params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', this.costAnalysisType).set('ReqFrom', this.filter.ReqFrom);
+      params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', this.costAnalysisType).set('ReqFrom', this.filter.ReqFrom)
+      .set('Status', this.filter.Status);
       this.controller.showloader();
       this.httpService.reportGetDayWiseCostOverview(params).subscribe({
          next: (res: any) => {

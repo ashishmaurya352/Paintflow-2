@@ -106,6 +106,8 @@ qaAcceptedList = [
   loginTeam:any
   currentReasonList: string[] = [];
 private ionSelectObserver: MutationObserver | null = null;
+isRefreshing: boolean = false;
+
 
   constructor(private router: Router,
     private route: ActivatedRoute,
@@ -247,15 +249,15 @@ private ionSelectObserver: MutationObserver | null = null;
           this.completed = dataReturned.data.quantity
         }
         if (this.typeItem == 'Update') {
-          this.updateItemStatus(this.selectedItem, 'CompleteStatus');
+          this.updateItemStatus(this.selectedItem, 'CompleteStatus', true);
         }
         else if (this.typeItem == 'AcceptOrder') {
           this.approve()
         } else if (this.typeItem == 'SendForHandover') {
-          this.updateItemStatus(this.selectedItem, 'SendForHandover')
+          this.updateItemStatus(this.selectedItem, 'SendForHandover', true)
         }
         else {
-          this.updateItemStatus(this.selectedItem, 'SendForApproval');
+          this.updateItemStatus(this.selectedItem, 'SendForApproval',true);
         }
       }
       else {
@@ -306,23 +308,43 @@ private ionSelectObserver: MutationObserver | null = null;
 
   }
 
-  getRequisitionItem(id: any) {
+  getRequisitionItem(id: any, isRefresh: boolean = false) {
+    console.log('getRequisitionItem', id);
+    // 🔹 If it's a refresh request, reset pagination and lists
+    if (isRefresh) {
+      this.isRefreshing = true;
+      this.filter.PageNumber = 1;
+      this.finalPage = false;
+
+      // Reset lists based on role and segment
+      if (this.usereRole === 'QA') {
+        this.InQueueList = [];
+        this.RejectedList = [];
+        this.ApprovedList = [];
+      } else {
+        this.ItemList = [];
+        this.handoverItemList = [];
+      }
+    }
     const parm = this.buildParams(id);
 
-    this.controller.showloader();
+      this.controller.showloader();
 
     this.httpService.getItemDetail(parm)
       .subscribe(
         (res: any) => {
-          if (res.length < 20) {
+          if (res.length < 200) {
             this.finalPage = true; // Set finalPage to true if no items are returned
           }
-          this.controller.hideloader()
+          // setTimeout(() => {
+            this.controller.hideloader();
+          // }, 100);
           console.log(res);
-          this.processRequisitionItem(res);
-
+          this.processRequisitionItem(res,isRefresh);
+          this.isRefreshing = false;
         }, (error) => {
           this.controller.hideloader()
+          this.isRefreshing = false;
         });
   }
 
@@ -354,54 +376,52 @@ private ionSelectObserver: MutationObserver | null = null;
     return parm;
   }
 
-  processRequisitionItem(res: any) {
+  processRequisitionItem(res: any, isRefresh: boolean = false) {
     if (this.usereRole === 'QA') {
-      this.handleQARequisitionItem(res);
+      this.handleQARequisitionItem(res, isRefresh);
     } else {
-      this.handleOtherRequisitionItem(res);
+      this.handleOtherRequisitionItem(res, isRefresh);
     }
   }
 
-  handleQARequisitionItem(res: any) {
+  handleQARequisitionItem(res: any, isRefresh: boolean = false) {
     switch (this.segmentValue) {
       case 'InQueue':
-        if(this.filter.PageNumber > 1) {
-          this.InQueueList = [...this.InQueueList, ...res];
-        } else {
-          this.InQueueList = res;
-        }
+        this.InQueueList =
+          this.filter.PageNumber > 1 && !isRefresh
+            ? [...this.InQueueList, ...res]
+            : res;
         break;
+
       case 'Rejected':
-        if(this.filter.PageNumber > 1) {
-          this.RejectedList = [...this.RejectedList, ...res];
-        } else {
-          this.RejectedList = res;
-        }
+        this.RejectedList =
+          this.filter.PageNumber > 1 && !isRefresh
+            ? [...this.RejectedList, ...res]
+            : res;
         break;
+
       default:
-        if(this.filter.PageNumber > 1) {
-          this.ApprovedList = [...this.ApprovedList, ...res];
-        } else {
-          this.ApprovedList = res;
-        }
+        this.ApprovedList =
+          this.filter.PageNumber > 1 && !isRefresh
+            ? [...this.ApprovedList, ...res]
+            : res;
     }
   }
 
-  handleOtherRequisitionItem(res: any) {
+  handleOtherRequisitionItem(res: any, isRefresh: boolean = false) {
     if (this.segmentValue === 'handover') {
-      if(this.filter.PageNumber > 1) {
-        this.handoverItemList = [...this.handoverItemList, ...res];
-      } else {
-        this.handoverItemList = res;
-      }
+      this.handoverItemList =
+        this.filter.PageNumber > 1 && !isRefresh
+          ? [...this.handoverItemList, ...res]
+          : res;
     } else {
-      if(this.filter.PageNumber > 1) {
-        this.ItemList = [...this.ItemList, ...res];
-      } else {
-        this.ItemList = res;
-      }
+      this.ItemList =
+        this.filter.PageNumber > 1 && !isRefresh
+          ? [...this.ItemList, ...res]
+          : res;
     }
   }
+
 
   startTask(item: any) {
     console.log(item);
@@ -412,13 +432,13 @@ private ionSelectObserver: MutationObserver | null = null;
         (res: any) => {
           this.controller.hideloader()
           console.log(res);
-          this.getRequisitionItem(this.requisitionId)
+          this.getRequisitionItem(this.requisitionId,true)
         }, (error) => {
           this.controller.hideloader()
         });
   }
 
-  updateItemStatus(item: any, type: any) {
+  updateItemStatus(item: any, type: any, isRefresh: boolean = false ) {
     if (this.completed <= 0) {
       console.log('completed', this.completed);
       return
@@ -441,7 +461,7 @@ private ionSelectObserver: MutationObserver | null = null;
       .subscribe(
         (res: any) => {
           console.log(res);
-          this.getRequisitionItem(this.requisitionId)
+          this.getRequisitionItem(this.requisitionId, isRefresh)
         });
   }
 
@@ -496,31 +516,50 @@ private ionSelectObserver: MutationObserver | null = null;
     })
   }
     addcss() {
-  console.log("Adding custom styles to ion-select");
+    // Check if we're on the requisition page
+    const isRequisitionPage = window.location.pathname === '/requisition' && window.location.search.startsWith('?id=');
 
-  this.ionSelectObserver = new MutationObserver(() => {
-    document.querySelectorAll("ion-select").forEach((ionSelect) => {
-      if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
-        console.log("✅ Styling dynamically added ion-select");
-        const style = document.createElement("style");
-        style.classList.add("custom-style");
-        style.textContent = `
-          .select-outline-container {
-            height: 32px !important;
-            left: 20px !important;
-            width: 80% !important;
+    if (!isRequisitionPage) {
+      return; // Exit the function if not on the requisition page
+    }
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll("ion-select").forEach((ionSelect) => {
+        // Ensure ion-select has shadowRoot and check for existing styles
+        if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+          try {
+            console.log("✅ Styling dynamically added ion-select");
+
+            // Create style element and add the styles
+            const style = document.createElement("style");
+            style.classList.add("custom-style");
+            style.textContent = `
+              .select-outline-container {
+                height: 32px !important;
+                left: 20px !important;
+                width: 80% !important;
+              }
+              .select-wrapper-inner {
+                display: block !important;
+              }
+            `;
+
+            // Append to shadow DOM
+            ionSelect.shadowRoot.appendChild(style);
+          } catch (error) {
+            console.error("Error while adding custom styles to ion-select:", error);
           }
-          .select-wrapper-inner {
-            display: block !important;
-          }
-        `;
-        ionSelect.shadowRoot.appendChild(style);
-      }
+        }
+      });
     });
-  });
 
-  this.ionSelectObserver.observe(document.body, { childList: true, subtree: true });
-}
+    // Observe the entire document for added nodes
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    setTimeout(() => {
+      console.log("Stopping the observer");
+      observer.disconnect(); // Stop observing
+    }, 2000);
+  }
   toggleSearch() {
     this.isSearchbarVisible = !this.isSearchbarVisible;
   }
@@ -749,6 +788,7 @@ private ionSelectObserver: MutationObserver | null = null;
 
   onIonInfinite(event: InfiniteScrollCustomEvent) {
     this.filter.PageNumber += 1;
+    console.log('onIonInfinite')
     this.getRequisitionItem(this.requisitionId)
     setTimeout(() => {
       event.target.complete();

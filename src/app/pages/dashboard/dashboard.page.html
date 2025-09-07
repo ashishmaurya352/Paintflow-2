@@ -117,7 +117,7 @@
             <ion-card-content class="overview">
               <h3>{{ paintData[key].name }}</h3>
               <p>Surface Area In sqft:<b>{{ paintData[key].surfaceAreaInSqFt| number:'1.3-3'}}</b></p>
-              <p>Weight: <b>{{ paintData[key].weight }}</b></p>
+              <p>Weight: <b>{{ paintData[key].weight | number:'1.3-3' }}</b></p>
             </ion-card-content>
           </ion-card>
         </ion-col>
@@ -207,7 +207,7 @@
           <ion-card-content class="overview">
             <h3>{{ team.team }}</h3>
             <h2>{{ team.delayInDays | number }}</h2>
-            <p>Slip Number: <b>{{ (team.slipNumber ?? 0) | number }}</b></p>
+            <p>Slip Number: <b>{{ team.slipNumber }}</b></p>
           </ion-card-content>
         </ion-card>
       </ion-col>

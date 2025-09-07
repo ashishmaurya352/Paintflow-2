@@ -19,14 +19,14 @@ import { forkJoin, Observable } from 'rxjs';
   selector: 'app-order',
   templateUrl: './order.page.html',
   styleUrls: ['./order.page.scss'],
-  imports: [CommonModule, IonicModule,ChartComponent],
+  imports: [CommonModule, IonicModule, ChartComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class OrderPage implements OnInit {
 
   filter: any = {
     PageNumber: 1,
-    PageSize: 20,
+    PageSize: 100,
     StartDate: null,
     EndDate: null,
     Keyword: null,
@@ -69,13 +69,13 @@ export class OrderPage implements OnInit {
   PaintDescription: any[] = [];
   routerCount: number = 0;
 
-  activeCount:any
-  completedCount:any
-  inQueueCount:any
-  UnAssignedCount:any
-  AssignedCount:any
-  rejectedCount:any
-  approvedCount:any
+  activeCount: any
+  completedCount: any
+  inQueueCount: any
+  UnAssignedCount: any
+  AssignedCount: any
+  rejectedCount: any
+  approvedCount: any
   ionSelectObserver: MutationObserver | null = null;
 
   constructor(
@@ -106,46 +106,46 @@ export class OrderPage implements OnInit {
     // }
     this.route.queryParams.subscribe(params => {
       this.addcss()
-      if(this.routerCount == 0) {
-      this.routerCount++;
-      if (params['team']) {
-        this.teamsOrders = params['team']
-        this.pageTitles = this.teamsOrders + " Orders"
-        // this.segmentValue = 'Active';
-      }
-      const segmentValueParam = params['segmentValue'];
-      if (segmentValueParam) {
-        this.segmentValue = segmentValueParam
-      }
+      if (this.routerCount == 0) {
+        this.routerCount++;
+        if (params['team']) {
+          this.teamsOrders = params['team']
+          this.pageTitles = this.teamsOrders + " Orders"
+          // this.segmentValue = 'Active';
+        }
+        const segmentValueParam = params['segmentValue'];
+        if (segmentValueParam) {
+          this.segmentValue = segmentValueParam
+        }
 
-      console.log(this.usereRole);
-      if (this.usereRole == 'Inward Manager') {
-        if (!this.segmentValue) {
-          this.segmentValue = 'UnAssigned'
+        console.log(this.usereRole);
+        if (this.usereRole == 'Inward Manager') {
+          if (!this.segmentValue) {
+            this.segmentValue = 'UnAssigned'
+          }
+          this.pageTitles = "Recently Created Requisitions"
+          this.getItem()
+          this.getTeams()
+          this.getPaintDescriptionGet()
         }
-        this.pageTitles = "Recently Created Requisitions"
-        this.getItem()
-        this.getTeams()
-        this.getPaintDescriptionGet()
-      }
-      else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
-        if (!this.segmentValue) {
-          this.segmentValue = 'Active'
+        else if (this.usereRole == 'Executive' || this.usereRole == 'Admin') {
+          if (!this.segmentValue) {
+            this.segmentValue = 'Active'
+          }
+          this.getRequisitionDetail()
         }
-        this.getRequisitionDetail()
-      }
-      else {
-        if (!this.segmentValue) {
-          this.segmentValue = 'InQueueQA'
+        else {
+          if (!this.segmentValue) {
+            this.segmentValue = 'InQueueQA'
+          }
+          this.pageTitles = "QA Testing"
+          this.getRequisitionDetail()
         }
-        this.pageTitles = "QA Testing"
-        this.getRequisitionDetail()
+        setTimeout(() => {
+          this.routerCount = 0; // Reset the counter after processing
+        }, 1000);
+        console.log('this.segmentValue', this.segmentValue);
       }
-      setTimeout(() => {
-        this.routerCount = 0; // Reset the counter after processing
-      }, 1000);
-      console.log('this.segmentValue', this.segmentValue);
-    }
     });
 
 
@@ -174,12 +174,12 @@ export class OrderPage implements OnInit {
 
   activityListPage(id: any, slipNumber: any) {
     if (this.usereRole == 'Admin' || this.usereRole == 'QA') {
-      if(this.usereRole == 'QA'){
+      if (this.usereRole == 'QA') {
         if (this.ionSelectObserver) {
-        this.ionSelectObserver.disconnect();
-        this.ionSelectObserver = null;
-        console.log("🛑 MutationObserver disconnected");
-      }
+          this.ionSelectObserver.disconnect();
+          this.ionSelectObserver = null;
+          console.log("🛑 MutationObserver disconnected");
+        }
       }
       this.router.navigate(['/activity-list'], { queryParams: { id: id, slipNumber: slipNumber, team: this.teamsOrders } });
     }
@@ -221,9 +221,10 @@ export class OrderPage implements OnInit {
 
     // Make the HTTP request
     this.controller.showloader()
+    this.collapseAllItems();
     this.httpService.getRequisition(params)
       .subscribe((res: any) => {
-        if (res.length < 20) {
+        if (res.length < 100) {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         this.controller.hideloader()
@@ -233,7 +234,7 @@ export class OrderPage implements OnInit {
         this.controller.hideloader()
       });
 
-    
+
   }
 
   handleRequisitionResponse(res: any) {
@@ -306,7 +307,7 @@ export class OrderPage implements OnInit {
 
 
   getItem() {
-      this.getAssignmentCountParallel();
+    this.getAssignmentCountParallel();
     let params = new HttpParams()
       .set('Status', this.segmentValue);
 
@@ -318,10 +319,11 @@ export class OrderPage implements OnInit {
     });
 
     this.controller.showloader()
+    this.collapseAllItems();
     this.httpService.getAssignement(params)
       .subscribe(
         (res: any) => {
-          if (res.length < 20) {
+          if (res.length < 100) {
             this.finalPage = true; // Set finalPage to true if no items are returned
           }
           this.controller.hideloader()
@@ -392,7 +394,7 @@ export class OrderPage implements OnInit {
         parm = createHttpParams(id, team);
         break;
     }
-    parm = parm.set('PageSize', 20)
+    parm = parm.set('PageSize', 100)
 
     // Object.keys(this.filter).forEach(key => {
     //   if (this.filter[key] !== null) {
@@ -401,9 +403,10 @@ export class OrderPage implements OnInit {
     // });
 
     // Make the HTTP request
+    this.collapseAllItems();
     this.httpService.getItemDetail(parm)
       .subscribe((res: any) => {
-        if (res.length < 20) {
+        if (res.length < 100) {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         // Handle the response based on user role and segment value
@@ -550,14 +553,14 @@ export class OrderPage implements OnInit {
       //         window.location.reload();
       //       }
       // });
-  // Clear Capacitor Storage
+      // Clear Capacitor Storage
 
       // Clear localStorage if you're using it
       localStorage.clear();
       this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
         // Only reload if necessary
         // if (Capacitor.getPlatform() === 'android') {
-          setTimeout(() => window.location.reload(), 100); // small delay improves stability
+        setTimeout(() => window.location.reload(), 100); // small delay improves stability
         // }
       });
     }
@@ -607,38 +610,58 @@ export class OrderPage implements OnInit {
     event.stopPropagation();
     event.preventDefault()
     let params = new HttpParams().set('id', id).set('status', Status);
+    this.collapseAllItems();
     this.httpService.requisitionUpdatePriorityStatus(params).subscribe((res: any) => {
       console.log('Status updated successfully:', res);
       // this.ItemList[i].priority = Status
     })
     // console.log('Selected option:', this.selectedOption);
   }
-    addcss() {
-  console.log("Adding custom styles to ion-select");
+  addcss() {
+    // Check if we're on the requisition page
+    const isRequisitionPage = window.location.pathname === '/requisition' && window.location.search.startsWith('?id=');
 
-  this.ionSelectObserver = new MutationObserver(() => {
-    document.querySelectorAll("ion-select").forEach((ionSelect) => {
-      if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
-        console.log("✅ Styling dynamically added ion-select");
-        const style = document.createElement("style");
-        style.classList.add("custom-style");
-        style.textContent = `
-          .select-outline-container {
-            height: 32px !important;
-            left: 20px !important;
-            width: 80% !important;
+    if (!isRequisitionPage) {
+      return; // Exit the function if not on the requisition page
+    }
+    const observer = new MutationObserver(() => {
+      document.querySelectorAll("ion-select").forEach((ionSelect) => {
+        // Ensure ion-select has shadowRoot and check for existing styles
+        if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+          try {
+            console.log("✅ Styling dynamically added ion-select");
+
+            // Create style element and add the styles
+            const style = document.createElement("style");
+            style.classList.add("custom-style");
+            style.textContent = `
+              .select-outline-container {
+                height: 32px !important;
+                left: 20px !important;
+                width: 80% !important;
+              }
+              .select-wrapper-inner {
+                display: block !important;
+              }
+            `;
+
+            // Append to shadow DOM
+            ionSelect.shadowRoot.appendChild(style);
+          } catch (error) {
+            console.error("Error while adding custom styles to ion-select:", error);
           }
-          .select-wrapper-inner {
-            display: block !important;
-          }
-        `;
-        ionSelect.shadowRoot.appendChild(style);
-      }
+        }
+      });
     });
-  });
 
-  this.ionSelectObserver.observe(document.body, { childList: true, subtree: true });
-}
+    // Observe the entire document for added nodes
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    setTimeout(() => {
+      console.log("Stopping the observer");
+      observer.disconnect(); // Stop observing
+    }, 2000);
+  }
   async openFilter() {
     const modal = await this.modalController.create({
       component: FilterModalComponent,
@@ -679,7 +702,7 @@ export class OrderPage implements OnInit {
   resetFilter() {
     this.filter = {
       PageNumber: 1,
-      PageSize: 20,
+      PageSize: 100,
       StartDate: null,
       EndDate: null,
       Keyword: null,
@@ -687,73 +710,72 @@ export class OrderPage implements OnInit {
     }
   }
   rejectOrder(id: any, slipNumber: any) {
-    this.router.navigate(['/requisition'], { queryParams: { id: id, slipNumber: slipNumber,isReject: true } });
+    this.router.navigate(['/requisition'], { queryParams: { id: id, slipNumber: slipNumber, isReject: true } });
   }
 
   addISTOffset(dateStr: string): Date {
-  const originalDate = new Date(dateStr);
-  const istOffsetMs = 5.5 * 60 * 60 * 1000; // 5 hours 30 mins in ms
-  return new Date(originalDate.getTime() + istOffsetMs);
-}
+    const originalDate = new Date(dateStr);
+    const istOffsetMs = 5.5 * 60 * 60 * 1000; // 5 hours 30 mins in ms
+    return new Date(originalDate.getTime() + istOffsetMs);
+  }
 
-async showReceivedModal(id: any) {
-  const modal = await this.modalController.create({
-        component: ReceivedModalComponent,
-        componentProps: {
-          // 'totalQuantity': totalQuantity,
-          // 'getquantity': this.UpdatedItemLists[i].quantity || 0,
-          // 'itemName': partDescription,
-          'teams2': this.teams,
-          'PaintDescription': this.PaintDescription,
-          'isSingle': false,
-          isInwardManager: this.usereRole === 'Inward Manager' ? true : false,
-          isChallan: true,
-        },
-        cssClass: 'quantity-modal',
-      });
-      modal.onDidDismiss().then((dataReturned: any) => {
-        console.log('Modal data:', dataReturned);
-        if (dataReturned.data !== undefined) {
-          this.controller.showloader()
-          const data = {
-            "requisitionId": id,
-            "priority": dataReturned.data.selectedChallanPriority,
-            "items": [
-              {
-                "itemId": 0,
-                "priority": dataReturned.data.selectedPriority,
-                "quantity": 0,
-                "color": dataReturned.data.color,
-                "itemPaintDescriptions": dataReturned.data.itemPaintDescriptions,
-                "images": []
-              }
-            ]
-          }
-          console.log('data', data);
-          this.httpService.assignItemProcess(data)
-            .subscribe((res: any) => {
-              if (res.success) {
-                this.controller.hideloader()
-                this.ngOnInit()
-                this.collapseAllItems();
-
-              }
-              else {
-                this.controller.hideloader()
-                this.controller.showToast(res.message);
-
-              }
-            }, (error) => {
-              this.controller.hideloader()
-            });
+  async showReceivedModal(id: any) {
+    const modal = await this.modalController.create({
+      component: ReceivedModalComponent,
+      componentProps: {
+        // 'totalQuantity': totalQuantity,
+        // 'getquantity': this.UpdatedItemLists[i].quantity || 0,
+        // 'itemName': partDescription,
+        'teams2': this.teams,
+        'PaintDescription': this.PaintDescription,
+        'isSingle': false,
+        isInwardManager: this.usereRole === 'Inward Manager' ? true : false,
+        isChallan: true,
+      },
+      cssClass: 'quantity-modal',
+    });
+    modal.onDidDismiss().then((dataReturned: any) => {
+      console.log('Modal data:', dataReturned);
+      if (dataReturned.data !== undefined) {
+        this.controller.showloader()
+        const data = {
+          "requisitionId": id,
+          "priority": dataReturned.data.selectedChallanPriority,
+          "items": [
+            {
+              "itemId": 0,
+              "priority": dataReturned.data.selectedPriority,
+              "quantity": 0,
+              "color": dataReturned.data.color,
+              "itemPaintDescriptions": dataReturned.data.itemPaintDescriptions,
+              "images": []
+            }
+          ]
         }
+        this.collapseAllItems();
+        this.httpService.assignItemProcess(data)
+          .subscribe((res: any) => {
+            if (res.success) {
+              this.controller.hideloader()
+              this.ngOnInit()
+            }
+            else {
+              this.controller.hideloader()
+              this.controller.showToast(res.message);
 
-      });
-      await modal.present();
-    }
+            }
+          }, (error) => {
+            this.controller.hideloader()
+          });
+      }
 
-    getTeams() {
+    });
+    await modal.present();
+  }
+
+  getTeams() {
     // this.controller.showloader()
+    this.collapseAllItems();
     this.httpService.getTeams()
       .subscribe(
         (res: any) => {
@@ -766,6 +788,7 @@ async showReceivedModal(id: any) {
   }
 
   getPaintDescriptionGet() {
+    this.collapseAllItems();
     this.httpService.getPaintDescriptionGet().subscribe((res: any) => {
       // console.log('getPaintDescriptionGet', res);
       const paintList = res;
@@ -785,100 +808,103 @@ async showReceivedModal(id: any) {
     })
   }
   collapseAllItems(): void {
-  const roleSegmentMap: any = {
-    'Executive': {
-      'Active': this.activeExpandedItems,
-      'Completed': this.completedExpandedItems,
-      'InQueue': this.inQueueExpandedItems
-    },
-    'Admin': {
-      'Active': this.activeExpandedItems,
-      'Completed': this.completedExpandedItems,
-      'InQueue': this.inQueueExpandedItems
-    },
-    'Inward Manager': {
-      'Assigned': this.expandedItems,
-      'UnAssigned': this.unAssignedExpandedItems
-    },
-    'QA': {
-      'InQueueQA': this.qaCompletedExpandedItems,
-      'Rejected': this.rejectedExpandedItems,
-      'Approved': this.approvedExpandedItems
+    const roleSegmentMap: any = {
+      'Executive': {
+        'Active': this.activeExpandedItems,
+        'Completed': this.completedExpandedItems,
+        'InQueue': this.inQueueExpandedItems
+      },
+      'Admin': {
+        'Active': this.activeExpandedItems,
+        'Completed': this.completedExpandedItems,
+        'InQueue': this.inQueueExpandedItems
+      },
+      'Inward Manager': {
+        'Assigned': this.expandedItems,
+        'UnAssigned': this.unAssignedExpandedItems
+      },
+      'QA': {
+        'InQueueQA': this.qaCompletedExpandedItems,
+        'Rejected': this.rejectedExpandedItems,
+        'Approved': this.approvedExpandedItems
+      }
+    };
+
+    const roleSegments = roleSegmentMap[this.usereRole];
+    if (roleSegments) {
+      (Object.values(roleSegments) as Set<number>[]).forEach((set) => set.clear());
     }
-  };
-
-  const roleSegments = roleSegmentMap[this.usereRole];
-  if (roleSegments) {
-    (Object.values(roleSegments) as Set<number>[]).forEach((set) => set.clear());
   }
-}
 
-// getRequisitionGetCount() {
-//   let params = new HttpParams();
-//   params.set('Status', 'Active');
-//   params.set('Status', 'Completed');
-//   params.set('Status', 'InQueue');
-  
-//   this.httpService.getRequisitionGetCount(params)
-//     .subscribe((res: any) => {
-//       console.log('Requisition Get Count:', res);
-//     });
-// }
+  // getRequisitionGetCount() {
+  //   let params = new HttpParams();
+  //   params.set('Status', 'Active');
+  //   params.set('Status', 'Completed');
+  //   params.set('Status', 'InQueue');
+
+  //   this.httpService.getRequisitionGetCount(params)
+  //     .subscribe((res: any) => {
+  //       console.log('Requisition Get Count:', res);
+  //     });
+  // }
 
   getRequisitionGetCountParallel() {
-  const inQueue$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'Approved' : 'InQueue');
+    const inQueue$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'Approved' : 'InQueue');
 
-  let requests = [inQueue$];
-  let roles = ['inQueue'];
+    let requests = [inQueue$];
+    let roles = ['inQueue'];
 
-  if (this.usereRole == 'QA') {
-    const rejected$ = this.getCountByStatus('Rejected');
-    const approved$ = this.getCountByStatus('Approved');
+    if (this.usereRole == 'QA') {
+      const rejected$ = this.getCountByStatus('Rejected');
+      const approved$ = this.getCountByStatus('Approved');
 
-    requests.push(rejected$, approved$);
-    roles.push('rejected', 'approved');
-  } else {
-    const active$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'InQueue' : 'Active');
-    const completed$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'Rejected' : 'Completed');
+      requests.push(rejected$, approved$);
+      roles.push('rejected', 'approved');
+    } else {
+      const active$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'InQueue' : 'Active');
+      const completed$ = this.getCountByStatus(this.teamsOrders === 'QA Team' ? 'Rejected' : 'Completed');
 
-    requests.push(active$, completed$);
-    roles.push('active', 'completed');
-  }
+      requests.push(active$, completed$);
+      roles.push('active', 'completed');
+    }
 
-  forkJoin(requests).subscribe((results) => {
-    results.forEach((res, index) => {
-      const role = roles[index];
-      switch (role) {
-        case 'active':
-          this.activeCount = res;
-          console.log('Active Count:', res);
-          break;
-        case 'completed':
-          this.completedCount = res;
-          console.log('Completed Count:', res);
-          break;
-        case 'inQueue':
-          this.inQueueCount = res;
-          console.log('InQueue Count:', res);
-          break;
-        case 'rejected':
-          this.rejectedCount = res;
-          console.log('Rejected Count:', res);
-          break;
-        case 'approved':
-          this.approvedCount = res;
-          console.log('Approved Count:', res);
-          break;
-      }
+    forkJoin(requests).subscribe((results) => {
+      results.forEach((res, index) => {
+        const role = roles[index];
+        switch (role) {
+          case 'active':
+            this.activeCount = res;
+            console.log('Active Count:', res);
+            break;
+          case 'completed':
+            this.completedCount = res;
+            console.log('Completed Count:', res);
+            break;
+          case 'inQueue':
+            this.inQueueCount = res;
+            console.log('InQueue Count:', res);
+            break;
+          case 'rejected':
+            this.rejectedCount = res;
+            console.log('Rejected Count:', res);
+            break;
+          case 'approved':
+            this.approvedCount = res;
+            console.log('Approved Count:', res);
+            break;
+        }
+      });
     });
-  });
-}
+  }
 
 
   getCountByStatus(status: string): Observable<any> {
     let params = new HttpParams()
-    params = params.set('Team', this.teamsOrders);
+    if (this.teamsOrders) {
+      params = params.set('Team', this.teamsOrders);
+    }
     params = params.set('Status', status);
+    this.collapseAllItems();
     return this.httpService.getRequisitionGetCount(params);
   }
 
@@ -896,25 +922,28 @@ async showReceivedModal(id: any) {
 
   getAssignmenCountByStatus(status: string): Observable<any> {
     let params = new HttpParams().set('Status', status);
+    this.collapseAllItems();
     return this.httpService.getRequisitionGetForAssignmentCount(params);
   }
-  
-ngOnDestroy() {
-  if (this.ionSelectObserver) {
-    this.ionSelectObserver.disconnect();
-    this.ionSelectObserver = null;
-    console.log("🛑 MutationObserver disconnected");
+
+  ngOnDestroy() {
+    if (this.ionSelectObserver) {
+      this.ionSelectObserver.disconnect();
+      this.ionSelectObserver = null;
+      console.log("🛑 MutationObserver disconnected");
+    }
+
+    // Optional: Remove the injected styles
+    document.querySelectorAll("ion-select").forEach((ionSelect) => {
+      if (ionSelect.shadowRoot) {
+        const style = ionSelect.shadowRoot.querySelector("style.custom-style");
+        if (style) {
+          ionSelect.shadowRoot.removeChild(style);
+          console.log("❌ Custom style removed from ion-select");
+        }
+      }
+    });
   }
 
-  // Optional: Remove the injected styles
-  document.querySelectorAll("ion-select").forEach((ionSelect) => {
-    if (ionSelect.shadowRoot) {
-      const style = ionSelect.shadowRoot.querySelector("style.custom-style");
-      if (style) {
-        ionSelect.shadowRoot.removeChild(style);
-        console.log("❌ Custom style removed from ion-select");
-      }
-    }
-  });
-}
+
 }

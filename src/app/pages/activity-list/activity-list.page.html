@@ -149,7 +149,7 @@
                   <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
 
                 </ion-button>
-                <ion-button id="handover-btn-id" *ngIf="!item?.curretProcess?.sentForHandover" class="startTask-btn"
+                <!-- <ion-button id="handover-btn-id" *ngIf="!item?.curretProcess?.sentForHandover" class="startTask-btn"
                   (click)="openModal(item,'SendForHandover')">
                   <div *ngIf="loginTeam !== 'Touch Up Team'">
 
@@ -159,7 +159,7 @@
                     Complete
                   </div>
                   <ion-icon slot="start" name="navigate"></ion-icon>
-                </ion-button>
+                </ion-button> -->
                 
                 <ion-button fill="outline" class="QARemarks-btn" (click)="openRemarksModal(item,'QARemarks')">
                   QA Remarks
@@ -573,7 +573,7 @@
   </ion-modal>
 
 
-  <ion-infinite-scroll *ngIf="!finalPage" (ionInfinite)="onIonInfinite($event)">
+  <ion-infinite-scroll *ngIf="!finalPage && !isRefreshing" (ionInfinite)="onIonInfinite($event)">
     <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 
