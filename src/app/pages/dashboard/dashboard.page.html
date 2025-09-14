@@ -258,6 +258,13 @@
       <ion-fab-button data-desc="Refresh App Data" aria-label="Update Rate Data" (click)="getRequisitionFetch()">
         <ion-icon name="repeat-outline"></ion-icon>
       </ion-fab-button>
+      <!-- Floating Action Button (FAB) -->
+      <ion-fab-button data-desc="Upload excel" aria-label="Upload excel" (click)="triggerFileInput()">
+        <ion-icon name="cloud-upload-outline"></ion-icon>
+      </ion-fab-button>
+
+      <!-- Invisible File Input -->
+      <input type="file" #fileInput (change)="onFileChange($event)" style="display: none" />
       <ion-fab-button data-desc="Change Password" aria-label="Change Password" (click)="changePassword()">
         <ion-icon name="lock-closed-outline"></ion-icon>
       </ion-fab-button>

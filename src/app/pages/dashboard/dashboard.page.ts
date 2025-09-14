@@ -5,9 +5,9 @@ import { Router } from '@angular/router';
 import { IonicModule, ModalController } from '@ionic/angular';
 import { ControllerService } from 'src/app/services/controller.service';
 import { HttpService } from 'src/app/services/http.service';
-import { Capacitor } from '@capacitor/core';
 import { ChangePasswordModalComponent } from 'src/app/shares/components/change-password-modal/change-password-modal.component';
-import { ReportComponent } from 'src/app/shares/components/report/report/report.component';
+import * as XLSX from 'xlsx';
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.page.html',
@@ -95,14 +95,14 @@ export class DashboardPage implements OnInit {
     this.router.navigate(['/login'], { replaceUrl: true }).then(() => {
       // Only reload if necessary
       // if (Capacitor.getPlatform() === 'android') {
-        setTimeout(() => window.location.reload(), 100); // small delay improves stability
+      setTimeout(() => window.location.reload(), 100); // small delay improves stability
       // }
     });
 
   }
   getActiveRequisitionCount() {
     const parm = new HttpParams().set('ReqFrom', '');
-      this.controller.showloader()
+    this.controller.showloader()
     this.httpService.getActiveRequisitionCount(parm).subscribe(
       (apidata: any) => {
         this.controller.hideloader()
@@ -130,7 +130,7 @@ export class DashboardPage implements OnInit {
       },
       (error) => {
         console.error('Error fetching active requisition count:', error);
-          this.controller.hideloader()
+        this.controller.hideloader()
       }
     );
   }
@@ -224,15 +224,15 @@ export class DashboardPage implements OnInit {
 
   }
   addcss() {
-  console.log("Adding custom styles to ion-select");
+    console.log("Adding custom styles to ion-select");
 
-  this.ionSelectObserver = new MutationObserver(() => {
-    document.querySelectorAll("ion-select").forEach((ionSelect) => {
-      if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
-        console.log("✅ Styling dynamically added ion-select");
-        const style = document.createElement("style");
-        style.classList.add("custom-style");
-        style.textContent = `
+    this.ionSelectObserver = new MutationObserver(() => {
+      document.querySelectorAll("ion-select").forEach((ionSelect) => {
+        if (ionSelect.shadowRoot && !ionSelect.shadowRoot.querySelector("style.custom-style")) {
+          console.log("✅ Styling dynamically added ion-select");
+          const style = document.createElement("style");
+          style.classList.add("custom-style");
+          style.textContent = `
           .select-outline-container {
             height: 32px !important;
             left: 20px !important;
@@ -242,13 +242,13 @@ export class DashboardPage implements OnInit {
             display: block !important;
           }
         `;
-        ionSelect.shadowRoot.appendChild(style);
-      }
+          ionSelect.shadowRoot.appendChild(style);
+        }
+      });
     });
-  });
 
-  this.ionSelectObserver.observe(document.body, { childList: true, subtree: true });
-}
+    this.ionSelectObserver.observe(document.body, { childList: true, subtree: true });
+  }
 
 
   getPaintDescWiseCostOverview(filter: any = false) {
@@ -489,41 +489,41 @@ export class DashboardPage implements OnInit {
     } else if (reportType === 'Rework') {
       params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', 'Rework');
     }
-    else if( reportType === 'CostOverview') {
+    else if (reportType === 'CostOverview') {
       params = new HttpParams().set('StartDate', this.filter.StartDate).set('EndDate', this.filter.EndDate).set('Type', this.costAnalysisType).set('ReqFrom', this.filter.ReqFrom)
-      .set('Status', this.filter.Status);
+        .set('Status', this.filter.Status);
       this.controller.showloader();
       this.httpService.reportGetDayWiseCostOverview(params).subscribe({
-         next: (res: any) => {
-        this.controller.hideloader();
-        console.log('Report URL:', res);
-        window.open(res, '_blank');
-      },
+        next: (res: any) => {
+          this.controller.hideloader();
+          console.log('Report URL:', res);
+          window.open(res, '_blank');
+        },
         error: (err) => {
           this.controller.hideloader()
           this.controller.showToast('Error fetching report');
           console.error('Download error:', err);
         }
-    });
+      });
       return
     }
     this.controller.showloader();
 
     this.httpService.reportGetItems(params).subscribe({
-         next: (res: any) => {
+      next: (res: any) => {
         this.controller.hideloader();
         console.log('Report URL:', res);
         window.open(res, '_blank');
       },
-        error: (err) => {
-          this.controller.hideloader()
-          this.controller.showToast('Error fetching report');
-          console.error('Download error:', err);
-        }
+      error: (err) => {
+        this.controller.hideloader()
+        this.controller.showToast('Error fetching report');
+        console.error('Download error:', err);
+      }
     });
   }
 
-  openFilter(){
+  openFilter() {
 
   }
   openReport() {
@@ -532,25 +532,74 @@ export class DashboardPage implements OnInit {
   }
   date(date: any) {
     return new Date(date)
-    }
-
-    ngOnDestroy() {
-  if (this.ionSelectObserver) {
-    this.ionSelectObserver.disconnect();
-    this.ionSelectObserver = null;
-    console.log("🛑 MutationObserver disconnected");
   }
 
-  // Optional: Remove the injected styles
-  document.querySelectorAll("ion-select").forEach((ionSelect) => {
-    if (ionSelect.shadowRoot) {
-      const style = ionSelect.shadowRoot.querySelector("style.custom-style");
-      if (style) {
-        ionSelect.shadowRoot.removeChild(style);
-        console.log("❌ Custom style removed from ion-select");
+  ngOnDestroy() {
+    if (this.ionSelectObserver) {
+      this.ionSelectObserver.disconnect();
+      this.ionSelectObserver = null;
+      console.log("🛑 MutationObserver disconnected");
+    }
+
+    // Optional: Remove the injected styles
+    document.querySelectorAll("ion-select").forEach((ionSelect) => {
+      if (ionSelect.shadowRoot) {
+        const style = ionSelect.shadowRoot.querySelector("style.custom-style");
+        if (style) {
+          ionSelect.shadowRoot.removeChild(style);
+          console.log("❌ Custom style removed from ion-select");
+        }
       }
-    }
-  });
-}
-
+    });
   }
+  selectedFile: File | null = null;
+  isUploading: boolean = false;
+   // Handle the file input change event
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.uploadFile();
+    }
+  }
+
+  
+
+   triggerFileInput(): void {
+    this.fileInput.nativeElement.click();
+  }
+
+  // Handle the file upload to the server
+  async uploadFile() {
+    if (!this.selectedFile) {
+      return; // Add error handling if no file selected
+    }
+
+    this.isUploading = true;  // Set uploading status to true
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile, this.selectedFile.name);
+
+    // const loading = await this.loadingCtrl.create({
+    //   message: 'Uploading file...',
+    // });
+    // await loading.present();
+    this.controller.showloader('Uploading file...');
+
+    this.httpService.requisitionUploadExcel(formData).subscribe({
+      next: async (response) => {
+        console.log('Upload successful:', response);
+        this.controller.showToast(response.message);
+        this.controller.hideloader();
+      },
+      error: (error) => {
+        console.error('Upload failed:', error);
+        this.controller.showToast(error.message);
+
+        this.controller.hideloader();
+      }
+    });
+  }
+
+
+}

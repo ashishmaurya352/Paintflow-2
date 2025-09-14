@@ -26,7 +26,7 @@ export class OrderPage implements OnInit {
 
   filter: any = {
     PageNumber: 1,
-    PageSize: 100,
+    PageSize: 20,
     StartDate: null,
     EndDate: null,
     Keyword: null,
@@ -224,7 +224,7 @@ export class OrderPage implements OnInit {
     this.collapseAllItems();
     this.httpService.getRequisition(params)
       .subscribe((res: any) => {
-        if (res.length < 100) {
+        if (res.length < 20) {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         this.controller.hideloader()
@@ -323,7 +323,7 @@ export class OrderPage implements OnInit {
     this.httpService.getAssignement(params)
       .subscribe(
         (res: any) => {
-          if (res.length < 100) {
+          if (res.length < 20) {
             this.finalPage = true; // Set finalPage to true if no items are returned
           }
           this.controller.hideloader()
@@ -394,7 +394,7 @@ export class OrderPage implements OnInit {
         parm = createHttpParams(id, team);
         break;
     }
-    parm = parm.set('PageSize', 100)
+    parm = parm.set('PageSize', 20)
 
     // Object.keys(this.filter).forEach(key => {
     //   if (this.filter[key] !== null) {
@@ -406,7 +406,7 @@ export class OrderPage implements OnInit {
     this.collapseAllItems();
     this.httpService.getItemDetail(parm)
       .subscribe((res: any) => {
-        if (res.length < 100) {
+        if (res.length < 20) {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         // Handle the response based on user role and segment value
@@ -702,7 +702,7 @@ export class OrderPage implements OnInit {
   resetFilter() {
     this.filter = {
       PageNumber: 1,
-      PageSize: 100,
+      PageSize: 20,
       StartDate: null,
       EndDate: null,
       Keyword: null,

@@ -25,7 +25,7 @@ export class RequisitionPage implements OnInit {
 
   filter: any = {
     PageNumber: 1,
-    PageSize: 20,
+    PageSize: 300,
     StartDate: null,
     EndDate: null,
     // SortBy
@@ -219,7 +219,7 @@ export class RequisitionPage implements OnInit {
     this.httpService.getItem(params).subscribe(
       (res: any) => {
         this.addcss();
-        if (res.length < 20) {
+        if (res.length < 300) {
           this.finalPage = true; // Set finalPage to true if no items are returned
         }
         // Hide loader after response

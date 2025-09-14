@@ -60,6 +60,7 @@ export class HttpService {
   readonly RequisitionGetForAssignementCount = `/Requisition/GetForAssignementCount`;
   readonly ReportGetPaintingPlanReport = `/Report/GetPaintingPlanReport`;
   readonly RequisitionGetDDLSlipNumbers = `/Requisition/GetDDLSlipNumbers`;
+  readonly RequisitionUploadExcel = `/Requisition/UploadExcel`;
   constructor(
     private httpClient: HttpClient
   ) { }
@@ -275,6 +276,10 @@ export class HttpService {
   requisitionGetDDLSlipNumbers(data: any): Observable<any> {
     let url = `${this.apiUrl + this.RequisitionGetDDLSlipNumbers}?${data}`;
     return this.httpClient.get(url);
+  }
+  requisitionUploadExcel(data: any): Observable<any> {
+    let url = `${this.apiUrl + this.RequisitionUploadExcel}`;
+    return this.httpClient.post(url, data);
   }
 
 }

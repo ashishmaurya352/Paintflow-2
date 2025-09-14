@@ -24,7 +24,7 @@ export class ActivityListPage implements OnInit {
   reworkImageUrl = 'assets/img/letter-r.png';
   filter: any = {
     PageNumber: 1,
-    PageSize: 200,
+    PageSize: 300,
     StartDate: null,
     EndDate: null,
     // SortBy
@@ -333,7 +333,7 @@ isRefreshing: boolean = false;
     this.httpService.getItemDetail(parm)
       .subscribe(
         (res: any) => {
-          if (res.length < 200) {
+          if (res.length < 300) {
             this.finalPage = true; // Set finalPage to true if no items are returned
           }
           // setTimeout(() => {
@@ -966,7 +966,7 @@ isRefreshing: boolean = false;
   resetFilter() {
     this.filter = {
       PageNumber: 1,
-      PageSize: 200,
+      PageSize: 300,
       StartDate: null,
       EndDate: null,
       Keyword: null,
